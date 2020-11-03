@@ -1,0 +1,5 @@
+rootProject.name = 'HAC'
+include 'hac-api'
+include 'hac-core'
+include 'hac-movement'
+include 'hac-util'

@@ -1,0 +1,9 @@
+group 'com.heirteir'
+version pluginVersion
+
+dependencies {
+    api(project(':hac-api'))
+    api(project(':hac-util'))
+
+    errorprone("com.google.errorprone:error_prone_core:2.4.0")
+}

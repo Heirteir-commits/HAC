@@ -1,0 +1,47 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+    ext {
+        jarName = "[HAC] Movement.jar"
+    }
+}
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+group 'com.heirteir'
+version pluginVersion
+
+task copyFiles {
+    doLast {
+        serverLocationFile.eachDir { File file ->
+            if (!defaultJarDirectory.contains(file.path)) {
+                copy {
+                    from defaultJarDirectory + jarName
+                    into file.path + '/plugins/'
+                }
+            }
+        }
+    }
+}
+
+shadowJar {
+    destinationDirectory = file(defaultJarDirectory)
+    archiveFileName = jarName
+    relocate 'com.heirteir.hac.util', 'com.heirteir.hac.movement.util'
+    finalizedBy copyFiles
+}
+
+dependencies {
+    api(project(':hac-util'))
+    compileOnlyApi(project(':hac-core'))
+
+    errorprone("com.google.errorprone:error_prone_core:2.4.0")
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}

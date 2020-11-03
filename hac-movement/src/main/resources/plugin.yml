@@ -1,0 +1,8 @@
+name: HAC-Movement
+version: @version@
+main: com.heirteir.hac.movement.Test
+prefix: '-'
+api-version: 1.13
+authors: [ Heirteir ]
+description: The base framework for the other modular plugins in the susano framework.
+website: heirteir.com

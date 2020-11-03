@@ -1,0 +1,13 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+group 'com.heirteir'
+version pluginVersion
+
+dependencies {
+    compileOnlyApi('org.jetbrains:annotations:16.0.2')
+    compileOnlyApi(files(spigotLocation + "1_16_R2.jar"))
+
+    errorprone("com.google.errorprone:error_prone_core:2.4.0")
+}

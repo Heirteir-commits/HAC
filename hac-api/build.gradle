@@ -1,0 +1,8 @@
+group 'com.heirteir'
+version pluginVersion
+
+dependencies {
+
+
+    errorprone("com.google.errorprone:error_prone_core:2.4.0")
+}
