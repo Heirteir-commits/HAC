@@ -39,7 +39,8 @@ public class GithubDependency extends AbstractDependency {
     private final boolean useBeta;
 
     /* dynamic vars */
-    private Boolean needsUpdate = null;
+    private boolean checkedUpdate;
+    private boolean needsUpdate;
     private boolean updating;
 
     public GithubDependency(@NotNull String fileName, @NotNull String pluginMame, @NotNull String githubRepoRelativeURL, int spigotId, boolean checkUpdate, boolean useBeta) {
@@ -61,13 +62,13 @@ public class GithubDependency extends AbstractDependency {
 
     @Override
     public boolean needsUpdate() {
-        if (this.needsUpdate != null) {
+        if (this.checkedUpdate) {
             return this.needsUpdate;
         }
 
         this.needsUpdate = !Files.exists(this.getDownloadLocation()) && Bukkit.getPluginManager().getPlugin(this.pluginName) == null;
 
-        if (this.checkUpdate && !needsUpdate) {
+        if (this.checkUpdate && !this.needsUpdate) {
             JsonObject latest = this.getLatestVersion();
 
             if (latest != null) {
@@ -87,6 +88,7 @@ public class GithubDependency extends AbstractDependency {
             }
         }
 
+        this.checkedUpdate = true;
         return this.needsUpdate;
     }
 
