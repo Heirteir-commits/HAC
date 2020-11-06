@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,35 +70,35 @@ public final class Log {
         Preconditions.checkState(this.open, "Log file hasn't been created please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
     }
 
-    public void info(String message) {
+    public void info(@NotNull String message) {
         this.checkState();
 
-        if (this.open) {
+        if (this.parent.getLogger().isLoggable(Level.INFO) && this.open) {
             this.parent.getLogger().info(this.toLogMessage(message));
         }
     }
 
-    public void severe(String message) {
+    public void severe(@NotNull String message) {
         this.checkState();
 
-        if (this.open) {
+        if (this.parent.getLogger().isLoggable(Level.SEVERE) && this.open) {
             this.parent.getLogger().severe(this.toLogMessage(message));
         }
     }
 
-    public void severe(Throwable exception) {
+    public void severe(@NotNull Throwable exception) {
         this.checkState();
 
-        if (this.open) {
+        if (this.parent.getLogger().isLoggable(Level.SEVERE) && this.open) {
             this.parent.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
         }
     }
 
-    public void reportFatalError(String message) {
+    public void reportFatalError(@NotNull String message) {
         this.reportFatalError(message, true);
     }
 
-    public void reportFatalError(String message, boolean shutdown) {
+    public void reportFatalError(@NotNull String message, boolean shutdown) {
         int splitSize = 60;
         int padding = 6;
         Iterable<String> header = Splitter.fixedLength(splitSize).split(String.format("'%s' ran into an error that has forced the plugin to stop. More information below:", this.parent.getName()));
@@ -116,7 +117,7 @@ public final class Log {
         }
     }
 
-    public void reportFatalError(Throwable exception) {
+    public void reportFatalError(@NotNull Throwable exception) {
         this.severe(exception);
         this.reportFatalError(exception.getMessage());
     }

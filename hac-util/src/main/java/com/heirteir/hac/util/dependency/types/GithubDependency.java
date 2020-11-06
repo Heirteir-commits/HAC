@@ -171,7 +171,7 @@ public class GithubDependency extends AbstractDependency {
 
     @Override
     public boolean download() {
-        boolean success = true;
+        boolean success;
 
         if (this.updating) {
             super.getDependencyPlugin().getLog().info(String.format("Downloading update for '%s'.", this.pluginName));
@@ -179,26 +179,13 @@ public class GithubDependency extends AbstractDependency {
             super.getDependencyPlugin().getLog().info(String.format("Downloading plugin dependency '%s'.", this.pluginName));
         }
 
-        URL url = null;
-        try {
-            url = this.getUrl();
-        } catch (MalformedURLException e) {
-            success = false;
-        }
+        success = super.download();
 
-        if (url != null) {
-            try (InputStream is = url.openStream()) {
-                Files.createDirectories(this.getDownloadLocation().getParent());
-                Files.deleteIfExists(this.getDownloadLocation());
-                Files.copy(is, this.getDownloadLocation());
-
-                if (this.updating) {
-                    super.getDependencyPlugin().getLog().info(String.format("Successfully downloaded update for '%s' to '%s'. It will be active on next reload.", this.getName(), this.getDownloadLocation().toAbsolutePath()));
-                } else {
-                    super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
-                }
-            } catch (IOException e) {
-                success = false;
+        if (success) {
+            if (this.updating) {
+                super.getDependencyPlugin().getLog().info(String.format("Successfully downloaded update for '%s' to '%s'. It will be active on next reload.", this.getName(), this.getDownloadLocation().toAbsolutePath()));
+            } else {
+                super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
             }
         }
 

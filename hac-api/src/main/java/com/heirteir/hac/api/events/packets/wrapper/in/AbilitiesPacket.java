@@ -13,4 +13,9 @@ public final class AbilitiesPacket extends AbstractWrappedPacketIn {
     public AbilitiesPacket() {
         super(PacketConstants.In.ABILITIES);
     }
+
+    public AbilitiesPacket(boolean flying) {
+        this();
+        this.flying = flying;
+    }
 }

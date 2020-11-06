@@ -15,4 +15,11 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
     public EntityVelocityPacket() {
         super(PacketConstants.Out.ENTITY_VELOCITY);
     }
+
+    public EntityVelocityPacket(double x, double y, double z) {
+        this();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 }
