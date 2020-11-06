@@ -1,0 +1,2 @@
+# HAC
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f7d3bacff76e48e7ad32ed2d8d025323)](https://app.codacy.com/gh/Heirteir-commits/HAC?utm_source=github.com&utm_medium=referral&utm_content=Heirteir-commits/HAC&utm_campaign=Badge_Grade_Settings)
