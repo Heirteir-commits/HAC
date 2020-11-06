@@ -2,6 +2,8 @@ group 'com.heirteir'
 version pluginVersion
 
 dependencies {
+    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0')
+
     compileOnlyApi('org.jetbrains:annotations:16.0.2')
     compileOnlyApi(latestSpigot)
 

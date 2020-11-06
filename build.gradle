@@ -20,14 +20,20 @@ buildscript {
 
 plugins {
     id 'base'
-    id "org.sonarqube" version "3.0"
+    id 'org.sonarqube' version '3.0'
 }
+
+//sonarqube {
+//    properties {
+//        property "sonar.projectKey", "Heirteir-commits_HAC"
+//        property "sonar.organization", "heirteir-commits"
+////        property "sonar.host.url", "https://sonarcloud.io"
+//    }
+//}
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "Heirteir-commits_HAC"
-        property "sonar.organization", "heirteir-commits"
-        property "sonar.host.url", "https://sonarcloud.io"
+        property 'sonar.coverage.jacoco.xmlReportPaths', project(':hac-util').buildDir.path + '/coverage.xml'
     }
 }
 
@@ -35,10 +41,27 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.freefair.lombok'
     apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'jacoco'
 
     compileJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+        finalizedBy clean
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            csv.enabled = false
+            html.enabled = false
+            xml.destination = file("$buildDir/coverage.xml")
+        }
+        dependsOn test
     }
 
     repositories {

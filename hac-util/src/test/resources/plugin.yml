@@ -1,0 +1,8 @@
+name: Dependency-Plugin
+version: 0.0.1
+main: com.heirteir.hac.util.dependency.plugin.DependencyPluginTest
+prefix: '-'
+api-version: 1.13
+authors: [ Heirteir ]
+description: Dependency-Plugin
+website: heirteir.com

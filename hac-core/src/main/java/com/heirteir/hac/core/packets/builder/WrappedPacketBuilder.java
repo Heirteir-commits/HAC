@@ -6,9 +6,9 @@ import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.util.reflections.types.WrappedClass;
 import com.heirteir.hac.api.util.reflections.types.WrappedConstructor;
+import com.heirteir.hac.core.Core;
 import com.heirteir.hac.core.packets.builder.conversion.ConvertInfo;
 import com.heirteir.hac.core.packets.builder.conversion.ConvertType;
-import com.heirteir.hac.util.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 public class WrappedPacketBuilder {
 
+    private final Core core;
     private final WrappedClass nmsPacketClass;
 
     private final Class<? extends WrappedPacket> rawWrappedPacketClass;
@@ -28,14 +29,15 @@ public class WrappedPacketBuilder {
     private boolean valid = true;
     private WrappedConstructor wrappedConstructor;
 
-    public WrappedPacketBuilder(String nmsPacketClass, Class<? extends WrappedPacket> wrappedPacketClass) {
+    public WrappedPacketBuilder(Core core, String nmsPacketClass, Class<? extends WrappedPacket> wrappedPacketClass) {
+        this.core = core;
         this.nmsPacketClass = API.INSTANCE.getReflections().getNMSClass(nmsPacketClass);
         this.rawWrappedPacketClass = wrappedPacketClass;
         this.wrappedPacketClass = API.INSTANCE.getReflections().getClass(wrappedPacketClass);
         try {
             this.wrappedConstructor = this.wrappedPacketClass.getConstructor();
         } catch (NoSuchMethodException e) {
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         this.fields = Sets.newHashSet();
     }
@@ -53,7 +55,7 @@ public class WrappedPacketBuilder {
                         this.wrappedPacketClass.getFieldByName(mappedName),
                         conversions == null ? Lists.newArrayList() : conversions));
             } catch (NoSuchFieldException e) {
-                Log.INSTANCE.reportFatalError(e);
+                this.core.getLog().reportFatalError(e);
             }
         }
         return this;
@@ -68,7 +70,7 @@ public class WrappedPacketBuilder {
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             packet = null;
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         return packet;
     }

@@ -1,9 +1,8 @@
 package com.heirteir.hac.util.dependency.types;
 
 import com.heirteir.hac.util.dependency.DependencyUtils;
+import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
-import com.heirteir.hac.util.files.FilePaths;
-import com.heirteir.hac.util.logging.Log;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,17 +23,17 @@ public final class MavenDependency extends AbstractDependency {
     private final String version;
     private final String repoUrl;
 
-    public MavenDependency(@NotNull String groupId, @NotNull String artifactId, @NotNull String version, @NotNull String repoUrl) {
+    public MavenDependency(DependencyPlugin parent, @NotNull String groupId, @NotNull String artifactId, @NotNull String version, @NotNull String repoUrl) {
+        super(parent);
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.repoUrl = repoUrl.endsWith("/") ? repoUrl : repoUrl + "/";
     }
 
-    public MavenDependency(@NotNull Maven maven) {
-        this(maven.groupId(), maven.artifactId(), maven.version(), maven.repoUrl());
+    public MavenDependency(DependencyPlugin parent, @NotNull Maven maven) {
+        this(parent, maven.groupId(), maven.artifactId(), maven.version(), maven.repoUrl());
     }
-
 
     @Override
     public boolean needsUpdate() {
@@ -43,7 +42,7 @@ public final class MavenDependency extends AbstractDependency {
 
     @Override
     public Path getDownloadLocation() {
-        return FilePaths.INSTANCE.getPluginFolder().resolve("dependencies").resolve(this.getName() + ".jar");
+        return super.getDependencyPlugin().getPluginFolder().resolve("dependencies").resolve(this.getName() + ".jar");
     }
 
     @Override
@@ -69,18 +68,26 @@ public final class MavenDependency extends AbstractDependency {
     @Override
     public boolean download() {
         boolean success = true;
-        Log.INSTANCE.info(String.format("Dependency '%s' is not in the library folder '%s'. Downloading now...", this.getName(), this.getDownloadLocation().getParent().toAbsolutePath()));
+        super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' is not in the library folder '%s'. Downloading now...", this.getName(), this.getDownloadLocation().getParent().toAbsolutePath()));
+        URL url = null;
 
         try {
-            URL url = this.getUrl();
-
-            Files.createDirectories(this.getDownloadLocation().getParent());
-            InputStream is = url.openStream();
-            Files.copy(is, this.getDownloadLocation());
-            Log.INSTANCE.info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
-        } catch (IOException e) {
+            url = this.getUrl();
+        } catch (MalformedURLException e) {
             success = false;
         }
+
+        if (url != null) {
+            try (InputStream is = url.openStream()) {
+                Files.createDirectories(this.getDownloadLocation().getParent());
+                Files.deleteIfExists(this.getDownloadLocation());
+                Files.copy(is, this.getDownloadLocation());
+                super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
+            } catch (IOException e) {
+                success = false;
+            }
+        }
+
         return success;
     }
 
@@ -90,14 +97,14 @@ public final class MavenDependency extends AbstractDependency {
         boolean success = true;
         URLClassLoader classLoader = (URLClassLoader) DependencyUtils.class.getClassLoader();
 
-        Log.INSTANCE.info(String.format("Attempting to Load dependency '%s'.", this.getName()));
+        super.getDependencyPlugin().getLog().info(String.format("Attempting to Load dependency '%s'.", this.getName()));
 
         try {
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
             method.invoke(classLoader, this.getDownloadLocation().toUri().toURL());
         } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException e) {
-            Log.INSTANCE.severe(e);
+            super.getDependencyPlugin().getLog().severe(e);
             success = false;
         }
         return success;

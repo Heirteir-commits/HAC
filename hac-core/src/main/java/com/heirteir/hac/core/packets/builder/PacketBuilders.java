@@ -9,15 +9,18 @@ import com.heirteir.hac.api.events.packets.wrapper.in.EntityActionPacket;
 import com.heirteir.hac.api.events.packets.wrapper.in.FlyingPacket;
 import com.heirteir.hac.api.events.packets.wrapper.out.EntityVelocityPacket;
 import com.heirteir.hac.api.util.reflections.version.ServerVersion;
+import com.heirteir.hac.core.Core;
 import com.heirteir.hac.core.packets.builder.conversion.ConvertType;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
 public class PacketBuilders {
+    private final Core core;
     private final Map<Class<? extends WrappedPacket>, WrappedPacketBuilder> builders;
 
-    public PacketBuilders() {
+    public PacketBuilders(Core core) {
+        this.core = core;
         this.builders = Maps.newHashMap();
 
         this.create("PacketPlayInFlying", FlyingPacket.class)
@@ -55,7 +58,7 @@ public class PacketBuilders {
     }
 
     private WrappedPacketBuilder create(String nmsClass, Class<? extends WrappedPacket> type) {
-        WrappedPacketBuilder builder = new WrappedPacketBuilder(nmsClass, type);
+        WrappedPacketBuilder builder = new WrappedPacketBuilder(this.core, nmsClass, type);
         this.builders.put(type, builder);
         return builder;
     }

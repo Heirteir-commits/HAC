@@ -5,8 +5,8 @@ import com.heirteir.hac.api.events.packets.PacketConstants;
 import com.heirteir.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
 import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.player.HACPlayer;
+import com.heirteir.hac.core.Core;
 import com.heirteir.hac.core.packets.builder.PacketBuilders;
-import com.heirteir.hac.util.logging.Log;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 @RequiredArgsConstructor
 public final class ChannelHandler extends ChannelDuplexHandler {
 
+    private final Core core;
     private final PacketBuilders builders;
     private final ExecutorService pool;
     private final ASyncPacketEventManager eventManager;
@@ -38,7 +39,7 @@ public final class ChannelHandler extends ChannelDuplexHandler {
 
             this.handle(type.getWrappedClass(), builders.get(type.getWrappedClass()).build(msg));
         } catch (Exception e) {
-            Log.INSTANCE.severe(e);
+            this.core.getLog().severe(e);
         }
     }
 
@@ -59,7 +60,7 @@ public final class ChannelHandler extends ChannelDuplexHandler {
                 this.handle(type.getWrappedClass(), out);
             }
         } catch (Exception e) {
-            Log.INSTANCE.severe(e);
+            this.core.getLog().severe(e);
         }
     }
 
@@ -72,7 +73,7 @@ public final class ChannelHandler extends ChannelDuplexHandler {
                 .thenRunAsync(() -> this.eventManager.run(this.player, type, packet), this.pool)
                 .whenCompleteAsync((msg, ex) -> {
                     if (ex != null) {
-                        Log.INSTANCE.severe(ex);
+                        this.core.getLog().severe(ex);
                     }
                 }, this.pool);
     }

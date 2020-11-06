@@ -7,7 +7,6 @@ import com.heirteir.hac.util.dependency.types.GithubDependency;
 import com.heirteir.hac.util.dependency.types.MavenDependency;
 import com.heirteir.hac.util.dependency.types.annotation.Github;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
-import com.heirteir.hac.util.logging.Log;
 
 import java.net.MalformedURLException;
 import java.util.Arrays;
@@ -23,28 +22,28 @@ public final class DependencyUtils {
 
         if (plugin.getClass().isAnnotationPresent(Maven.List.class)) {
             Arrays.stream(plugin.getClass().getAnnotation(Maven.List.class).value())
-                    .map(MavenDependency::new)
+                    .map(maven -> new MavenDependency(plugin, maven))
                     .forEachOrdered(dependencies::add);
         }
 
         if (plugin.getClass().isAnnotationPresent(Maven.class)) {
-            dependencies.add(new MavenDependency(plugin.getClass().getAnnotation(Maven.class)));
+            dependencies.add(new MavenDependency(plugin, plugin.getClass().getAnnotation(Maven.class)));
         }
 
         if (plugin.getClass().isAnnotationPresent(Github.List.class)) {
             Arrays.stream(plugin.getClass().getAnnotation(Github.List.class).value())
-                    .map(GithubDependency::new)
+                    .map(github -> new GithubDependency(plugin, github))
                     .forEachOrdered(dependencies::add);
         }
 
         if (plugin.getClass().isAnnotationPresent(Github.class)) {
-            dependencies.add(new GithubDependency(plugin.getClass().getAnnotation(Github.class)));
+            dependencies.add(new GithubDependency(plugin, plugin.getClass().getAnnotation(Github.class)));
         }
 
-        return dependencies.stream().allMatch(DependencyUtils::loadDependency);
+        return dependencies.stream().allMatch(dependency -> DependencyUtils.loadDependency(plugin, dependency));
     }
 
-    private static boolean downloadDependency(AbstractDependency dependency) {
+    public static boolean downloadDependency(DependencyPlugin plugin, AbstractDependency dependency) {
         boolean success = true;
 
         if (dependency.needsUpdate()) {
@@ -53,21 +52,21 @@ public final class DependencyUtils {
 
         if (!success) {
             try {
-                Log.INSTANCE.reportFatalError(String.format("Failed to download dependency '%s'. Please download the dependency from: '%s' and place it into the folder '%s'.",
+                plugin.getLog().reportFatalError(String.format("Failed to download dependency '%s'. Please download the dependency from: '%s' and place it into the folder '%s'.",
                         dependency.getName(),
                         dependency.getManualURL(),
                         dependency.getDownloadLocation()));
             } catch (MalformedURLException e) {
-                Log.INSTANCE.severe(e);
+                plugin.getLog().severe(e);
             }
         }
 
         return success;
     }
 
-    public static boolean loadDependency(AbstractDependency dependency) {
-        if (DependencyUtils.downloadDependency(dependency) && dependency.load()) {
-            Log.INSTANCE.info(String.format("Successfully loaded dependency '%s'.", dependency.getName()));
+    public static boolean loadDependency(DependencyPlugin plugin, AbstractDependency dependency) {
+        if (DependencyUtils.downloadDependency(plugin, dependency) && dependency.load()) {
+            plugin.getLog().info(String.format("Successfully loaded dependency '%s'.", dependency.getName()));
             return true;
         }
 

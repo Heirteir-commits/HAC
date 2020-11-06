@@ -19,6 +19,8 @@ shadowJar {
 }
 
 dependencies {
+    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0')
+
     compileOnlyApi('org.javassist:javassist:3.27.0-GA')
 
     api(project(':hac-util'))

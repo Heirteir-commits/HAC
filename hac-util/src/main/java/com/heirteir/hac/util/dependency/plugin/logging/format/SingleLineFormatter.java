@@ -1,4 +1,4 @@
-package com.heirteir.hac.util.logging.format;
+package com.heirteir.hac.util.dependency.plugin.logging.format;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
