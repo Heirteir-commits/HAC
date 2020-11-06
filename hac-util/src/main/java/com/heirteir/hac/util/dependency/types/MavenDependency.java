@@ -1,6 +1,6 @@
 package com.heirteir.hac.util.dependency.types;
 
-import com.heirteir.hac.util.dependency.Dependencies;
+import com.heirteir.hac.util.dependency.DependencyUtils;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
 import com.heirteir.hac.util.files.FilePaths;
 import com.heirteir.hac.util.logging.Log;
@@ -88,7 +88,7 @@ public final class MavenDependency extends AbstractDependency {
     @Override
     public boolean load() {
         boolean success = true;
-        URLClassLoader classLoader = (URLClassLoader) Dependencies.class.getClassLoader();
+        URLClassLoader classLoader = (URLClassLoader) DependencyUtils.class.getClassLoader();
 
         Log.INSTANCE.info(String.format("Attempting to Load dependency '%s'.", this.getName()));
 
