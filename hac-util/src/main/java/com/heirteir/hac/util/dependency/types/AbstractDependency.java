@@ -7,6 +7,7 @@ import java.net.URL;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractDependency {
+
     public abstract URL getUrl();
 
     public abstract String getName();

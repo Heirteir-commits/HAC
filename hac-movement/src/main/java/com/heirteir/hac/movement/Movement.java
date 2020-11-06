@@ -3,9 +3,9 @@ package com.heirteir.hac.movement;
 import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
 
-@Maven(groupId = "org.projectlombok", artifactId = "lombok", version = "1.18.16")
-public class Test extends DependencyPlugin {
-    public Test() {
+@Maven(groupId = "org.javassist", artifactId = "javassist", version = "3.27.0-GA")
+public class Movement extends DependencyPlugin {
+    protected Movement() {
         super("Movement");
     }
 

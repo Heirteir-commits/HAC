@@ -2,10 +2,10 @@ package com.heirteir.hac.util.logging;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.files.FilePaths;
 import com.heirteir.hac.util.logging.format.SingleLineFormatter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +18,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-@SuppressWarnings("ImmutableEnumChecker") //This is a Singleton so it won't be Immutable
+@SuppressWarnings("ImmutableEnumChecker") //This is a Singleton so be quiet
 public enum Log {
     INSTANCE;
 
@@ -30,7 +30,6 @@ public enum Log {
 
     /* State Handler */
     private boolean open;
-
 
     Log() {
         this.parent = (DependencyPlugin) JavaPlugin.getProvidingPlugin(Log.class);
@@ -48,6 +47,7 @@ public enum Log {
 
         try {
             FileHandler fh = new FileHandler(this.loggingFile.toAbsolutePath().toString());
+            fh.setEncoding("UTF-8");
             fh.setFormatter(new SingleLineFormatter());
             this.parent.getLogger().addHandler(fh);
             this.open = true;
@@ -68,7 +68,7 @@ public enum Log {
 
     private String toLogMessage(String message) {
         Preconditions.checkState(this.open, "Log file hasn't been created please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
-        return ChatColor.translateAlternateColorCodes('&', parent.getLoggerPrefix() + message);
+        return ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(parent.getLoggerPrefix() + message));
     }
 
     public void info(String message) {
@@ -85,22 +85,45 @@ public enum Log {
 
     public void reportFatalError(String message) {
         int splitSize = 60;
+        int padding = 6;
         Iterable<String> header = Splitter.fixedLength(splitSize).split(String.format("'%s' ran into an error that has forced the plugin to stop. More information below:", this.parent.getName()));
         Iterable<String> body = Splitter.fixedLength(splitSize).split(ChatColor.stripColor(message));
-        String headTail = StringUtils.repeat("=", splitSize + 8);
-        String headerTail = "|" + StringUtils.repeat("=", splitSize + 6) + "|";
+        String headTail = "&c" + StringUtils.repeat("=", splitSize + padding + 2);
+        String headerTail = "&c|" + StringUtils.repeat("=", splitSize + padding) + "|";
 
         this.severe(headTail);
-        header.forEach(line -> this.severe("|" + StringUtils.center(line, splitSize + 6) + "|"));
+        header.forEach(line -> this.severe("&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
         this.severe(headerTail);
-        body.forEach(line -> this.severe("|" + StringUtils.center(line, splitSize + 6) + "|"));
+        body.forEach(line -> this.severe("&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
         this.severe(headTail);
 
-        Bukkit.getPluginManager().disablePlugin(this.parent);
+        if (Bukkit.getPluginManager().isPluginEnabled(this.parent))
+            Bukkit.getPluginManager().disablePlugin(this.parent);
     }
 
     public void reportFatalError(Throwable exception) {
         this.severe(exception);
         this.reportFatalError(exception.getMessage());
+    }
+
+    @RequiredArgsConstructor
+    private enum ChatColorAnsi {
+        RED("&c", "\u001b[31m"),
+        DEFAULT("&r", "\u001b[0m");
+
+        private final String colorCode;
+        private final String ansiCode;
+
+        private static String colorCodeToAnsi(String input) {
+            String output = input;
+
+            for (ChatColorAnsi ansi : ChatColorAnsi.values()) {
+                output = StringUtils.replace(output, ansi.colorCode, ansi.ansiCode);
+            }
+
+            output += ChatColorAnsi.DEFAULT.ansiCode;
+
+            return output;
+        }
     }
 }

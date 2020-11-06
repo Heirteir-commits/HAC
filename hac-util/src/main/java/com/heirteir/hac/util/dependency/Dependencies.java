@@ -52,12 +52,11 @@ public final class Dependencies {
                 Log.INSTANCE.info(String.format("Dependency '%s' successfully downloaded.", dependency.getName()));
             } catch (IOException e) {
                 success = false;
-                Log.INSTANCE.severe(
-                        String.format("Failed to download dependency '%s'. Please download the dependency from: '%s' and place it into the folder '%s'.",
-                                dependency.getName(),
-                                dependency.getUrl().toString(),
-                                location.getParent().toAbsolutePath())
-                );
+
+                Log.INSTANCE.reportFatalError(String.format("Failed to download dependency '%s'. Please download the dependency from: '%s' and place it into the folder '%s'.",
+                        dependency.getName(),
+                        dependency.getUrl().toString(),
+                        location.getParent().toAbsolutePath()));
             }
         }
 

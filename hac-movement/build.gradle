@@ -1,8 +1,6 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 buildscript {
     ext {
-        jarName = "[HAC] Movement.jar"
+        jarName = "HAC.Movement.jar"
     }
 }
 
@@ -13,35 +11,17 @@ plugins {
 group 'com.heirteir'
 version pluginVersion
 
-task copyFiles {
-    doLast {
-        serverLocationFile.eachDir { File file ->
-            if (!defaultJarDirectory.contains(file.path)) {
-                copy {
-                    from defaultJarDirectory + jarName
-                    into file.path + '/plugins/'
-                }
-            }
-        }
-    }
-}
-
 shadowJar {
-    destinationDirectory = file(defaultJarDirectory)
     archiveFileName = jarName
     relocate 'com.heirteir.hac.util', 'com.heirteir.hac.movement.util'
-    finalizedBy copyFiles
 }
 
 dependencies {
+    compileOnlyApi('org.javassist:javassist:3.27.0-GA')
+
     api(project(':hac-util'))
     compileOnlyApi(project(':hac-core'))
 
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
-}
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
-    }
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
 }
