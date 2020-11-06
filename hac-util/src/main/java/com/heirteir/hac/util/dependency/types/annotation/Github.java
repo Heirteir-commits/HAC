@@ -4,19 +4,19 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Repeatable(Spigot.List.class)
-public @interface Spigot {
-    String groupId();
+@Repeatable(Github.List.class)
+public @interface Github {
+    String fileName();
 
-    String artifactId();
+    String pluginName();
 
-    String version();
+    String githubRepoRelativeURL();
 
-    String repoUrl() default "https://repo1.maven.org/maven2";
+    int spigotId();
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     @interface List {
-        Spigot[] value() default {};
+        Github[] value() default {};
     }
 }
