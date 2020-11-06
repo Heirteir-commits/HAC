@@ -1,9 +1,21 @@
+import org.gradle.api.internal.file.FilteredFileTree
+
 buildscript {
     ext {
         /* Dirs */
-        latestSpigot = fileTree(buildDir.parentFile.path + '/buildtools/').matching{
+        buildToolsTree = fileTree(buildDir.parentFile.path + '/buildtools/').matching {
             include 'spigot*.jar'
-        }.files.iterator().next()
+        } as FilteredFileTree
+
+        if (buildToolsTree.size() != 0) {
+            latestSpigot = buildToolsTree.iterator().next()
+        } else {
+            buildToolsTree = fileTree(buildDir.parentFile.path + '/buildtools/').matching {
+                include 'spigot*.jar'
+            } as FilteredFileTree
+
+            latestSpigot = buildToolsTree.iterator().next()
+        }
 
         pluginVersion = '0.1.2'
     }

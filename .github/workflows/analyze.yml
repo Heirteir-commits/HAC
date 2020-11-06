@@ -24,6 +24,8 @@ jobs:
           target: buildtools/
       - name: Run Build Tools
         run: java -jar buildtools/BuildTools.jar --rev latest
+      - name: ls dir test
+        run: ls -R
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
