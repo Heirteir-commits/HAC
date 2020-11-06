@@ -66,20 +66,26 @@ public enum Log {
         this.open = false;
     }
 
-    private String toLogMessage(String message) {
+    private void checkState() {
         Preconditions.checkState(this.open, "Log file hasn't been created please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
+    }
+
+    private String toLogMessage(String message) {
         return ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(parent.getLoggerPrefix() + message));
     }
 
     public void info(String message) {
+        this.checkState();
         this.parent.getLogger().info(this.toLogMessage(message));
     }
 
     public void severe(String message) {
+        this.checkState();
         this.parent.getLogger().severe(this.toLogMessage(message));
     }
 
     public void severe(Throwable exception) {
+        this.checkState();
         this.parent.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
     }
 

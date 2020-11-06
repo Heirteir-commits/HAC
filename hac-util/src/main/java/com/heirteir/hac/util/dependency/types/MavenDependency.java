@@ -53,7 +53,7 @@ public final class MavenDependency extends AbstractDependency {
 
     @Override
     public URL getUrl() throws MalformedURLException {
-        return new URL(String.format(this.repoUrl + "%s/%s/%s/%s-%s.jar", this.groupId.replace(".", "/"), this.artifactId, this.version, this.artifactId, this.version));
+        return new URL(String.format("%s%s/%s/%s/%s-%s.jar", this.repoUrl, this.groupId.replace(".", "/"), this.artifactId, this.version, this.artifactId, this.version));
     }
 
     @Override

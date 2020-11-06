@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class GithubDependency extends AbstractDependency {
+    private static final String TAG_NAME = "tag_name";
+    private static final String ASSETS = "assets";
+
     private final String fileName;
     private final String pluginName;
     private final String githubRepoRelativeURL;
@@ -62,11 +65,7 @@ public class GithubDependency extends AbstractDependency {
             return this.needsUpdate;
         }
 
-        boolean needsUpdate = false;
-
-        if (!Files.exists(this.getDownloadLocation()) && Bukkit.getPluginManager().getPlugin(this.pluginName) == null) {
-            needsUpdate = true;
-        }
+        this.needsUpdate = !Files.exists(this.getDownloadLocation()) && Bukkit.getPluginManager().getPlugin(this.pluginName) == null;
 
         if (this.checkUpdate && !needsUpdate) {
             JsonObject latest = this.getLatestVersion();
@@ -75,20 +74,20 @@ public class GithubDependency extends AbstractDependency {
                 Plugin plugin = Bukkit.getPluginManager().getPlugin(this.pluginName);
 
                 if (plugin == null) {
-                    needsUpdate = true;
+                    this.needsUpdate = true;
                 } else {
                     int currentVersion = GithubDependency.versionStringToInt(plugin.getDescription().getVersion());
-                    int latestVersion = GithubDependency.versionStringToInt(latest.get("tag_name").getAsString());
+                    int latestVersion = GithubDependency.versionStringToInt(latest.get(GithubDependency.TAG_NAME).getAsString());
 
                     if (currentVersion < latestVersion) {
                         this.updating = true;
-                        needsUpdate = true;
+                        this.needsUpdate = true;
                     }
                 }
             }
         }
 
-        return this.needsUpdate = needsUpdate;
+        return this.needsUpdate;
     }
 
     @Override
@@ -107,7 +106,7 @@ public class GithubDependency extends AbstractDependency {
         URL output;
 
         if (latest != null) {
-            output = new URL(latest.getAsJsonArray("assets").get(0)
+            output = new URL(latest.getAsJsonArray(GithubDependency.ASSETS).get(0)
                     .getAsJsonObject()
                     .get("browser_download_url")
                     .getAsString());
@@ -120,29 +119,37 @@ public class GithubDependency extends AbstractDependency {
     @Nullable
     private JsonObject getLatestVersion() {
         JsonObject latest;
+
+        String apiURL = "https://api.github.com/repos/" + this.githubRepoRelativeURL + "/releases";
+
+        InputStream is = null;
         try {
-            String apiURL = "https://api.github.com/repos/" + this.githubRepoRelativeURL + "/releases";
+            is = new URL(apiURL).openStream();
+        } catch (IOException e) {
+            Log.INSTANCE.severe(e);
+        }
 
-            InputStream is = new URL(apiURL).openStream();
+        if (is == null) {
+            return null;
+        }
 
-
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             JsonArray json = new JsonParser()
-                    .parse(new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
-                            .lines()
+                    .parse(reader.lines()
                             .collect(Collectors.joining("\n")))
                     .getAsJsonArray();
 
             latest = StreamSupport.stream(json.spliterator(), true)
                     .map(JsonElement::getAsJsonObject)
-                    .filter(element -> element.has("tag_name"))
-                    .filter(element -> element.get("tag_name").getAsString().contains("STABLE") || (this.useBeta && element.get("tag_name").getAsString().contains("BETA")))
-                    .filter(element -> element.has("assets"))
-                    .filter(element -> element.getAsJsonArray("assets").size() > 0)
-                    .max(Comparator.comparingInt(element -> GithubDependency.versionStringToInt(element.get("tag_name").getAsString())))
+                    .filter(element -> element.has(GithubDependency.TAG_NAME))
+                    .filter(element -> element.get(GithubDependency.TAG_NAME).getAsString().contains("STABLE") || (this.useBeta && element.get(GithubDependency.TAG_NAME).getAsString().contains("BETA")))
+                    .filter(element -> element.has(GithubDependency.ASSETS))
+                    .filter(element -> element.getAsJsonArray(GithubDependency.ASSETS).size() > 0)
+                    .max(Comparator.comparingInt(element -> GithubDependency.versionStringToInt(element.get(GithubDependency.TAG_NAME).getAsString())))
                     .orElse(null);
         } catch (IOException e) {
-            latest = null;
             Log.INSTANCE.severe(e);
+            latest = null;
         }
 
         return latest;
@@ -184,7 +191,6 @@ public class GithubDependency extends AbstractDependency {
             }
         } catch (IOException e) {
             success = false;
-            e.printStackTrace();
         }
         return success;
     }

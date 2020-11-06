@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.Set;
 
 public final class DependencyUtils {
+    private DependencyUtils() {
+        throw new IllegalStateException("Utility Class");
+    }
 
     public static boolean loadDependenciesFromPlugin(DependencyPlugin plugin) {
         Set<AbstractDependency> dependencies = Sets.newLinkedHashSet();
