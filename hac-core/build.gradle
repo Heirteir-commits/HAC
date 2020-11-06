@@ -20,8 +20,9 @@ shadowJar {
 }
 
 dependencies {
-    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0')
-
+    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
+        exclude group: 'org.spigotmc'
+    }
     compileOnlyApi('io.netty:netty-all:4.1.53.Final')
     compileOnlyApi('com.flowpowered:flow-math:1.0.3')
 
