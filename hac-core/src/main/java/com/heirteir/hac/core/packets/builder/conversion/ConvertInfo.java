@@ -41,7 +41,7 @@ public final class ConvertInfo<T, K> {
             case SHORT:
                 value = ((Number) value).shortValue();
                 break;
-            case NONE:
+            default:
                 break;
         }
 
