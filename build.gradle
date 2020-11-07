@@ -1,17 +1,17 @@
-import org.gradle.api.internal.file.FilteredFileTree
-import org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection
-
 buildscript {
     ext {
         /* Dirs */
+        //noinspection GroovyAssignabilityCheck
         fileTreeSpigot = fileTree(buildDir.parentFile.path + '/buildtools/').matching {
             include 'spigot*.jar'
-        } as FilteredFileTree
+        }
 
         if (fileTreeSpigot.size() != 0) {
-            latestSpigot = files(fileTreeSpigot.iterator().next()) as DefaultConfigurableFileCollection
+            //noinspection GroovyAssignabilityCheck
+            latestSpigot = files(fileTreeSpigot.iterator().next())
         } else {
-            latestSpigot = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT' as DefaultConfigurableFileCollection
+            //noinspection GroovyAssignabilityCheck
+            latestSpigot = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
         }
 
         pluginVersion = '0.1.3'
