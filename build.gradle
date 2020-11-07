@@ -46,6 +46,23 @@ sonarqube {
     }
 }
 
+task updateSpigot {
+    doLast {
+        new URL('https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar')
+                .withInputStream { i ->
+                    file(buildDir.parentFile.path + '/buildtools/BuildTools.jar')
+                            .withOutputStream {
+                                it << i
+                            }
+                }
+
+        exec {
+            workingDir buildDir.parentFile.path + '/buildtools/'
+            commandLine 'java', '-jar', 'BuildTools.jar', '--compile-if-changed', '--rev', 'latest'
+        }
+    }
+}
+
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.freefair.lombok'

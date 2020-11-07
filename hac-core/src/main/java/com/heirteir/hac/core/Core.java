@@ -12,6 +12,10 @@ import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.dependency.types.GithubDependency;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
 import lombok.Getter;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.File;
 
 @Getter
 @Maven(groupId = "com.flowpowered", artifactId = "flow-math", version = "1.0.3")
@@ -24,6 +28,10 @@ public final class Core extends DependencyPlugin {
 
     public Core() {
         super("Core");
+    }
+
+    protected Core(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
     }
 
     @Override
