@@ -1,4 +1,5 @@
 import org.gradle.api.internal.file.FilteredFileTree
+import org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection
 
 buildscript {
     ext {
@@ -8,12 +9,12 @@ buildscript {
         } as FilteredFileTree
 
         if (fileTreeSpigot.size() != 0) {
-            latestSpigot = files(fileTreeSpigot.iterator().next())
+            latestSpigot = files(fileTreeSpigot.iterator().next()) as DefaultConfigurableFileCollection
         } else {
-            latestSpigot = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+            latestSpigot = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT' as DefaultConfigurableFileCollection
         }
 
-        pluginVersion = '0.1.2'
+        pluginVersion = '0.1.3'
     }
 
     repositories {
@@ -40,7 +41,7 @@ sonarqube {
         property "sonar.host.url", "https://sonarcloud.io"
         property 'sonar.coverage.jacoco.xmlReportPaths',
                 project(':hac-util').buildDir.path + '/coverage.xml,' +
-                project(':hac-api').buildDir.path + "/converage.xml"
+                        project(':hac-api').buildDir.path + "/converage.xml"
 
     }
 }
