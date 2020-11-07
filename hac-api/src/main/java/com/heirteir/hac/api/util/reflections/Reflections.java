@@ -17,7 +17,13 @@ public final class Reflections {
     private final HelperManager helpers;
 
     public Reflections() {
-        this.version = ServerVersion.fromPackage(Iterables.get(Splitter.on('v').split(Bukkit.getServer().getClass().getPackage().getName()), 1));
+        ServerVersion version1;
+        try {
+            version1 = ServerVersion.fromPackage(Iterables.get(Splitter.on('v').split(Bukkit.getServer().getClass().getPackage().getName()), 1));
+        } catch (Exception e) {
+            version1 = ServerVersion.MAX;
+        }
+        this.version = version1;
         this.helpers = new HelperManager();
 
         this.registerBaseHelpers();

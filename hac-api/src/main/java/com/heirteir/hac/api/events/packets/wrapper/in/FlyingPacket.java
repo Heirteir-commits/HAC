@@ -16,7 +16,7 @@ public final class FlyingPacket extends AbstractWrappedPacketIn {
         DEFAULT.z = 0;
         DEFAULT.yaw = 0;
         DEFAULT.pitch = 0;
-        DEFAULT.hasLook = true;
+        DEFAULT.hasLook = false;
         DEFAULT.hasPos = true;
         DEFAULT.onGround = true;
     }
