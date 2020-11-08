@@ -1,17 +1,25 @@
 package com.heirteir.hac.api.events;
 
-import com.google.common.collect.Lists;
 import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class ASyncPacketEventManager {
     private final List<AbstractPacketEvent<?>> events;
 
     public ASyncPacketEventManager() {
-        this.events = Lists.newArrayList();
+        this.events = new ArrayList<AbstractPacketEvent<?>>() {
+            @Override
+            public boolean add(AbstractPacketEvent<?> abstractPacketEvent) {
+                boolean output = super.add(abstractPacketEvent);
+                this.sort(Comparator.comparingInt(event -> event.getPriority().ordinal()));
+                return output;
+            }
+        };
     }
 
     public void addEvent(@NotNull AbstractPacketEvent<?> event) {
