@@ -30,7 +30,7 @@ public final class Core extends DependencyPlugin {
         super("Core");
     }
 
-    protected Core(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+    Core(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
     }
 

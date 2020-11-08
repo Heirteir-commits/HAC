@@ -111,10 +111,10 @@ class APITest {
         Assertions.assertEquals(flyingPacketEventTest, events.get(3));
 
         /* Reflections testing for latest version */
-        api.getEventManager().run(player, AbilitiesPacket.class, AbilitiesPacket.DEFAULT);
-        api.getEventManager().run(player, EntityActionPacket.class, EntityActionPacket.DEFAULT);
-        api.getEventManager().run(player, EntityVelocityPacket.class, EntityVelocityPacket.DEFAULT);
-        api.getEventManager().run(player, FlyingPacket.class, FlyingPacket.DEFAULT);
+        api.getEventManager().run(player, AbilitiesPacket.DEFAULT);
+        api.getEventManager().run(player, EntityActionPacket.DEFAULT);
+        api.getEventManager().run(player, EntityVelocityPacket.DEFAULT);
+        api.getEventManager().run(player, FlyingPacket.DEFAULT);
 
         Assertions.assertTrue(abilitiesPacketEventTest.isRun1());
         Assertions.assertFalse(abilitiesPacketEventTest.isRun2());
