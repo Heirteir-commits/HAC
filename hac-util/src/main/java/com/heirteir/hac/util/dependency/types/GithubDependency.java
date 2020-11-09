@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class GithubDependency extends AbstractDependency {
+public final class GithubDependency extends AbstractDependency {
     private static final String TAG_NAME = "tag_name";
     private static final String ASSETS = "assets";
 
@@ -110,14 +110,13 @@ public class GithubDependency extends AbstractDependency {
         URL output;
 
         if (latest != null) {
-            output = new URL(
-                    StreamSupport.stream(latest.getAsJsonArray(GithubDependency.ASSETS).spliterator(), true)
-                            .filter(element -> element.getAsJsonObject().get("name").getAsString().contains(this.fileName))
-                            .findAny()
-                            .orElseThrow(MalformedURLException::new)
-                            .getAsJsonObject()
-                            .get("browser_download_url")
-                            .getAsString());
+            output = new URL(StreamSupport.stream(latest.getAsJsonArray(GithubDependency.ASSETS).spliterator(), true)
+                    .filter(element -> element.getAsJsonObject().get("name").getAsString().contains(this.fileName))
+                    .findAny()
+                    .orElseThrow(MalformedURLException::new)
+                    .getAsJsonObject()
+                    .get("browser_download_url")
+                    .getAsString());
         } else {
             output = null;
         }
@@ -156,8 +155,8 @@ public class GithubDependency extends AbstractDependency {
                     .max(Comparator.comparingInt(element -> GithubDependency.versionStringToInt(element.get(GithubDependency.TAG_NAME).getAsString())))
                     .orElse(null);
         } catch (IOException e) {
-            super.getDependencyPlugin().getLog().severe(e);
             latest = null;
+            super.getDependencyPlugin().getLog().severe(e);
         }
 
         return latest;

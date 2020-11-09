@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class HACPlayerList {
+public final class HACPlayerList {
 
     @Getter
     private final HACPlayerBuilder builder;

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
 @Getter
-public class EntityVelocityEventTest extends AbstractPacketEvent<EntityVelocityPacket> {
+public final class EntityVelocityEventTest extends AbstractPacketEvent<EntityVelocityPacket> {
     private boolean run1;
     private boolean run2;
 

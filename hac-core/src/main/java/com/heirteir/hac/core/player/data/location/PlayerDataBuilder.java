@@ -2,16 +2,16 @@ package com.heirteir.hac.core.player.data.location;
 
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.api.player.builder.AbstractDataBuilder;
-import com.heirteir.hac.core.player.data.location.updaters.AbilitiesUpdater;
-import com.heirteir.hac.core.player.data.location.updaters.EntityActionUpdater;
-import com.heirteir.hac.core.player.data.location.updaters.FlyingUpdater;
+import com.heirteir.hac.core.player.data.location.updaters.PlayerDataAbilitiesUpdater;
+import com.heirteir.hac.core.player.data.location.updaters.PlayerDataEntityActionUpdater;
+import com.heirteir.hac.core.player.data.location.updaters.PlayerDataFlyingUpdater;
 
-public class PlayerDataBuilder extends AbstractDataBuilder<PlayerData> {
+public final class PlayerDataBuilder extends AbstractDataBuilder<PlayerData> {
 
     public PlayerDataBuilder() {
-        super(new AbilitiesUpdater(),
-                new EntityActionUpdater(),
-                new FlyingUpdater());
+        super(new PlayerDataAbilitiesUpdater(),
+                new PlayerDataEntityActionUpdater(),
+                new PlayerDataFlyingUpdater());
     }
 
     @Override

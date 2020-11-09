@@ -4,7 +4,7 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
 
-public class SingleLineFormatter extends Formatter {
+public final class SingleLineFormatter extends Formatter {
     private final Pattern stripColor;
 
     public SingleLineFormatter() {
