@@ -1,6 +1,7 @@
 name: HAC-Core
 version: @version@
 main: com.heirteir.hac.core.Core
+load: STARTUP
 prefix: '-'
 api-version: 1.13
 authors: [ Heirteir ]

@@ -41,6 +41,13 @@ public final class Core extends DependencyPlugin {
             return;
         }
 
+        super.getLog().info("Registering default async error handler.");
+        API.INSTANCE.getThreadPool().setDefaultErrorHandler((msg, ex) -> {
+            if (ex != null) {
+                super.getLog().severe(ex);
+            }
+        });
+
         super.getLog().info(String.format("Registering Reflections Helper '%s'.", PlayerHelper.class));
         API.INSTANCE.getReflections().getHelpers().registerHelper(PlayerHelper.class, new PlayerHelper(this));
 
@@ -68,6 +75,9 @@ public final class Core extends DependencyPlugin {
 
             super.getLog().info(String.format("Unregistering Reflections Helper '%s'.", PlayerHelper.class));
             API.INSTANCE.getReflections().getHelpers().unregisterHelper(PlayerHelper.class);
+
+            super.getLog().info("Closing Thread Pool");
+            API.INSTANCE.getThreadPool().unload();
         }
     }
 

@@ -2,30 +2,37 @@ package com.heirteir.hac.movement.dynamic.entity.human;
 
 
 import com.heirteir.hac.api.util.reflections.version.ServerVersion;
-import com.heirteir.hac.movement.util.mapping.builder.annotation.DeclaringClass;
-import com.heirteir.hac.movement.util.mapping.builder.annotation.MappingField;
-import com.heirteir.hac.movement.util.mapping.builder.annotation.MappingMethod;
-import com.heirteir.hac.movement.util.mapping.builder.annotation.RawType;
+import com.heirteir.hac.movement.util.mapping.annotation.DeclaringClass;
+import com.heirteir.hac.movement.util.mapping.annotation.MappingField;
+import com.heirteir.hac.movement.util.mapping.annotation.MappingMethod;
+import com.heirteir.hac.movement.util.mapping.annotation.RawType;
 
 public interface EntityHumanAccessor {
     /* Static Mappings */
-    @DeclaringClass("%nms%.EntityHuman")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, obfuscatedName = "isSpectator")
-    @MappingMethod.Body(
-            "public %raw_type% %mapped%() {" +
-                    "return false;" +
-                    "}"
-    )
-    @RawType(boolean.class)
-    boolean isSpectator();
 
     void setLocation(double x, double y, double z, float yaw, float pitch);
-
 
     /* Getters and Setters */
     void setSprinting(boolean sprinting);
 
+    boolean isSprinting();
+
     void setSneaking(boolean sneaking);
+
+    @DeclaringClass("%nms%.Entity")
+    @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "world")
+    @RawType(Object.class)
+    void setWorld(Object world);
+
+    @DeclaringClass("%nms%.Entity")
+    @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "justCreated")
+    @RawType(boolean.class)
+    void setJustCreated(boolean justCreated);
+
+    @DeclaringClass("%nms%.EntityHuman")
+    @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "foodData")
+    @RawType(Object.class)
+    void setFoodData(Object foodData);
 
     @DeclaringClass("%nms%.Entity")
     @MappingField(type = MappingField.Type.GETTER, obfuscatedName = "onGround")
@@ -47,6 +54,18 @@ public interface EntityHumanAccessor {
     @RawType(float.class)
     void setFallDistance(float distance);
 
+    @DeclaringClass("%nms%.EntityLiving")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R1, max = ServerVersion.EIGHT_R1, obfuscatedName = "bl")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R2, max = ServerVersion.EIGHT_R3, obfuscatedName = "bn")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R1, max = ServerVersion.NINE_R1, obfuscatedName = "bA")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R2, max = ServerVersion.NINE_R2, obfuscatedName = "bB")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TEN_R1, max = ServerVersion.ELEVEN_R1, obfuscatedName = "bC")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TWELVE_R1, max = ServerVersion.TWELVE_R1, obfuscatedName = "bD")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.THIRTEEN_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "bJ")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "jumpTicks")
+    @RawType(int.class)
+    void setJumpTicks(int ticks);
+
     @DeclaringClass("%nms%.EntityHuman")
     @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "abilities.isFlying")
     @RawType(boolean.class)
@@ -58,35 +77,77 @@ public interface EntityHumanAccessor {
     void setInvulnerable(boolean invulnerable);
 
     @DeclaringClass("%nms%.EntityHuman")
+    @MappingField(type = MappingField.Type.GETTER, obfuscatedName = "abilities.flySpeed")
+    @RawType(float.class)
+    float getFlySpeed();
+
+    @DeclaringClass("%nms%.EntityHuman")
     @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "abilities.flySpeed")
     @RawType(float.class)
     void setFlySpeed(float speed);
     /* Dynamic Mappings */
 
+    void hacSetFlag(int index, boolean flag);
+
     @DeclaringClass("%nms%.EntityHuman")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.EIGHT_R3, max = ServerVersion.EIGHT_R3, obfuscatedName = "t_")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.EIGHT_R1, max = ServerVersion.EIGHT_R1, obfuscatedName = "s_")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.EIGHT_R2, max = ServerVersion.EIGHT_R3, obfuscatedName = "t_")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.NINE_R1, max = ServerVersion.NINE_R1, obfuscatedName = "i")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.NINE_R2, max = ServerVersion.TEN_R1, obfuscatedName = "m")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.ELEVEN_R1, max = ServerVersion.ELEVEN_R1, obfuscatedName = "A_")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.TWELVE_R1, max = ServerVersion.TWELVE_R1, obfuscatedName = "B_")
+    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.THIRTEEN_R1, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "tick")
     @MappingMethod.Body("public void %mapped%(){" +
             "super.%obfuscated%();" +
             "}")
     @RawType(Object.class)
-    void tick();
+    void hacTick();
 
     /* Getters & Setters */
+    @DeclaringClass("%nms%.EntityLiving")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R1, max = ServerVersion.EIGHT_R1, obfuscatedName = "aW")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R2, max = ServerVersion.EIGHT_R3, obfuscatedName = "aY")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R1, max = ServerVersion.NINE_R1, obfuscatedName = "bc")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R2, max = ServerVersion.NINE_R2, obfuscatedName = "bd")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TEN_R1, max = ServerVersion.TEN_R1, obfuscatedName = "be")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.ELEVEN_R1, max = ServerVersion.ELEVEN_R1, obfuscatedName = "bd")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TWELVE_R1, max = ServerVersion.TWELVE_R1, obfuscatedName = "bd")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.THIRTEEN_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "bg")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "jumping")
+    @RawType(boolean.class)
+    void setJumping(boolean jumping);
 
     @DeclaringClass("%nms%.EntityLiving")
-    @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "aZ")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R1, max = ServerVersion.EIGHT_R1, obfuscatedName = "aX")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R2, max = ServerVersion.EIGHT_R3, obfuscatedName = "aZ")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R1, max = ServerVersion.NINE_R1, obfuscatedName = "bd")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R2, max = ServerVersion.NINE_R2, obfuscatedName = "be")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TEN_R1, max = ServerVersion.TEN_R1, obfuscatedName = "bf")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.ELEVEN_R1, max = ServerVersion.ELEVEN_R1, obfuscatedName = "be")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TWELVE_R1, max = ServerVersion.TWELVE_R1, obfuscatedName = "be")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.THIRTEEN_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "bh")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.FOURTEEN_R1, obfuscatedName = "bb")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FIFTEEN_R1, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "aZ")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.SIXTEEN_R1, max = ServerVersion.SIXTEEN_R1, obfuscatedName = "aY")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.SIXTEEN_R2, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "aR")
     @RawType(float.class)
     void setStrafe(float strafe);
 
     @DeclaringClass("%nms%.EntityLiving")
-    @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "ba")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R1, max = ServerVersion.EIGHT_R1, obfuscatedName = "aY")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R2, max = ServerVersion.EIGHT_R3, obfuscatedName = "ba")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R1, max = ServerVersion.NINE_R1, obfuscatedName = "be")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.NINE_R2, max = ServerVersion.NINE_R2, obfuscatedName = "bf")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TEN_R1, max = ServerVersion.TEN_R1, obfuscatedName = "bg")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.ELEVEN_R1, max = ServerVersion.ELEVEN_R1, obfuscatedName = "bf")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.TWELVE_R1, max = ServerVersion.TWELVE_R1, obfuscatedName = "bg")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.THIRTEEN_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "bj")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.FOURTEEN_R1, obfuscatedName = "bd")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FIFTEEN_R1, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "bb")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.SIXTEEN_R1, max = ServerVersion.SIXTEEN_R1, obfuscatedName = "ba")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.SIXTEEN_R2, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "aT")
     @RawType(float.class)
     void setForward(float forward);
-
-    @DeclaringClass("%nms%.EntityLiving")
-    @MappingField(type = MappingField.Type.SETTER, obfuscatedName = "aY")
-    @RawType(boolean.class)
-    void setJumping(boolean jumping);
 
     @DeclaringClass("%nms%.Entity")
     @MappingField(type = MappingField.Type.GETTER, min = ServerVersion.MIN, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "locX")
@@ -117,14 +178,6 @@ public interface EntityHumanAccessor {
                     "}")
     @RawType(double.class)
     double getLocZ();
-
-    @DeclaringClass("%nms%.EntityLiving")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, obfuscatedName = "bn")
-    @MappingMethod.Body("public void %mapped%(int amount){" +
-            "super.%obfuscated% = amount;" +
-            "}")
-    @RawType(int.class)
-    void setJumpTicks(int amount);
 
     @DeclaringClass("%nms%.Entity")
     @MappingField(type = MappingField.Type.GETTER, min = ServerVersion.MIN, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "motX")
@@ -201,26 +254,18 @@ public interface EntityHumanAccessor {
     void setInWeb(boolean inWeb);
 
     @DeclaringClass("%nms%.Entity")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.EIGHT_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "")
+    @MappingField(type = MappingField.Type.GETTER, min = ServerVersion.EIGHT_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "")
     @MappingField(type = MappingField.Type.GETTER, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.FOURTEEN_R1, obfuscatedName = "B")
     @MappingField(type = MappingField.Type.GETTER, min = ServerVersion.FIFTEEN_R1, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "y")
     @MappingField(type = MappingField.Type.GETTER, min = ServerVersion.SIXTEEN_R1, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "x")
-    @MappingMethod.Body(min = ServerVersion.EIGHT_R1, max = ServerVersion.THIRTEEN_R2, value =
-            "public %raw_type% %mapped%(){ return null; }")
     @RawType(Object.class)
     Object getMotOffset();
 
     @DeclaringClass("%nms%.Entity")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.EIGHT_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.FOURTEEN_R1, obfuscatedName = "B")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.FIFTEEN_R1, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "y")
-    @MappingMethod(type = MappingMethod.Type.REPLACE, min = ServerVersion.SIXTEEN_R1, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "x")
-    @MappingMethod.Body(min = ServerVersion.EIGHT_R1, max = ServerVersion.THIRTEEN_R2, value =
-            "public void %mapped%(Object vec3d){}")
-    @MappingMethod.Body(min = ServerVersion.FOURTEEN_R1, max = ServerVersion.SIXTEEN_R2, value =
-            "public void %mapped%(Object vec3d){" +
-                    "this.%obfuscated% = (%nms%.Vec3D) vec3d;" +
-                    "}")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.EIGHT_R1, max = ServerVersion.THIRTEEN_R2, obfuscatedName = "")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FOURTEEN_R1, max = ServerVersion.FOURTEEN_R1, obfuscatedName = "B")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.FIFTEEN_R1, max = ServerVersion.FIFTEEN_R1, obfuscatedName = "y")
+    @MappingField(type = MappingField.Type.SETTER, min = ServerVersion.SIXTEEN_R1, max = ServerVersion.SIXTEEN_R2, obfuscatedName = "x")
     @RawType(Object.class)
     void setMotOffset(Object offset);
 

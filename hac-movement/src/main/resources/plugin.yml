@@ -1,6 +1,7 @@
 name: HAC-Movement
 version: @version@
 main: com.heirteir.hac.movement.Movement
+load: STARTUP
 prefix: '-'
 api-version: 1.13
 authors: [ Heirteir ]
