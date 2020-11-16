@@ -5,7 +5,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.events.types.packets.wrapper.in.FlyingPacket;
 import com.heirteir.hac.api.player.HACPlayer;
-import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.core.util.reflections.helper.EntityHelper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -45,7 +45,7 @@ public final class PlayerData {
             this.current.moving = false;
         }
 
-        this.setElytraFlying(API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).isElytraFlying(this.player.getBukkitPlayer()));
+        this.setElytraFlying(API.INSTANCE.getReflections().getHelpers().getHelper(EntityHelper.class).isElytraFlying(this.player.getBukkitPlayer()));
     }
 
     public void setSneaking(boolean sneaking) {

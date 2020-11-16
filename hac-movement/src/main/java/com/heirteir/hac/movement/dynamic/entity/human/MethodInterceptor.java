@@ -126,7 +126,7 @@ public class MethodInterceptor {
             Byte value = this.getByte.invoke(Byte.class, dataWatcherInstance, dataWatcherObjectInstance);
 
             if (flag) {
-                this.set.invoke(Object.class, dataWatcherInstance, dataWatcherObjectInstance, (byte) (value & 0xff | 1 << index));
+                this.set.invoke(Object.class, dataWatcherInstance, dataWatcherObjectInstance, (byte) ((value & 0xff) | 1 << index));
             } else {
                 this.set.invoke(Object.class, dataWatcherInstance, dataWatcherObjectInstance, (byte) (value & ~(1 << index)));
             }

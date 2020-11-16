@@ -20,7 +20,7 @@ dependencies {
         exclude group: 'org.spigotmc'
     }
 
-    compileOnlyApi(fileTree('/home/heirteir/Desktop/Workspace/Libraries/Minecraft'))
+    compileOnlyApi(files('/home/heirteir/Desktop/Workspace/Libraries/Minecraft/1_11_R1.jar'))
     compileOnlyApi('net.bytebuddy:byte-buddy:1.10.18')
 
     api(project(':hac-util'))

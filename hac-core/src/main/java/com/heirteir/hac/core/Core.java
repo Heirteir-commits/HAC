@@ -1,21 +1,27 @@
 package com.heirteir.hac.core;
 
+import com.google.common.collect.Queues;
 import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.util.reflections.version.ServerVersion;
 import com.heirteir.hac.core.packets.ChannelInjector;
 import com.heirteir.hac.core.player.HACPlayerListUpdater;
 import com.heirteir.hac.core.player.data.location.PlayerData;
 import com.heirteir.hac.core.player.data.location.PlayerDataBuilder;
-import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.core.util.reflections.helper.AbstractCoreHelper;
+import com.heirteir.hac.core.util.reflections.helper.BoundingBoxHelper;
+import com.heirteir.hac.core.util.reflections.helper.EntityHelper;
+import com.heirteir.hac.core.util.reflections.helper.WorldHelper;
 import com.heirteir.hac.util.dependency.DependencyUtils;
 import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.dependency.types.GithubDependency;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
 import java.io.File;
+import java.util.ArrayDeque;
 
 @Getter
 @Maven(groupId = "com.flowpowered", artifactId = "flow-math", version = "1.0.3")
@@ -26,12 +32,17 @@ public final class Core extends DependencyPlugin {
     /* Data Builders */
     private PlayerDataBuilder playerDataBuilder;
 
+    @Getter(AccessLevel.NONE)
+    private final ArrayDeque<AbstractCoreHelper<?>> helpers;
+
     public Core() {
         super("Core");
+        this.helpers = Queues.newArrayDeque();
     }
 
     Core(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
+        this.helpers = Queues.newArrayDeque();
     }
 
     @Override
@@ -48,8 +59,11 @@ public final class Core extends DependencyPlugin {
             }
         });
 
-        super.getLog().info(String.format("Registering Reflections Helper '%s'.", PlayerHelper.class));
-        API.INSTANCE.getReflections().getHelpers().registerHelper(PlayerHelper.class, new PlayerHelper(this));
+        this.helpers.add(new EntityHelper(this));
+        this.helpers.add(new BoundingBoxHelper(this));
+        this.helpers.add(new WorldHelper(this));
+
+        this.helpers.forEach(AbstractCoreHelper::load);
 
         super.getLog().info("Booting up the Channel Injector.");
         this.channelInjector = new ChannelInjector(this);
@@ -73,8 +87,9 @@ public final class Core extends DependencyPlugin {
             super.getLog().info("Shutting down the Channel Injector.");
             this.channelInjector.unload();
 
-            super.getLog().info(String.format("Unregistering Reflections Helper '%s'.", PlayerHelper.class));
-            API.INSTANCE.getReflections().getHelpers().unregisterHelper(PlayerHelper.class);
+            this.helpers
+                    .descendingIterator()
+                    .forEachRemaining(AbstractCoreHelper::unload);
 
             super.getLog().info("Closing Thread Pool");
             API.INSTANCE.getThreadPool().unload();
