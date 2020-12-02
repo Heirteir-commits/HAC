@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-public class WrappedPacketBuilder {
+public final class WrappedPacketBuilder {
 
     private final Core core;
     private final WrappedClass nmsPacketClass;

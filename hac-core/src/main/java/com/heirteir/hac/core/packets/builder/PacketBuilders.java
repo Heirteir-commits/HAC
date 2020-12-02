@@ -15,7 +15,7 @@ import com.heirteir.hac.core.packets.builder.conversion.ConvertType;
 import java.util.AbstractMap;
 import java.util.Map;
 
-public class PacketBuilders {
+public final class PacketBuilders {
     private final Core core;
     private final Map<Class<? extends WrappedPacket>, WrappedPacketBuilder> builders;
 

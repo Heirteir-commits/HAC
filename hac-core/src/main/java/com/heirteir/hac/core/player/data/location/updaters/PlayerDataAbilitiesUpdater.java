@@ -7,8 +7,8 @@ import com.heirteir.hac.core.player.data.location.PlayerData;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-public final class AbilitiesUpdater extends AbstractPacketEvent<AbilitiesPacket> {
-    public AbilitiesUpdater() {
+public final class PlayerDataAbilitiesUpdater extends AbstractPacketEvent<AbilitiesPacket> {
+    public PlayerDataAbilitiesUpdater() {
         super(AbilitiesPacket.class, Priority.PROCESS_1);
     }
 
