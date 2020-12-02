@@ -17,6 +17,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Download Build Tools
+        uses: suisei-cn/actions-download-file@v1
+        with:
+          url: "https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar"
+          target: buildtools/
+      - name: Chmod Build tools
+        run: chmox +x ./buildtools/build.sh
+      - name: Run Build Tools
+        run: ./buildtools/build.sh
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -29,13 +38,6 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
-      - name: Download Build Tools
-        uses: suisei-cn/actions-download-file@v1
-        with:
-          url: "https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar"
-          target: buildtools/
-      - name: Run ls
-        run: ls -R
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

@@ -1,7 +1,9 @@
 buildscript {
     ext {
         /* Dirs */
-        latestSpigot = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+        latestSpigot = fileTree(buildDir.parentFile.path + '/buildtools/').matching{
+            include 'spigot*.jar'
+        }.files.iterator().next()
 
         pluginVersion = '0.1.2'
     }
@@ -23,16 +25,11 @@ plugins {
     id 'org.sonarqube' version '3.0'
 }
 
-//sonarqube {
-//    properties {
-//        property "sonar.projectKey", "Heirteir-commits_HAC"
-//        property "sonar.organization", "heirteir-commits"
-////        property "sonar.host.url", "https://sonarcloud.io"
-//    }
-//}
-
 sonarqube {
     properties {
+        property "sonar.projectKey", "Heirteir-commits_HAC"
+        property "sonar.organization", "heirteir-commits"
+        property "sonar.host.url", "https://sonarcloud.io"
         property 'sonar.coverage.jacoco.xmlReportPaths', project(':hac-util').buildDir.path + '/coverage.xml'
     }
 }

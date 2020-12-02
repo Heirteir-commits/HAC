@@ -2,10 +2,12 @@ group 'com.heirteir'
 version pluginVersion
 
 dependencies {
-    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0')
+    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
+        exclude group: 'org.spigotmc'
+    }
 
     compileOnlyApi('org.jetbrains:annotations:16.0.2')
-    compileOnlyApi(latestSpigot)
+    compileOnlyApi(files(latestSpigot))
 
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
