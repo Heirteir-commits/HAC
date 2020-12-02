@@ -7,11 +7,4 @@ version PLUGIN_VERSION
 
 subprojects {
     apply plugin: 'java-library'
-
-    /* Give all subprojects the hac-util project */
-    pluginManager.withPlugin('java-library') {
-        dependencies {
-            compileOnlyApi(project(':hac-util'))
-        }
-    }
 }
