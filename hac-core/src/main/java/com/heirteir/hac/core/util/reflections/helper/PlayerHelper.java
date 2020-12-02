@@ -1,19 +1,21 @@
 package com.heirteir.hac.core.util.reflections.helper;
 
-import com.heirteir.hac.api.util.reflections.Reflections;
+import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.util.reflections.types.WrappedConstructor;
 import com.heirteir.hac.api.util.reflections.types.WrappedField;
 import com.heirteir.hac.api.util.reflections.types.WrappedMethod;
 import com.heirteir.hac.api.util.reflections.version.ServerVersion;
-import com.heirteir.hac.util.logging.Log;
+import com.heirteir.hac.core.Core;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 
 public final class PlayerHelper {
-
     private static final int ELYTRA_FLYING_FLAG = 7;
+
+    private final Core core;
+
     /* Player - Get */
     private WrappedMethod getHandle;
     private WrappedField playerConnection;
@@ -25,25 +27,26 @@ public final class PlayerHelper {
     /* Player - Position */
     private WrappedConstructor blockPositionConstructor;
 
-    public PlayerHelper(Reflections reflections) {
+    public PlayerHelper(Core core) {
+        this.core = core;
         try {
             /* Player - Get */
-            this.getHandle = reflections.getCBClass("entity.CraftEntity").getMethod("getHandle");
-            this.playerConnection = reflections.getNMSClass("EntityPlayer").getFieldByName("playerConnection");
-            this.sendPacket = reflections.getNMSClass("PlayerConnection").getMethod("sendPacket", reflections.getNMSClass("Packet").getRaw());
+            this.getHandle = API.INSTANCE.getReflections().getCBClass("entity.CraftEntity").getMethod("getHandle");
+            this.playerConnection = API.INSTANCE.getReflections().getNMSClass("EntityPlayer").getFieldByName("playerConnection");
+            this.sendPacket = API.INSTANCE.getReflections().getNMSClass("PlayerConnection").getMethod("sendPacket", API.INSTANCE.getReflections().getNMSClass("Packet").getRaw());
 
             /* Player - Elytra */
-            if (reflections.getVersion().greaterThanOrEqual(ServerVersion.NINE_R1)) {
-                this.getFlag = reflections.getNMSClass("Entity").getMethod("getFlag", int.class);
+            if (API.INSTANCE.getReflections().getVersion().greaterThanOrEqual(ServerVersion.NINE_R1)) {
+                this.getFlag = API.INSTANCE.getReflections().getNMSClass("Entity").getMethod("getFlag", int.class);
             }
 
             /* Player - World */
-            this.getWorld = reflections.getNMSClass("Entity").getMethod("getWorld");
+            this.getWorld = API.INSTANCE.getReflections().getNMSClass("Entity").getMethod("getWorld");
 
             /* Player - Position */
-            this.blockPositionConstructor = reflections.getNMSClass("BlockPosition").getConstructor(double.class, double.class, double.class);
+            this.blockPositionConstructor = API.INSTANCE.getReflections().getNMSClass("BlockPosition").getConstructor(double.class, double.class, double.class);
         } catch (NoSuchMethodException | NoSuchFieldException e) {
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
     }
 
@@ -54,7 +57,7 @@ public final class PlayerHelper {
             output = this.blockPositionConstructor != null ? this.blockPositionConstructor.newInstance(Object.class, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()) : null;
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             output = null;
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         return output;
     }
@@ -71,7 +74,7 @@ public final class PlayerHelper {
             output = this.getWorld.invoke(Object.class, this.getEntityPlayer(player));
         } catch (InvocationTargetException | IllegalAccessException e) {
             output = null;
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         return output;
     }
@@ -88,7 +91,7 @@ public final class PlayerHelper {
             output = this.getFlag != null && this.getFlag.invoke(Boolean.class, this.getEntityPlayer(player), PlayerHelper.ELYTRA_FLYING_FLAG);
         } catch (InvocationTargetException | IllegalAccessException e) {
             output = false;
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         return output;
     }
@@ -105,7 +108,7 @@ public final class PlayerHelper {
             output = this.getHandle.invoke(Object.class, player);
         } catch (InvocationTargetException | IllegalAccessException e) {
             output = null;
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         return output;
     }
@@ -122,7 +125,7 @@ public final class PlayerHelper {
             output = this.playerConnection.get(Object.class, this.getEntityPlayer(player));
         } catch (IllegalAccessException e) {
             output = null;
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
         return output;
     }
@@ -137,7 +140,7 @@ public final class PlayerHelper {
         try {
             this.sendPacket.invoke(Object.class, this.playerConnection.get(Object.class, this.getEntityPlayer(player)), packet);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            Log.INSTANCE.reportFatalError(e);
+            this.core.getLog().reportFatalError(e);
         }
     }
 }

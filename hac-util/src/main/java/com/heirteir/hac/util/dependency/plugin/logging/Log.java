@@ -1,15 +1,13 @@
-package com.heirteir.hac.util.logging;
+package com.heirteir.hac.util.dependency.plugin.logging;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
-import com.heirteir.hac.util.files.FilePaths;
-import com.heirteir.hac.util.logging.format.SingleLineFormatter;
+import com.heirteir.hac.util.dependency.plugin.logging.format.SingleLineFormatter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,10 +16,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-@SuppressWarnings("ImmutableEnumChecker") //This is a Singleton so be quiet
-public enum Log {
-    INSTANCE;
-
+public final class Log {
     /* Plugin Parent */
     private final DependencyPlugin parent;
 
@@ -31,9 +26,9 @@ public enum Log {
     /* State Handler */
     private boolean open;
 
-    Log() {
-        this.parent = (DependencyPlugin) JavaPlugin.getProvidingPlugin(Log.class);
-        this.loggingFile = FilePaths.INSTANCE.getPluginFolder().resolve("log").resolve(parent.getName()).resolve("latest.log.txt");
+    public Log(DependencyPlugin parent) {
+        this.parent = parent;
+        this.loggingFile = this.parent.getPluginFolder().resolve("log").resolve(parent.getName()).resolve("latest.log.txt");
 
         try {
             Files.createDirectories(this.loggingFile.getParent());
@@ -99,6 +94,10 @@ public enum Log {
     }
 
     public void reportFatalError(String message) {
+        this.reportFatalError(message, true);
+    }
+
+    public void reportFatalError(String message, boolean shutdown) {
         int splitSize = 60;
         int padding = 6;
         Iterable<String> header = Splitter.fixedLength(splitSize).split(String.format("'%s' ran into an error that has forced the plugin to stop. More information below:", this.parent.getName()));
@@ -112,8 +111,9 @@ public enum Log {
         body.forEach(line -> this.severe("&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
         this.severe(headTail);
 
-        if (Bukkit.getPluginManager().isPluginEnabled(this.parent))
+        if (shutdown && Bukkit.getPluginManager().isPluginEnabled(this.parent)) {
             Bukkit.getPluginManager().disablePlugin(this.parent);
+        }
     }
 
     public void reportFatalError(Throwable exception) {

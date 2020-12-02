@@ -4,12 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.dependency.types.annotation.Github;
-import com.heirteir.hac.util.files.FilePaths;
-import com.heirteir.hac.util.logging.Log;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +40,8 @@ public class GithubDependency extends AbstractDependency {
     private boolean needsUpdate;
     private boolean updating;
 
-    public GithubDependency(@NotNull String fileName, @NotNull String pluginMame, @NotNull String githubRepoRelativeURL, int spigotId, boolean checkUpdate, boolean useBeta) {
+    public GithubDependency(DependencyPlugin parent, @NotNull String fileName, @NotNull String pluginMame, @NotNull String githubRepoRelativeURL, int spigotId, boolean checkUpdate, boolean useBeta) {
+        super(parent);
         this.fileName = fileName;
         this.pluginName = pluginMame;
         this.githubRepoRelativeURL = githubRepoRelativeURL;
@@ -52,8 +50,8 @@ public class GithubDependency extends AbstractDependency {
         this.useBeta = useBeta;
     }
 
-    public GithubDependency(@NotNull Github github) {
-        this(github.fileName(), github.pluginName(), github.githubRepoRelativeURL(), github.spigotId(), false, false);
+    public GithubDependency(DependencyPlugin parent, @NotNull Github github) {
+        this(parent, github.fileName(), github.pluginName(), github.githubRepoRelativeURL(), github.spigotId(), false, false);
     }
 
     private static int versionStringToInt(String input) {
@@ -94,7 +92,11 @@ public class GithubDependency extends AbstractDependency {
 
     @Override
     public Path getDownloadLocation() {
-        return FilePaths.INSTANCE.getPluginFolder().getParent().resolve(this.fileName + ".jar");
+        if (updating) {
+            return super.getDependencyPlugin().getPluginFolder().getParent().resolve("upload").resolve(this.fileName + ".jar");
+        } else {
+            return super.getDependencyPlugin().getPluginFolder().getParent().resolve(this.fileName + ".jar");
+        }
     }
 
     @Override
@@ -128,7 +130,7 @@ public class GithubDependency extends AbstractDependency {
         try {
             is = new URL(apiURL).openStream();
         } catch (IOException e) {
-            Log.INSTANCE.severe(e);
+            super.getDependencyPlugin().getLog().severe(e);
         }
 
         if (is == null) {
@@ -150,7 +152,7 @@ public class GithubDependency extends AbstractDependency {
                     .max(Comparator.comparingInt(element -> GithubDependency.versionStringToInt(element.get(GithubDependency.TAG_NAME).getAsString())))
                     .orElse(null);
         } catch (IOException e) {
-            Log.INSTANCE.severe(e);
+            super.getDependencyPlugin().getLog().severe(e);
             latest = null;
         }
 
@@ -170,30 +172,36 @@ public class GithubDependency extends AbstractDependency {
     @Override
     public boolean download() {
         boolean success = true;
-        Path downloadLocation = this.getDownloadLocation();
 
         if (this.updating) {
-            Log.INSTANCE.info(String.format("Downloading update for '%s'.", this.pluginName));
-            downloadLocation = this.getDownloadLocation().getParent().resolve("update").resolve(this.fileName + ".jar");
+            super.getDependencyPlugin().getLog().info(String.format("Downloading update for '%s'.", this.pluginName));
         } else {
-            Log.INSTANCE.info(String.format("Downloading plugin dependency '%s'.", this.pluginName));
+            super.getDependencyPlugin().getLog().info(String.format("Downloading plugin dependency '%s'.", this.pluginName));
         }
 
+        URL url = null;
         try {
-            URL url = this.getUrl();
-
-            Files.createDirectories(downloadLocation.getParent());
-            InputStream is = url.openStream();
-            Files.copy(is, downloadLocation);
-
-            if (this.updating) {
-                Log.INSTANCE.info(String.format("Successfully downloaded update for '%s' to '%s'. It will be active on next reload.", this.getName(), downloadLocation.toAbsolutePath()));
-            } else {
-                Log.INSTANCE.info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
-            }
-        } catch (IOException e) {
+            url = this.getUrl();
+        } catch (MalformedURLException e) {
             success = false;
         }
+
+        if (url != null) {
+            try (InputStream is = url.openStream()) {
+                Files.createDirectories(this.getDownloadLocation().getParent());
+                Files.deleteIfExists(this.getDownloadLocation());
+                Files.copy(is, this.getDownloadLocation());
+
+                if (this.updating) {
+                    super.getDependencyPlugin().getLog().info(String.format("Successfully downloaded update for '%s' to '%s'. It will be active on next reload.", this.getName(), this.getDownloadLocation().toAbsolutePath()));
+                } else {
+                    super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
+                }
+            } catch (IOException e) {
+                success = false;
+            }
+        }
+
         return success;
     }
 
@@ -202,7 +210,7 @@ public class GithubDependency extends AbstractDependency {
         boolean success = true;
         try {
             if (this.needsUpdate() && !this.updating) {
-                Log.INSTANCE.info(String.format("Attempting to Load dependency '%s'.", this.getName()));
+                super.getDependencyPlugin().getLog().info(String.format("Attempting to Load dependency '%s'.", this.getName()));
 
                 Bukkit.getPluginManager().loadPlugin(this.getDownloadLocation().toFile());
 
@@ -214,9 +222,9 @@ public class GithubDependency extends AbstractDependency {
                     success = false;
                 }
             }
-        } catch (InvalidPluginException | InvalidDescriptionException e) {
+        } catch (Exception e) {
             success = false;
-            Log.INSTANCE.severe(e);
+            super.getDependencyPlugin().getLog().severe(e);
         }
         return success;
     }
