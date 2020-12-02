@@ -92,6 +92,7 @@ gradle-app.setting
 # Project Specific
 buildtools/
 jars/
+logs/
 .idea/misc.xml
 .idea/sonarlint/
 .idea/vcs.xml
