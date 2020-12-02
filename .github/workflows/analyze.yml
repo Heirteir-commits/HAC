@@ -45,9 +45,11 @@ jobs:
         run: ./gradlew build sonarqube --info
       - name: Shadow jar
         run: ./gradlew shadowJar
-      - name: Upload HAC.Core.jar artifact
+      - name: upload jars folder to artifacts
         uses: actions/upload-artifact@v2
         with:
           name: jars
-          path: ./hac-core/build/libs/HAC.Core.jar
+          path: |
+            ./jars
+            !./jars/HAC.Movement.jar
 
