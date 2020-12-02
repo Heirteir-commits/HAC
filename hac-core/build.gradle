@@ -1,9 +1,37 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+    ext {
+        jarName = "HAC.Core.jar"
+    }
+}
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
 group 'com.heirteir'
 version pluginVersion
 
+shadowJar {
+    archiveFileName = jarName
+    relocate 'com.heirteir.hac.util', 'com.heirteir.hac.core.util'
+    minimize()
+}
+
 dependencies {
+    compileOnlyApi('io.netty:netty-all:4.1.53.Final')
+    compileOnlyApi('com.flowpowered:flow-math:1.0.3')
+
     api(project(':hac-api'))
     api(project(':hac-util'))
 
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
 }

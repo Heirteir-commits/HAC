@@ -7,7 +7,8 @@ version pluginVersion
 
 dependencies {
     compileOnlyApi('org.jetbrains:annotations:16.0.2')
-    compileOnlyApi(files(spigotLocation + "1_16_R2.jar"))
+    compileOnlyApi(latestSpigot)
 
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
 }
