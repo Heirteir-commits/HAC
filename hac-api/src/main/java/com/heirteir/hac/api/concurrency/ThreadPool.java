@@ -16,7 +16,7 @@ public class ThreadPool {
     private BiConsumer<? super Void, ? super Throwable> defaultErrorHandler;
 
     public ThreadPool() {
-        this.pool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-cached-thread-%d").build());
+        this.pool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d").build());
     }
 
     public void unload() {

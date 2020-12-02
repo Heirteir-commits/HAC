@@ -8,7 +8,8 @@ import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.api.util.reflections.types.WrappedConstructor;
 import com.heirteir.hac.api.util.reflections.version.ServerVersion;
 import com.heirteir.hac.core.player.data.location.PlayerData;
-import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.core.util.reflections.helper.EntityHelper;
+import com.heirteir.hac.core.util.reflections.helper.WorldHelper;
 import com.heirteir.hac.movement.Movement;
 import com.heirteir.hac.movement.dynamic.entity.human.EntityHumanAccessor;
 import com.mojang.authlib.GameProfile;
@@ -37,11 +38,11 @@ public final class Simulator {
         this.resetClosestMatch();
 
         Object[] arguments;
-        Object world = API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getWorld(player.getBukkitPlayer());
+        Object world = API.INSTANCE.getReflections().getHelpers().getHelper(WorldHelper.class).getNMSWorld(player.getBukkitPlayer().getWorld());
         GameProfile profile = new GameProfile(null, "HAC-Simulator");
 
         if (API.INSTANCE.getReflections().getVersion().greaterThanOrEqual(ServerVersion.SIXTEEN_R1)) {
-            arguments = new Object[]{world, API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getBlockPosition(player.getBukkitPlayer()), 0f, profile};
+            arguments = new Object[]{world, API.INSTANCE.getReflections().getHelpers().getHelper(EntityHelper.class).getBlockPosition(player.getBukkitPlayer()), 0f, profile};
         } else {
             arguments = new Object[]{world, profile};
         }
@@ -54,7 +55,7 @@ public final class Simulator {
             Set<HACHumanWrapper> wrappers = Sets.newHashSetWithExpectedSize(18);
 
             wrappers.add(this.noInputSimulator);
-            /* Creates 17 simulators with the forward: -1 -> 1, strafe: -1 -> 1, and jump: 0 -> 1*/
+            /* Creates 17 simulators with the strafe: -1 -> 1, forward: -1 -> 1, and jump: 0 -> 1*/
             for (int x = -1; x <= 1; x++) {
                 for (int y = -1; y <= 1; y++) {
                     for (int z = 0; z <= 1; z++) {
@@ -84,37 +85,37 @@ public final class Simulator {
             this.playerData.getCurrent().setHasLook(true);
         }
 
-        if (this.playerData.getCurrent().getVelocity().sub(this.noInputSimulator.getSimulatorData().getVelocity()).length() > 0.01) {
-            CountDownLatch latch = new CountDownLatch(18);
+        /* piston's changed 1.15 - better */
 
-            this.simulators.forEach(simulator -> API.INSTANCE.getThreadPool().getPool().execute(() -> {
-                try {
-                    simulator.update(this.closestMatch);
-                } catch (Exception e) {
-                    this.movement.getLog().severe(e);
-                } finally {
-                    latch.countDown();
-                }
-            }));
+        CountDownLatch latch = new CountDownLatch(18);
 
+        this.simulators.forEach(simulator -> API.INSTANCE.getThreadPool().getPool().execute(() -> {
             try {
-                latch.await();
-            } catch (InterruptedException e) {
-                this.movement.getLog().reportFatalError(e);
-                Thread.currentThread().interrupt();
+                simulator.update(this.closestMatch);
+            } catch (Exception e) {
+                this.movement.getLog().severe(e);
+            } finally {
+                latch.countDown();
             }
+        }));
 
-            this.closestMatch.apply(this.simulators.stream()
-                    .map(HACHumanWrapper::getSimulatorData)
-                    .min(Comparator.comparingDouble(data -> this.playerData.getCurrent().getVelocity().sub(data.getVelocity()).length()))
-                    .orElse(this.closestMatch));
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            this.movement.getLog().reportFatalError(e);
+            Thread.currentThread().interrupt();
+        }
 
-            if (/* this.playerData.getCurrent().getVelocity().length() > this.closestMatch.getVelocity().length() && */ this.playerData.getCurrent().getVelocity().sub(this.closestMatch.getVelocity()).length() > 0.1) {
-                this.movement.getLog().info(this.playerData.getCurrent().getVelocity().sub(this.closestMatch.getVelocity()).length() + " " + this.playerData.getCurrent().getVelocity() + " " + this.closestMatch.getVelocity());
-            } else {
-                this.closestMatch.setMotion(this.closestMatch.getMotion().add(this.playerData.getCurrent().getVelocity().sub(this.closestMatch.getVelocity())));
-                this.closestMatch.setLocation(this.playerData.getCurrent().getLocation());
-            }
+        this.closestMatch.apply(this.simulators.stream()
+                .map(HACHumanWrapper::getSimulatorData)
+                .min(Comparator.comparingDouble(data -> this.playerData.getCurrent().getVelocity().sub(data.getVelocity()).length()))
+                .orElse(this.closestMatch));
+
+        if (/* this.playerData.getCurrent().getVelocity().length() > this.closestMatch.getVelocity().length() && */ this.playerData.getCurrent().getVelocity().sub(this.closestMatch.getVelocity()).length() > 0.1) {
+            this.movement.getLog().info(this.playerData.getCurrent().getVelocity().sub(this.closestMatch.getVelocity()).length() + " " + this.playerData.getCurrent().getVelocity() + " " + this.closestMatch.getVelocity());
+        } else {
+            this.closestMatch.setMotion(this.closestMatch.getMotion().add(this.playerData.getCurrent().getVelocity().sub(this.closestMatch.getVelocity())));
+            this.closestMatch.setLocation(this.playerData.getCurrent().getLocation());
         }
     }
 

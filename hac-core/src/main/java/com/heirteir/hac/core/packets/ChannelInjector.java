@@ -5,7 +5,7 @@ import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.api.util.reflections.types.WrappedField;
 import com.heirteir.hac.core.Core;
 import com.heirteir.hac.core.packets.builder.PacketBuilders;
-import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.core.util.reflections.helper.EntityHelper;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 public final class ChannelInjector {
     private static final String AFTER_KEY = "packet_handler";
-    private static final String HANDLER_KEY = "hac_player_handler";
+    private static final String HANDLER_KEY = "hac_packet_handler";
 
     private final Core core;
 
@@ -66,7 +66,7 @@ public final class ChannelInjector {
 
             output = this.channel.get(Channel.class,
                     this.networkManager.get(Object.class,
-                            API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getPlayerConnection(player)
+                            API.INSTANCE.getReflections().getHelpers().getHelper(EntityHelper.class).getPlayerConnection(player)
                     )).pipeline();
         } catch (Exception e) {
             output = null;

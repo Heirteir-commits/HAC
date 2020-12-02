@@ -6,54 +6,46 @@ import com.heirteir.hac.api.util.reflections.types.WrappedField;
 import com.heirteir.hac.api.util.reflections.types.WrappedMethod;
 import com.heirteir.hac.api.util.reflections.version.ServerVersion;
 import com.heirteir.hac.core.Core;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 
-public final class PlayerHelper {
+public final class EntityHelper extends AbstractCoreHelper<EntityHelper> {
     private static final String ENTITY = "Entity";
     private static final int ELYTRA_FLYING_FLAG = 7;
 
-    private final Core core;
 
     /* Player - Get */
     private WrappedMethod getHandle;
     private WrappedField playerConnection;
-    private WrappedMethod sendPacket;
     /* Player - Elytra */
     private WrappedMethod getFlag;
-    /* Player - World */
-    private WrappedMethod getWorld;
     /* Player - Position */
     private WrappedConstructor blockPositionConstructor;
-    /* finder */
-    private WrappedMethod getBukkitEntity;
+    /* Entity - BoundingBox */
+    private WrappedMethod getBoundingBox;
 
-    public PlayerHelper(Core core) {
-        this.core = core;
+    public EntityHelper(Core core) {
+        super(core, EntityHelper.class);
         try {
             /* Player - Get */
             this.getHandle = API.INSTANCE.getReflections().getCBClass("entity.CraftEntity").getMethod("getHandle");
             this.playerConnection = API.INSTANCE.getReflections().getNMSClass("EntityPlayer").getFieldByName("playerConnection");
-            this.sendPacket = API.INSTANCE.getReflections().getNMSClass("PlayerConnection").getMethod("sendPacket", API.INSTANCE.getReflections().getNMSClass("Packet").getRaw());
 
             /* Player - Elytra */
             if (API.INSTANCE.getReflections().getVersion().greaterThanOrEqual(ServerVersion.NINE_R1)) {
-                this.getFlag = API.INSTANCE.getReflections().getNMSClass(PlayerHelper.ENTITY).getMethod("getFlag", int.class);
+                this.getFlag = API.INSTANCE.getReflections().getNMSClass(EntityHelper.ENTITY).getMethod("getFlag", int.class);
             }
-
-            /* Player - World */
-            this.getWorld = API.INSTANCE.getReflections().getNMSClass(PlayerHelper.ENTITY).getMethod("getWorld");
 
             /* Player - Position */
             this.blockPositionConstructor = API.INSTANCE.getReflections().getNMSClass("BlockPosition").getConstructor(double.class, double.class, double.class);
 
-            /* finder */
-            this.getBukkitEntity = API.INSTANCE.getReflections().getNMSClass(PlayerHelper.ENTITY).getMethod("getBukkitEntity");
+            /* Entity - BoundingBox */
+            this.getBoundingBox = API.INSTANCE.getReflections().getNMSClass(EntityHelper.ENTITY).getMethod("getBoundingBox");
         } catch (NoSuchMethodException | NoSuchFieldException e) {
-            this.core.getLog().reportFatalError(e);
+            super.getCore().getLog().reportFatalError(e);
         }
     }
 
@@ -64,24 +56,7 @@ public final class PlayerHelper {
             output = this.blockPositionConstructor != null ? this.blockPositionConstructor.newInstance(Object.class, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()) : null;
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             output = null;
-            this.core.getLog().reportFatalError(e);
-        }
-        return output;
-    }
-
-    /**
-     * Get the NMS world object for a player
-     *
-     * @param player The Bukkit Player
-     * @return NMS world object
-     */
-    public Object getWorld(Player player) {
-        Object output;
-        try {
-            output = this.getWorld.invoke(Object.class, this.getEntityPlayer(player));
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            output = null;
-            this.core.getLog().reportFatalError(e);
+            super.getCore().getLog().reportFatalError(e);
         }
         return output;
     }
@@ -93,46 +68,35 @@ public final class PlayerHelper {
      * @return true if player is flying with elytra false if not;
      */
     public boolean isElytraFlying(Player player) {
-        return this.isElytraFlying(this.getEntityPlayer(player));
+        return this.isElytraFlying(this.getNMSEntity(player));
     }
 
     public boolean isElytraFlying(Object nmsPlayer) {
         boolean output;
 
         try {
-            output = this.getFlag != null && this.getFlag.invoke(Boolean.class, nmsPlayer, PlayerHelper.ELYTRA_FLYING_FLAG);
+            output = this.getFlag != null && this.getFlag.invoke(Boolean.class, nmsPlayer, EntityHelper.ELYTRA_FLYING_FLAG);
         } catch (InvocationTargetException | IllegalAccessException e) {
             output = false;
-            this.core.getLog().reportFatalError(e);
+            super.getCore().getLog().reportFatalError(e);
         }
 
         return output;
     }
 
     /**
-     * Convert a player object to an EntityPlayer object.
+     * Convert a entity object to an nms Entity object.
      *
-     * @param player The Bukkit Player
+     * @param entity The Bukkit Entity
      * @return An EntityPlayer object.
      */
-    public Object getEntityPlayer(Player player) {
+    public Object getNMSEntity(Entity entity) {
         Object output;
         try {
-            output = this.getHandle.invoke(Object.class, player);
+            output = this.getHandle.invoke(Object.class, entity);
         } catch (InvocationTargetException | IllegalAccessException e) {
             output = null;
-            this.core.getLog().reportFatalError(e);
-        }
-        return output;
-    }
-
-    public LivingEntity getBukkitEntity(Object nmsEntity) {
-        LivingEntity output;
-        try {
-            output = this.getBukkitEntity.invoke(LivingEntity.class, nmsEntity);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            output = null;
-            this.core.getLog().reportFatalError(e);
+            super.getCore().getLog().reportFatalError(e);
         }
         return output;
     }
@@ -146,26 +110,27 @@ public final class PlayerHelper {
     public Object getPlayerConnection(Player player) {
         Object output;
         try {
-            output = this.playerConnection.get(Object.class, this.getEntityPlayer(player));
+            output = this.playerConnection.get(Object.class, this.getNMSEntity(player));
         } catch (IllegalAccessException e) {
             output = null;
-            this.core.getLog().reportFatalError(e);
+            super.getCore().getLog().reportFatalError(e);
         }
         return output;
     }
 
-    /**
-     * Sends a packet to the specified player object.
-     *
-     * @param player The Bukkit Player
-     * @param packet The Packet object
-     */
-    public void sendPacket(Player player, Object packet) {
+    public Object getBoundingBox(Entity entity) {
+        return this.getBoundingBox(this.getNMSEntity(entity));
+    }
+
+    public Object getBoundingBox(Object nmsEntity) {
+        Object output;
         try {
-            this.sendPacket.invoke(Object.class, this.playerConnection.get(Object.class, this.getEntityPlayer(player)), packet);
+            output = this.getBoundingBox.invoke(Object.class, nmsEntity);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            this.core.getLog().reportFatalError(e);
+            output = null;
+            super.getCore().getLog().reportFatalError(e);
         }
+        return output;
     }
 }
 

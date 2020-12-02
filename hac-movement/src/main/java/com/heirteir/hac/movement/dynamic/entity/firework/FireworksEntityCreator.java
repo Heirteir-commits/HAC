@@ -4,9 +4,11 @@ import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.util.reflections.types.WrappedConstructor;
 import com.heirteir.hac.api.util.reflections.types.WrappedField;
 import com.heirteir.hac.api.util.reflections.types.WrappedMethod;
-import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.core.util.reflections.helper.EntityHelper;
+import com.heirteir.hac.core.util.reflections.helper.WorldHelper;
 import com.heirteir.hac.movement.Movement;
 import com.heirteir.hac.movement.dynamic.AbstractDynamicClassCreator;
+import com.heirteir.hac.movement.dynamic.entity.Piston;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SuperMethodCall;
@@ -39,6 +41,7 @@ public class FireworksEntityCreator extends AbstractDynamicClassCreator implemen
 
     @Override
     public void load() {
+
         try {
             String methodName = null;
             switch (API.INSTANCE.getReflections().getVersion()) {
@@ -89,15 +92,18 @@ public class FireworksEntityCreator extends AbstractDynamicClassCreator implemen
                             API.INSTANCE.getReflections().getNMSClass("EntityLiving").getRaw());
 
             Bukkit.getPluginManager().registerEvents(this, super.getMovement());
+
+            //TODO: REMOVE
+            Bukkit.getPluginManager().registerEvents(new Piston(), super.getMovement());
         } catch (Exception e) {
             super.getMovement().getLog().reportFatalError(e);
         }
     }
 
-
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (e.getItem() == null || !e.getItem().getType().name().contains("FIREWORK") || !e.getAction().equals(Action.RIGHT_CLICK_AIR) || !API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).isElytraFlying(e.getPlayer())) {
+
+        if (e.getItem() == null || !e.getItem().getType().name().contains("FIREWORK") || !e.getAction().equals(Action.RIGHT_CLICK_AIR) || !API.INSTANCE.getReflections().getHelpers().getHelper(EntityHelper.class).isElytraFlying(e.getPlayer())) {
             return;
         }
 
@@ -106,9 +112,10 @@ public class FireworksEntityCreator extends AbstractDynamicClassCreator implemen
         }
 
         try {
-            PlayerHelper helper = API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class);
-            Object human = helper.getEntityPlayer(e.getPlayer());
-            Object world = helper.getWorld(e.getPlayer());
+            WorldHelper worldHelper = API.INSTANCE.getReflections().getHelpers().getHelper(WorldHelper.class);
+            EntityHelper helper = API.INSTANCE.getReflections().getHelpers().getHelper(EntityHelper.class);
+            Object human = helper.getNMSEntity(e.getPlayer());
+            Object world = worldHelper.getNMSWorld(e.getPlayer().getWorld());
             Object itemStack = this.handle.get(Object.class, e.getItem());
 
             this.addEntity.invoke(Object.class, world, this.entityFireworks.newInstance(Object.class, world, itemStack, human));
