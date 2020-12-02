@@ -1,10 +1,14 @@
 package com.heirteir.hac.util.dependency.plugin;
 
 import com.heirteir.hac.util.dependency.DependencyUtils;
-import com.heirteir.hac.util.files.FilePaths;
-import com.heirteir.hac.util.logging.Log;
+import com.heirteir.hac.util.dependency.plugin.logging.Log;
 import lombok.Getter;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public abstract class DependencyPlugin extends JavaPlugin {
     @Getter
@@ -12,15 +16,30 @@ public abstract class DependencyPlugin extends JavaPlugin {
 
     private boolean dependenciesLoaded = false;
 
+    @Getter
+    private final Path pluginFolder;
+
+    @Getter
+    private final Log log;
+
     protected DependencyPlugin(String loggerPrefix) {
+        this.pluginFolder = this.getDataFolder().toPath().getParent().resolve("HAC");
         this.loggerPrefix = "[HAC] [" + loggerPrefix + "] ";
+        this.log = new Log(this);
+    }
+
+    protected DependencyPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+        this.pluginFolder = this.getDataFolder().toPath().getParent().resolve("HAC");
+        this.loggerPrefix = "[HAC] [TEST]";
+        this.log = new Log(this);
     }
 
     @Override
     public final void onLoad() {
         super.onLoad();
 
-        Log.INSTANCE.open();
+        this.log.open();
         this.dependenciesLoaded = DependencyUtils.loadDependenciesFromPlugin(this);
 
         this.load();
@@ -34,7 +53,7 @@ public abstract class DependencyPlugin extends JavaPlugin {
             this.disable();
         }
 
-        Log.INSTANCE.close();
+        this.log.close();
     }
 
     @Override
@@ -44,10 +63,10 @@ public abstract class DependencyPlugin extends JavaPlugin {
         if (this.dependenciesLoaded) {
             this.enable();
         } else {
-            Log.INSTANCE.reportFatalError(
+            this.log.reportFatalError(
                     String.format("Could not download required dependencies. " +
                                     "Please look at the latest.log in the '%s' folder to determine the issue.",
-                            FilePaths.INSTANCE.getPluginFolder().getParent().relativize(FilePaths.INSTANCE.getPluginFolder().resolve("log").resolve(super.getName())))
+                            this.pluginFolder.getParent().relativize(this.pluginFolder.resolve("log").resolve(super.getName())))
             );
         }
     }

@@ -11,7 +11,6 @@ import com.heirteir.hac.util.dependency.DependencyUtils;
 import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
 import com.heirteir.hac.util.dependency.types.GithubDependency;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
-import com.heirteir.hac.util.logging.Log;
 import lombok.Getter;
 
 @Getter
@@ -30,43 +29,43 @@ public final class Core extends DependencyPlugin {
     @Override
     protected void enable() {
         if (API.INSTANCE.getReflections().getVersion().equals(ServerVersion.INVALID)) {
-            Log.INSTANCE.reportFatalError("HAC only supports [1.8 - 1.16.3].");
+            super.getLog().reportFatalError("HAC only supports [1.8 - 1.16.3].");
             return;
         }
 
-        Log.INSTANCE.info(String.format("Registering Reflections Helper '%s'.", PlayerHelper.class));
-        API.INSTANCE.getReflections().getHelpers().registerHelper(PlayerHelper.class, new PlayerHelper(API.INSTANCE.getReflections()));
+        super.getLog().info(String.format("Registering Reflections Helper '%s'.", PlayerHelper.class));
+        API.INSTANCE.getReflections().getHelpers().registerHelper(PlayerHelper.class, new PlayerHelper(this));
 
-        Log.INSTANCE.info("Booting up the Channel Injector.");
-        this.channelInjector = new ChannelInjector();
+        super.getLog().info("Booting up the Channel Injector.");
+        this.channelInjector = new ChannelInjector(this);
 
-        Log.INSTANCE.info("Booting up the HAC Player List.");
+        super.getLog().info("Booting up the HAC Player List.");
         this.playerListUpdater = new HACPlayerListUpdater(this);
 
         this.playerDataBuilder = new PlayerDataBuilder();
-        Log.INSTANCE.info(String.format("Registering Data Builder '%s'", PlayerData.class));
+        super.getLog().info(String.format("Registering Data Builder '%s'", PlayerData.class));
         API.INSTANCE.getHacPlayerList().getBuilder().registerDataBuilder(PlayerData.class, this.playerDataBuilder);
     }
 
     @Override
     protected void disable() {
         if (!API.INSTANCE.getReflections().getVersion().equals(ServerVersion.INVALID)) {
-            Log.INSTANCE.info(String.format("Unregistering Data Builder '%s'", PlayerData.class));
+            super.getLog().info(String.format("Unregistering Data Builder '%s'", PlayerData.class));
             API.INSTANCE.getHacPlayerList().getBuilder().unregisterDataBuilder(PlayerData.class);
 
-            Log.INSTANCE.info("Shutting down the HAC Player List.");
+            super.getLog().info("Shutting down the HAC Player List.");
             this.playerListUpdater.unload();
-            Log.INSTANCE.info("Shutting down the Channel Injector.");
+            super.getLog().info("Shutting down the Channel Injector.");
             this.channelInjector.unload();
 
-            Log.INSTANCE.info(String.format("Unregistering Reflections Helper '%s'.", PlayerHelper.class));
+            super.getLog().info(String.format("Unregistering Reflections Helper '%s'.", PlayerHelper.class));
             API.INSTANCE.getReflections().getHelpers().unregisterHelper(PlayerHelper.class);
         }
     }
 
     @Override
     protected void load() {
-        Log.INSTANCE.info("Checking for update...");
-        DependencyUtils.loadDependency(new GithubDependency("HAC.Core", "HAC-Core", "heirteir-commits/HAC", 75180, true, false)); //check for update
+        super.getLog().info("Checking for update...");
+        DependencyUtils.loadDependency(this, new GithubDependency(this, "HAC.Core", "HAC-Core", "heirteir-commits/HAC", 75180, true, false)); //check for update
     }
 }
