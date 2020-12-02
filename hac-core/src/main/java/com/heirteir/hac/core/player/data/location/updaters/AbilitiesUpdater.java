@@ -4,8 +4,8 @@ import com.heirteir.hac.api.events.AbstractPacketEvent;
 import com.heirteir.hac.api.events.packets.wrapper.in.AbilitiesPacket;
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.core.player.data.location.PlayerData;
+import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public final class AbilitiesUpdater extends AbstractPacketEvent<AbilitiesPacket> {
     public AbilitiesUpdater() {

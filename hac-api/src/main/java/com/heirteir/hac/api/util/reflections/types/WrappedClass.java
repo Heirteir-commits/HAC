@@ -1,22 +1,22 @@
 package com.heirteir.hac.api.util.reflections.types;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
 public final class WrappedClass {
 
     private final Class<?> raw;
-    private Set<Field> fields = null;
+    private List<Field> fields = null;
 
-    public WrappedConstructor getConstructorAtIndex(int index) throws IndexOutOfBoundsException {
+    public WrappedConstructor getConstructorAtIndex(int index) {
         Constructor<?>[] constructors = this.raw.getDeclaredConstructors();
 
         if (index > constructors.length + 1) {
@@ -41,9 +41,9 @@ public final class WrappedClass {
         );
     }
 
-    private Set<Field> getFields() {
+    private List<Field> getFields() {
         if (this.fields == null) {
-            this.fields = Sets.newLinkedHashSet();
+            this.fields = Lists.newArrayList();
 
             Class<?> current = this.raw;
 
@@ -63,16 +63,12 @@ public final class WrappedClass {
      * @param index if multiple fields exist get value at specified index
      * @return WrappedField instance of the field
      */
-    public WrappedField getFieldByType(Class<?> type, int index) throws IndexOutOfBoundsException {
-        Field[] fields = this.getFields().stream()
-                .filter(field -> field.getType().equals(type))
-                .toArray(Field[]::new);
-
-        if (index > fields.length + 1) {
-            throw new IndexOutOfBoundsException(String.format("There are only '%d' fields with type '%s' in class '%s' but tried to access the field at index '%d'.", fields.length + 1, type.getName(), this.raw.getName(), index));
+    public WrappedField getFieldByType(Class<?> type, int index) {
+        if (index > this.getFields().size() + 1) {
+            throw new IndexOutOfBoundsException(String.format("There are only '%d' fields with type '%s' in class '%s' but tried to access the field at index '%d'.", this.getFields().size() + 1, type.getName(), this.raw.getName(), index));
         }
 
-        return new WrappedField(this, fields[index]);
+        return new WrappedField(this, this.getFields().get(index));
     }
 
     /**
