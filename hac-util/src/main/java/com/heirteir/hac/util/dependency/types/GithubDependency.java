@@ -110,10 +110,14 @@ public class GithubDependency extends AbstractDependency {
         URL output;
 
         if (latest != null) {
-            output = new URL(latest.getAsJsonArray(GithubDependency.ASSETS).get(0)
-                    .getAsJsonObject()
-                    .get("browser_download_url")
-                    .getAsString());
+            output = new URL(
+                    StreamSupport.stream(latest.getAsJsonArray(GithubDependency.ASSETS).spliterator(), true)
+                            .filter(element -> element.getAsJsonObject().get("name").getAsString().contains(this.fileName))
+                            .findAny()
+                            .orElseThrow(MalformedURLException::new)
+                            .getAsJsonObject()
+                            .get("browser_download_url")
+                            .getAsString());
         } else {
             output = null;
         }

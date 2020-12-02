@@ -1,50 +1,36 @@
 package com.heirteir.hac.api.events;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public final class ASyncPacketEventManager {
-    private final Map<Class<? extends WrappedPacket>, List<AbstractPacketEvent<?>>> events;
+    private final List<AbstractPacketEvent<?>> events;
 
     public ASyncPacketEventManager() {
-        this.events = Maps.newHashMap();
+        this.events = Lists.newArrayList();
     }
 
     public void addEvent(@NotNull AbstractPacketEvent<?> event) {
-        this.getEvents(event.getWrappedClass()).add(event);
+        this.events.add(event);
     }
 
     public void removeEvent(@NotNull AbstractPacketEvent<?> event) {
-        this.getEvents(event.getWrappedClass()).remove(event);
+        this.events.remove(event);
     }
 
-    private List<AbstractPacketEvent<?>> getEvents(Class<? extends WrappedPacket> clazz) {
-        return this.events.computeIfAbsent(clazz, t -> new ArrayList<AbstractPacketEvent<?>>() {
-            @Override
-            public boolean add(AbstractPacketEvent<?> abstractPacketEvent) {
-                boolean add = super.add(abstractPacketEvent);
-                this.sort(Comparator.comparingInt(event -> event.getPriority().ordinal()));
-                return add;
-            }
-        });
-    }
-
-    public void run(@NotNull HACPlayer player, @NotNull Class<? extends WrappedPacket> type, @NotNull WrappedPacket packet) {
-        this.getEvents(type).stream()
+    public void run(@NotNull HACPlayer player, @NotNull WrappedPacket packet) {
+        this.events.stream()
+                .filter(event -> event.getWrappedClass().equals(packet.getClass()))
                 .filter(event -> !event.update(player, packet))
                 .findFirst()
                 .ifPresent(event -> event.onStop(player, packet));
     }
 
     public List<AbstractPacketEvent<?>> getCurrentEvents() {
-        return this.events.values().stream()
-                .flatMap(Collection::stream)
-                .sorted(Comparator.comparingInt(event -> event.getPriority().ordinal()))
-                .collect(Collectors.toList());
+        return this.events;
     }
 }

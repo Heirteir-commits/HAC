@@ -37,7 +37,7 @@ public final class ChannelHandler extends ChannelDuplexHandler {
                 return;
             }
 
-            this.handle(type.getWrappedClass(), builders.get(type.getWrappedClass()).build(msg));
+            this.handle(builders.get(type.getWrappedClass()).build(msg));
         } catch (Exception e) {
             this.core.getLog().severe(e);
         }
@@ -57,20 +57,20 @@ public final class ChannelHandler extends ChannelDuplexHandler {
             AbstractWrappedPacketOut out = (AbstractWrappedPacketOut) this.builders.get(type.getWrappedClass()).build(msg);
 
             if (out.getEntityId() == this.player.getBukkitPlayer().getEntityId()) {
-                this.handle(type.getWrappedClass(), out);
+                this.handle(out);
             }
         } catch (Exception e) {
             this.core.getLog().severe(e);
         }
     }
 
-    private void handle(Class<? extends WrappedPacket> type, WrappedPacket packet) {
+    private void handle(WrappedPacket packet) {
         if (this.future == null) {
             this.future = CompletableFuture.allOf();
         }
 
         this.future = this.future
-                .thenRunAsync(() -> this.eventManager.run(this.player, type, packet), this.pool)
+                .thenRunAsync(() -> this.eventManager.run(this.player, packet), this.pool)
                 .whenCompleteAsync((msg, ex) -> {
                     if (ex != null) {
                         this.core.getLog().severe(ex);
