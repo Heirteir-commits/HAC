@@ -22,10 +22,8 @@ jobs:
         with:
           url: "https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar"
           target: buildtools/
-      - name: Chmod Build tools
-        run: chmod +x buildtools/build.sh
       - name: Run Build Tools
-        run: buildtools/build.sh
+        run: java -jar buildtools/BuildTools.jar --rev latest
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
