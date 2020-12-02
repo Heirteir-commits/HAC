@@ -19,5 +19,17 @@ public final class FlyingPacket extends AbstractWrappedPacketIn {
     public FlyingPacket() {
         super(PacketConstants.In.FLYING);
     }
+
+    public FlyingPacket(double x, double y, double z, double yaw, double pitch, boolean hasLook, boolean hasPos, boolean onGround) {
+        this();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.hasLook = hasLook;
+        this.hasPos = hasPos;
+        this.onGround = onGround;
+    }
 }
 

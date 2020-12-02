@@ -16,6 +16,11 @@ public final class EntityActionPacket extends AbstractWrappedPacketIn {
         super(PacketConstants.In.ENTITY_ACTION);
     }
 
+    public EntityActionPacket(Action action) {
+        this();
+        this.action = action;
+    }
+
     @RequiredArgsConstructor
     @Getter
     public enum Action {

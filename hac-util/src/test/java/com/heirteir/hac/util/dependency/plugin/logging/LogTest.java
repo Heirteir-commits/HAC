@@ -4,10 +4,11 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import com.heirteir.hac.util.dependency.plugin.DependencyPluginTest;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class LogTest {
+class LogTest {
     private static ServerMock server;
     private static DependencyPluginTest plugin;
 
@@ -23,7 +24,9 @@ public class LogTest {
     }
 
     @Test
-    public void testLog() {
+    void testLog() {
         plugin.getLog().reportFatalError("Testing", false);
+
+        Assertions.assertThrows(IllegalStateException.class, () -> plugin.getLog().open());
     }
 }

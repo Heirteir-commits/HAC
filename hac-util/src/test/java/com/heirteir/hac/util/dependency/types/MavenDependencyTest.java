@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Maven(groupId = "com.flowpowered", artifactId = "flow-math", version = "1.0.3")
-public class MavenDependencyTest {
+class MavenDependencyTest {
     private static ServerMock server;
     private static DependencyPluginTest plugin;
 
@@ -29,7 +29,7 @@ public class MavenDependencyTest {
     }
 
     @Test
-    public void testNeedsUpdate() {
+    void testNeedsUpdate() {
         MavenDependency mavenDependency = new MavenDependency(plugin, MavenDependencyTest.class.getAnnotation(Maven.class));
 
         this.checkExists(mavenDependency);
