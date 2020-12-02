@@ -6,8 +6,6 @@ import com.heirteir.hac.util.dependency.types.annotation.Maven;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -67,25 +65,13 @@ public final class MavenDependency extends AbstractDependency {
 
     @Override
     public boolean download() {
-        boolean success = true;
+        boolean success;
         super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' is not in the library folder '%s'. Downloading now...", this.getName(), this.getDownloadLocation().getParent().toAbsolutePath()));
-        URL url = null;
 
-        try {
-            url = this.getUrl();
-        } catch (MalformedURLException e) {
-            success = false;
-        }
+        success = super.download();
 
-        if (url != null) {
-            try (InputStream is = url.openStream()) {
-                Files.createDirectories(this.getDownloadLocation().getParent());
-                Files.deleteIfExists(this.getDownloadLocation());
-                Files.copy(is, this.getDownloadLocation());
-                super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
-            } catch (IOException e) {
-                success = false;
-            }
+        if (success) {
+            super.getDependencyPlugin().getLog().info(String.format("Dependency '%s' successfully downloaded.", this.getName()));
         }
 
         return success;

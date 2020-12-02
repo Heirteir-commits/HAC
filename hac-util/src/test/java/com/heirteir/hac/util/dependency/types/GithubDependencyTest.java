@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Github(fileName = "HAC.Core", pluginName = "HAC-Core", githubRepoRelativeURL = "heirteir-commits/HAC", spigotId = 75180)
-public class GithubDependencyTest {
+class GithubDependencyTest {
     private static ServerMock server;
     private static DependencyPluginTest plugin;
 
@@ -30,7 +30,7 @@ public class GithubDependencyTest {
     }
 
     @Test
-    public void testNeedsUpdate() {
+    void testNeedsUpdate() {
         GithubDependency githubDependency = new GithubDependency(plugin, GithubDependencyTest.class.getAnnotation(Github.class));
 
         this.checkExists(githubDependency);
