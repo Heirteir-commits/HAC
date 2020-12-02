@@ -1,6 +1,6 @@
 package com.heirteir.hac.util.dependency.plugin;
 
-import com.heirteir.hac.util.dependency.Dependencies;
+import com.heirteir.hac.util.dependency.DependencyUtils;
 import com.heirteir.hac.util.files.FilePaths;
 import com.heirteir.hac.util.logging.Log;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public abstract class DependencyPlugin extends JavaPlugin {
         super.onLoad();
 
         Log.INSTANCE.open();
-        this.dependenciesLoaded = Dependencies.loadDependenciesFromPlugin(this);
+        this.dependenciesLoaded = DependencyUtils.loadDependenciesFromPlugin(this);
 
         this.load();
     }

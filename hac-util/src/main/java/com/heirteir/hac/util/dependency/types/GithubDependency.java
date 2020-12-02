@@ -64,10 +64,8 @@ public class GithubDependency extends AbstractDependency {
 
         boolean needsUpdate = false;
 
-        if (!Files.exists(this.getDownloadLocation())) {
-            if (Bukkit.getPluginManager().getPlugin(this.pluginName) == null) {
-                needsUpdate = true;
-            }
+        if (!Files.exists(this.getDownloadLocation()) && Bukkit.getPluginManager().getPlugin(this.pluginName) == null) {
+            needsUpdate = true;
         }
 
         if (this.checkUpdate && !needsUpdate) {
