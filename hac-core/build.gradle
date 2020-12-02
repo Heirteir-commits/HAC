@@ -30,6 +30,8 @@ dependencies {
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.4.2')
 
     compileOnlyApi('org.jetbrains:annotations:16.0.2')
+    compileOnlyApi('io.netty:netty-all:4.1.53.Final')
+    compileOnlyApi('com.flowpowered:flow-math:1.0.3')
     compileOnlyApi(latestSpigot)
 
     api(project(':hac-api'))
