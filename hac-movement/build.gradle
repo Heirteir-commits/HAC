@@ -19,7 +19,9 @@ shadowJar {
 }
 
 dependencies {
-    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0')
+    testCompileOnly('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
+        exclude group: 'org.spigotmc'
+    }
 
     compileOnlyApi('org.javassist:javassist:3.27.0-GA')
 
