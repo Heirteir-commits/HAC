@@ -4,50 +4,52 @@ import com.heirteir.hac.util.dependency.Dependencies;
 import com.heirteir.hac.util.files.FilePaths;
 import com.heirteir.hac.util.logging.Log;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class DependencyPlugin extends JavaPlugin {
     @Getter
     private final String loggerPrefix;
 
-    private boolean dependencySuccess;
+    private boolean dependenciesLoaded = false;
 
     protected DependencyPlugin(String loggerPrefix) {
         this.loggerPrefix = "[HAC] [" + loggerPrefix + "] ";
     }
 
     @Override
-    public void onLoad() {
+    public final void onLoad() {
         super.onLoad();
+
         Log.INSTANCE.open();
-        this.dependencySuccess = Dependencies.loadDependenciesFromPlugin(this);
+        this.dependenciesLoaded = Dependencies.loadDependenciesFromPlugin(this);
+
         this.load();
     }
 
     @Override
-    public void onDisable() {
+    public final void onDisable() {
         super.onDisable();
+
+        if (this.dependenciesLoaded) {
+            this.disable();
+        }
+
         Log.INSTANCE.close();
-        this.disable();
     }
 
     @Override
-    public void onEnable() {
+    public final void onEnable() {
         super.onEnable();
 
-        if (!this.dependencySuccess) {
+        if (this.dependenciesLoaded) {
+            this.enable();
+        } else {
             Log.INSTANCE.reportFatalError(
-                    String.format("'%s' Wasn't able to download required dependencies. " +
+                    String.format("Could not download required dependencies. " +
                                     "Please look at the latest.log in the '%s' folder to determine the issue.",
-                            super.getName(),
-                            FilePaths.INSTANCE.getPluginFolder().getParent().relativize(FilePaths.INSTANCE.getPluginFolder().resolve("log")))
+                            FilePaths.INSTANCE.getPluginFolder().getParent().relativize(FilePaths.INSTANCE.getPluginFolder().resolve("log").resolve(super.getName())))
             );
-            return;
         }
-
-        this.enable();
-
     }
 
     protected abstract void enable();

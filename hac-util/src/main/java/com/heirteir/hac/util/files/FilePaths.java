@@ -10,7 +10,7 @@ import java.nio.file.Path;
 public enum FilePaths {
     INSTANCE;
 
-    private static final String pluginFolderName = "Heirteir's Anti-Cheat";
+    private static final String pluginFolderName = "HAC";
 
     /* plugin data folder */
     private final Path pluginFolder;

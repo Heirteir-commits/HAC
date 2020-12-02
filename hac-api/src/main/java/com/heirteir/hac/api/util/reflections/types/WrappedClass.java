@@ -1,0 +1,114 @@
+package com.heirteir.hac.api.util.reflections.types;
+
+import com.google.common.collect.Sets;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Set;
+
+@RequiredArgsConstructor
+@Getter
+public final class WrappedClass {
+
+    private final Class<?> raw;
+    private Set<Field> fields = null;
+
+    public WrappedConstructor getConstructorAtIndex(int index) throws IndexOutOfBoundsException {
+        Constructor<?>[] constructors = this.raw.getDeclaredConstructors();
+
+        if (index > constructors.length + 1) {
+            throw new IndexOutOfBoundsException(String.format("There are only '%d' constructors in class '%s' but tried to access the '%d' constructor.", constructors.length + 1, this.raw.getName(), index));
+        }
+
+        return new WrappedConstructor(this, constructors[index]);
+    }
+
+    /**
+     * Get constructor inside of class.
+     *
+     * @param types the parameters types for the specified constructor
+     * @return WrappedConstructor instance of the constructor
+     */
+    public WrappedConstructor getConstructor(Class<?>... types) throws NoSuchMethodException {
+        return new WrappedConstructor(this,
+                Arrays.stream(this.raw.getDeclaredConstructors())
+                        .filter(constructor -> Arrays.equals(types, constructor.getParameterTypes()))
+                        .findFirst()
+                        .orElseThrow(() -> new NoSuchMethodException(String.format("Constructor with parameters '%s' not found in class '%s'.", Arrays.toString(types), this.raw.getName())))
+        );
+    }
+
+    private Set<Field> getFields() {
+        if (this.fields == null) {
+            this.fields = Sets.newLinkedHashSet();
+
+            Class<?> current = this.raw;
+
+            while (current != Object.class) {
+                this.fields.addAll(Arrays.asList(current.getDeclaredFields()));
+                current = current.getSuperclass();
+            }
+        }
+
+        return this.fields;
+    }
+
+    /**
+     * Gets a specified field by type.
+     *
+     * @param type  type of field
+     * @param index if multiple fields exist get value at specified index
+     * @return WrappedField instance of the field
+     */
+    public WrappedField getFieldByType(Class<?> type, int index) throws IndexOutOfBoundsException {
+        Field[] fields = this.getFields().stream()
+                .filter(field -> field.getType().equals(type))
+                .toArray(Field[]::new);
+
+        if (index > fields.length + 1) {
+            throw new IndexOutOfBoundsException(String.format("There are only '%d' fields with type '%s' in class '%s' but tried to access the field at index '%d'.", fields.length + 1, type.getName(), this.raw.getName(), index));
+        }
+
+        return new WrappedField(this, fields[index]);
+    }
+
+    /**
+     * Get a field by name instead of type.
+     *
+     * @param name Name of the field
+     * @return WrappedField instance of the field
+     */
+    public WrappedField getFieldByName(String name) throws NoSuchFieldException {
+        return new WrappedField(this,
+                this.getFields().stream()
+                        .filter(field -> field.getName().equals(name))
+                        .findFirst()
+                        .orElseThrow(() -> new NoSuchFieldException(String.format("Field with name '%s' not found in class '%s'.", name, this.raw.getSimpleName())))
+        );
+    }
+
+    /**
+     * Get a method using name and parameters.
+     *
+     * @param name       Method name
+     * @param parameters Method parameters
+     * @return WrappedMethod instance of the method
+     */
+    public WrappedMethod getMethod(String name, Class<?>... parameters) throws NoSuchMethodException {
+        return new WrappedMethod(this,
+                Arrays.stream(this.raw.getDeclaredMethods())
+                        .filter(method -> method.getName().equals(name) && parameters.length == method.getParameterCount() && Arrays.equals(parameters, method.getParameterTypes()))
+                        .findFirst()
+                        .orElseThrow(() -> new NoSuchMethodException(String.format("Method with name '%s', and parameters '%s' doesn't not found in class '%s'.", name, Arrays.toString(parameters), this.raw.getName()))));
+    }
+
+    public <E extends Enum<?>> E getEnum(Class<E> clazz, String name) throws NoSuchFieldException {
+        return Arrays.stream(clazz.getEnumConstants())
+                .filter(e -> e.name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchFieldException(String.format("Enum with name '%s' doesn't exist in class '%s'.", name, clazz.getName())));
+    }
+}
