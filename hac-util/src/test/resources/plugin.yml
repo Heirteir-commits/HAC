@@ -1,8 +1,0 @@
-name: Dependency-Plugin
-version: 0.0.1
-main: com.heretere.hac.util.dependency.plugin.DependencyPluginTest
-prefix: '-'
-api-version: 1.13
-authors: [ Heretere ]
-description: Dependency-Plugin
-website: heretere.com
