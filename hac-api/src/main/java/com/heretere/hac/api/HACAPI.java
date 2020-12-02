@@ -1,10 +1,11 @@
 package com.heretere.hac.api;
 
+import com.google.common.base.Preconditions;
 import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.events.ASyncPacketEventManager;
-import com.heretere.hac.api.player.HACPlayerList;
-import com.google.common.base.Preconditions;
+import com.heretere.hac.api.events.types.packets.PacketReferences;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.api.player.HACPlayerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,6 +35,7 @@ public final class HACAPI {
     private final ThreadPool threadPool;
     private final HACPlayerList hacPlayerList;
     private final ErrorHandler errorHandler;
+    private final PacketReferences packetReferences;
 
     private boolean loaded;
 
@@ -44,6 +46,7 @@ public final class HACAPI {
         this.threadPool = new ThreadPool();
         this.hacPlayerList = new HACPlayerList();
         this.errorHandler = new ErrorHandler();
+        this.packetReferences = new PacketReferences();
 
         this.loaded = true;
     }
@@ -72,7 +75,7 @@ public final class HACAPI {
      */
     public ASyncPacketEventManager getEventManager() {
         this.checkLoaded();
-        return eventManager;
+        return this.eventManager;
     }
 
     /**
@@ -94,7 +97,7 @@ public final class HACAPI {
      */
     public HACPlayerList getHacPlayerList() {
         this.checkLoaded();
-        return hacPlayerList;
+        return this.hacPlayerList;
     }
 
     /**
@@ -104,7 +107,12 @@ public final class HACAPI {
      * @return The ErrorHandler for the API.
      */
     public ErrorHandler getErrorHandler() {
-        return errorHandler;
+        return this.errorHandler;
+    }
+
+    public PacketReferences getPacketReferences() {
+        this.checkLoaded();
+        return this.packetReferences;
     }
 
     /**

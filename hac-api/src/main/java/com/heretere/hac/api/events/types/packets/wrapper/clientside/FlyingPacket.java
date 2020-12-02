@@ -1,32 +1,36 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This is the wrapped version of the PacketPlayInFlyingPacket.
  */
-public abstract class FlyingPacket extends AbstractWrappedPacketIn {
-    protected static final double UNIQUE_DOUBLE = ThreadLocalRandom.current().nextDouble(600, 100000);
-    protected static final float UNIQUE_FLOAT = ThreadLocalRandom.current().nextFloat();
-
-    protected double x;
-    protected double y;
-    protected double z;
-    protected double yaw;
-    protected double pitch;
-    protected boolean hasLook;
-    protected boolean hasPos;
-    protected boolean onGround;
+public final class FlyingPacket extends AbstractWrappedPacketIn {
+    private final double x;
+    private final double y;
+    private final double z;
+    private final double yaw;
+    private final double pitch;
+    private final boolean onGround;
 
     /**
      * Instantiates a new Flying packet.
+     *
+     * @param x        the x
+     * @param y        the y
+     * @param z        the z
+     * @param yaw      the yaw
+     * @param pitch    the pitch
+     * @param onGround the on ground
      */
-    public FlyingPacket() {
-        super(PacketConstants.In.FLYING);
+    public FlyingPacket(double x, double y, double z, double yaw, double pitch, boolean onGround) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.onGround = onGround;
     }
 
     /**
@@ -72,24 +76,6 @@ public abstract class FlyingPacket extends AbstractWrappedPacketIn {
      */
     public double getPitch() {
         return pitch;
-    }
-
-    /**
-     * Whether or not the packet contains look information.
-     *
-     * @return the boolean
-     */
-    public boolean isHasLook() {
-        return hasLook;
-    }
-
-    /**
-     * Whether or not the packet contains position information
-     *
-     * @return the boolean
-     */
-    public boolean isHasPos() {
-        return hasPos;
     }
 
     /**

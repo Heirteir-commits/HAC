@@ -1,20 +1,22 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
 
 /**
  * This is a wrapped version of the PacketPlayInAbilitiesPacket.
  */
-public abstract class AbilitiesPacket extends AbstractWrappedPacketIn {
-    private boolean flying;
+public final class AbilitiesPacket extends AbstractWrappedPacketIn {
+    private final boolean flying;
+
 
     /**
      * Instantiates a new Abilities packet.
+     *
+     * @param flying the flying
      */
-    public AbilitiesPacket() {
-        super(PacketConstants.In.ABILITIES);
+    public AbilitiesPacket(boolean flying) {
+        this.flying = flying;
     }
 
     /**

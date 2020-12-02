@@ -13,15 +13,15 @@ ext {
     /* Spigot jar version */
     /* Place a compiled Spigot Jar in the libs/ folder with the specified names seen here to build implementation */
     /* You don't need all jar versions you just need the jar for the version you want to compile. */
-    EIGHT_R3 = file(buildDir.parentFile.path + '/libs/spigot-1.8.8.jar')
-    NINE_R2 = file(buildDir.parentFile.path + '/libs/spigot-1.9.4.jar')
+    EIGHT_R3 = file(buildDir.parentFile.path + '/libs/1_8_R3.jar')
+    NINE_R2 = file(buildDir.parentFile.path + '/libs/1_9_R2.jar')
     TEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.10.2.jar')
     ELEVEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.11.2.jar')
     TWELVE_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.12.2.jar')
     THIRTEEN_R2 = file(buildDir.parentFile.path + '/libs/spigot-1.13.2.jar')
     FOURTEEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.14.4.jar')
     FIFTEEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.15.2.jar')
-    SIXTEEN_R3 = file(buildDir.parentFile.path + '/libs/spigot-1.16.4.jar')
+    SIXTEEN_R3 = file(buildDir.parentFile.path + '/libs/1_16_R3.jar')
 
     USE_EIGHT_R3 = false
     USE_NINE_R2 = false

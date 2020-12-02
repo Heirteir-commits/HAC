@@ -9,6 +9,8 @@ dependencies {
     compileOnlyApi('io.netty:netty-all:4.1.53.Final')
     compileOnlyApi(LATEST_SPIGOT)
 
+    api('net.mikera:vectorz:0.67.0')
+
     api(project(':hac-api'))
     api(project(':hac-util'))
 }

@@ -1,21 +1,22 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
-
-import java.util.Arrays;
 
 /**
  * This is the wrapped version of the PacketPlayInEntityActionPacket.
  */
-public abstract class EntityActionPacket extends AbstractWrappedPacketIn {
-    private Action action;
+public final class EntityActionPacket extends AbstractWrappedPacketIn {
+    private final Action action;
 
     /**
-     * Instantiates a new Entity action packet.
+     * @param action The action
      */
-    public EntityActionPacket() {
-        super(PacketConstants.In.ENTITY_ACTION);
+    public EntityActionPacket(Action action) {
+        this.action = action;
+    }
+
+    public Action getAction() {
+        return action;
     }
 
     /**
@@ -46,18 +47,5 @@ public abstract class EntityActionPacket extends AbstractWrappedPacketIn {
          * This is passed if the passed in action wasn't any of the above.
          */
         INVALID;
-
-        /**
-         * Used to map an NMS Entity Action enum to {@link Action}
-         *
-         * @param name the name
-         * @return the action
-         */
-        public static Action fromString(String name) {
-            return Arrays.stream(Action.values())
-                    .filter(action -> action.name().equals(name))
-                    .findFirst()
-                    .orElse(INVALID);
-        }
     }
 }

@@ -1,8 +1,10 @@
 package com.heretere.hac.api.player;
 
+import com.google.common.base.Preconditions;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.player.builder.DataManager;
 import com.heretere.hac.api.concurrency.ThreadPool;
+import com.heretere.hac.api.player.builder.DataManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +55,19 @@ public final class HACPlayer {
      */
     public UUID getUUID() {
         return uuid;
+    }
+
+    /**
+     * Get's the player instance using {@link Bukkit#getPlayer(UUID)}. Should only be used at init or destroy of HACPlayer.
+     *
+     * @return The Bukkit Player
+     */
+    public Player getBukkitPlayer() {
+        Player player = Bukkit.getPlayer(uuid);
+
+        Preconditions.checkNotNull(player, "Player with this UUID is offline.");
+
+        return player;
     }
 
     /**

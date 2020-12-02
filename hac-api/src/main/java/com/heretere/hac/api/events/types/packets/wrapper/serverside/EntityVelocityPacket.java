@@ -1,6 +1,5 @@
 package com.heretere.hac.api.events.types.packets.wrapper.serverside;
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketOut;
 
 /**
@@ -8,30 +7,26 @@ import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketOu
  */
 public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
     /**
-     * The constant DEFAULT. Mainly used for testing.
-     */
-    public static final EntityVelocityPacket DEFAULT;
-    /**
      * The constant CONVERSION. Used to convert the incoming values usually it will be (input / CONVERSION).
      */
     public static final double CONVERSION = 8000D;
 
-    static {
-        DEFAULT = new EntityVelocityPacket();
-        DEFAULT.x = 0;
-        DEFAULT.y = 0;
-        DEFAULT.z = 0;
-    }
-
-    private double x;
-    private double y;
-    private double z;
+    private final double x;
+    private final double y;
+    private final double z;
 
     /**
      * Instantiates a new Entity velocity packet.
+     *
+     * @param x the x
+     * @param y the y
+     * @param z the z
      */
-    public EntityVelocityPacket() {
-        super(PacketConstants.Out.ENTITY_VELOCITY);
+    public EntityVelocityPacket(int entityId, double x, double y, double z) {
+        super(entityId);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     /**

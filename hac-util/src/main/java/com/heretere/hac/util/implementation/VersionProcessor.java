@@ -4,11 +4,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.heretere.hac.util.implementation.versions.VersionImplementation;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,37 +57,6 @@ public final class VersionProcessor {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-
-    /**
-     * Find version implementation for a specific version string
-     *
-     * @param basePackage the base package
-     * @param version     the version
-     * @return the version implementation
-     */
-    @Nullable
-    public static VersionImplementation findVersionImplementation(String basePackage, String version) {
-        VersionImplementation output;
-        if (VersionProcessor.getAvailableVersions(basePackage).contains(version)) {
-            Class<?> implementationClass = VersionProcessor.findVersionImplementationClass(VersionProcessor.basePackageVersionAppend(basePackage, version), true);
-
-            if (implementationClass == null) {
-                output = null;
-            } else {
-                try {
-                    output = (VersionImplementation) implementationClass.getDeclaredConstructor().newInstance();
-                } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                    output = null;
-                }
-            }
-        } else {
-            output = null;
-        }
-
-
-        return output;
-    }
-
     /**
      * Finds a version implementation for a specified path.
      *
@@ -101,12 +68,26 @@ public final class VersionProcessor {
         Class<?> clazz;
 
         try {
-            clazz = Class.forName(path, init, VersionImplementation.class.getClassLoader());
+            clazz = Class.forName(path, init, VersionProcessor.class.getClassLoader());
         } catch (ClassNotFoundException e) {
             clazz = null;
         }
 
         return clazz;
+    }
+
+    @Nullable
+    public static Class<?> getLatestVersionImplementation(String basePackage) {
+        Class<?> versionImplementationClass;
+
+        String serverVersion = VersionProcessor.getServerVersionString();
+        if (VersionProcessor.getAvailableVersions(basePackage).contains(serverVersion)) {
+            versionImplementationClass = VersionProcessor.findVersionImplementationClass(VersionProcessor.basePackageVersionAppend(basePackage, serverVersion), true);
+        } else {
+            versionImplementationClass = null;
+        }
+
+        return versionImplementationClass;
     }
 
     /**
