@@ -1,22 +1,30 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
-import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
-import lombok.Getter;
 
-//PacketPlayInAbilities
-@Getter
-public final class AbilitiesPacket extends AbstractWrappedPacketIn {
-    public static final AbilitiesPacket DEFAULT;
+import com.heretere.hac.api.events.types.packets.wrapper.WrappedPacketIn;
 
-    static {
-        DEFAULT = new AbilitiesPacket();
-        DEFAULT.flying = false;
+/**
+ * This is a wrapped version of the PacketPlayInAbilitiesPacket.
+ */
+public final class AbilitiesPacket implements WrappedPacketIn {
+    private final boolean flying;
+
+
+    /**
+     * Instantiates a new Abilities packet.
+     *
+     * @param flying the flying
+     */
+    public AbilitiesPacket(boolean flying) {
+        this.flying = flying;
     }
 
-    private boolean flying;
-
-    public AbilitiesPacket() {
-        super(PacketConstants.In.ABILITIES);
+    /**
+     * Whether the packet says the player is flying or not.
+     *
+     * @return Whether they are flying or not.
+     */
+    public boolean isFlying() {
+        return flying;
     }
 }

@@ -1,32 +1,81 @@
 package com.heretere.hac.api.player;
 
-import com.heretere.hac.api.API;
+import com.google.common.base.Preconditions;
+import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.player.builder.DataManager;
-import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-@Getter
+/**
+ * {@link HACPlayer} is a wrapper used to handle all data related to {@link org.bukkit.entity.Player}
+ * for the plugin.
+ */
 public final class HACPlayer {
     private CompletableFuture<Void> future;
 
+    private final UUID uuid;
     private final DataManager dataManager;
-    private final Player bukkitPlayer;
 
 
-    public HACPlayer(Player player) {
+    HACPlayer(Player player) {
         this.future = CompletableFuture.allOf();
 
+        this.uuid = player.getUniqueId();
+
         this.dataManager = new DataManager();
-        this.bukkitPlayer = player;
     }
 
-    public void runTask(Runnable runnable, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
+    /**
+     * This passes a runnable to the {@link ThreadPool}. Anything passed to this method is ran in
+     * guaranteed serial order.
+     *
+     * @param runnable     The runnable to run in the {@link ThreadPool}.
+     * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
+     */
+    public void runTaskASync(Runnable runnable, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
         this.future = this.future
-                .thenRunAsync(runnable, API.INSTANCE.getThreadPool().getPool())
-                .whenCompleteAsync(errorHandler == null ? API.INSTANCE.getThreadPool().getDefaultErrorHandler() : errorHandler, API.INSTANCE.getThreadPool().getPool());
+                .thenRunAsync(runnable, HACAPI.getInstance().getThreadPool().getPool())
+                .whenCompleteAsync(
+                        errorHandler == null ?
+                                (msg, ex) -> HACAPI.getInstance().getErrorHandler().getHandler().accept(ex) :
+                                errorHandler,
+                        HACAPI.getInstance().getThreadPool().getPool());
+    }
+
+    /**
+     * The {@link java.util.UUID} of the player used for the HACPlayer
+     *
+     * @return The UUID of the player.
+     */
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    /**
+     * Get's the player instance using {@link Bukkit#getPlayer(UUID)}. Should only be used at init or destroy of HACPlayer.
+     *
+     * @return The Bukkit Player
+     */
+    public Player getBukkitPlayer() {
+        Player player = Bukkit.getPlayer(uuid);
+
+        Preconditions.checkNotNull(player, "Player with this UUID is offline.");
+
+        return player;
+    }
+
+    /**
+     * The {@link DataManager} instance for this player.
+     *
+     * @return The Data Manager.
+     */
+    public DataManager getDataManager() {
+        return dataManager;
     }
 }

@@ -1,40 +1,51 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
-import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.heretere.hac.api.events.types.packets.wrapper.WrappedPacketIn;
 
-import java.util.Arrays;
+/**
+ * This is the wrapped version of the PacketPlayInEntityActionPacket.
+ */
+public final class EntityActionPacket implements WrappedPacketIn {
+    private final Action action;
 
-//PacketPlayInEntityAction
-@Getter
-public final class EntityActionPacket extends AbstractWrappedPacketIn {
-    public static final EntityActionPacket DEFAULT;
-
-    static {
-        DEFAULT = new EntityActionPacket();
-        DEFAULT.action = Action.INVALID;
+    /**
+     * @param action The action
+     */
+    public EntityActionPacket(Action action) {
+        this.action = action;
     }
 
-    private Action action;
-
-    public EntityActionPacket() {
-        super(PacketConstants.In.ENTITY_ACTION);
+    public Action getAction() {
+        return action;
     }
 
-    @RequiredArgsConstructor
-    @Getter
+    /**
+     * This maps the Action enum from PacketPlayInEntityAction
+     */
     public enum Action {
+        /**
+         * Start sneaking action.
+         */
         START_SNEAKING,
+        /**
+         * Stop sneaking action.
+         */
         STOP_SNEAKING,
+        /**
+         * Start sprinting action.
+         */
         START_SPRINTING,
+        /**
+         * Stop sprinting action.
+         */
         STOP_SPRINTING,
+        /**
+         * Start flying with Elytra
+         */
         START_FALL_FLYING,
+        /**
+         * This is passed if the passed in action wasn't any of the above.
+         */
         INVALID;
-
-        public static Action fromString(String name) {
-            return Arrays.stream(Action.values()).filter(action -> action.name().equals(name)).findFirst().orElse(INVALID);
-        }
     }
 }

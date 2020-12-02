@@ -1,27 +1,58 @@
 package com.heretere.hac.api.events.types.packets.wrapper.serverside;
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketOut;
-import lombok.Getter;
 
-//PacketPlayOutEntityVelocity
-@Getter
+/**
+ * A Wrapped version of the PacketPlayOutEntityVelocityPacket
+ */
 public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
-    public static final EntityVelocityPacket DEFAULT;
+    /**
+     * The constant CONVERSION. Used to convert the incoming values usually it will be (input / CONVERSION).
+     */
     public static final double CONVERSION = 8000D;
 
-    static {
-        DEFAULT = new EntityVelocityPacket();
-        DEFAULT.x = 0;
-        DEFAULT.y = 0;
-        DEFAULT.z = 0;
+    private final double x;
+    private final double y;
+    private final double z;
+
+    /**
+     * Instantiates a new Entity velocity packet.
+     *
+     * @param x the x
+     * @param y the y
+     * @param z the z
+     */
+    public EntityVelocityPacket(int entityId, double x, double y, double z) {
+        super(entityId);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    private double x;
-    private double y;
-    private double z;
+    /**
+     * Gets x.
+     *
+     * @return the x
+     */
+    public double getX() {
+        return x;
+    }
 
-    public EntityVelocityPacket() {
-        super(PacketConstants.Out.ENTITY_VELOCITY);
+    /**
+     * Gets y.
+     *
+     * @return the y
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Gets z.
+     *
+     * @return the z
+     */
+    public double getZ() {
+        return z;
     }
 }

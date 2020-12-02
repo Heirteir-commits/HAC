@@ -1,37 +1,90 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
-import com.heretere.hac.api.events.types.packets.PacketConstants;
-import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
-import lombok.Getter;
 
-//PacketPlayInFlying
-@Getter
-public final class FlyingPacket extends AbstractWrappedPacketIn {
-    public static final FlyingPacket DEFAULT;
+import com.heretere.hac.api.events.types.packets.wrapper.WrappedPacketIn;
 
-    static {
-        DEFAULT = new FlyingPacket();
-        DEFAULT.x = 0;
-        DEFAULT.y = 0;
-        DEFAULT.z = 0;
-        DEFAULT.yaw = 0;
-        DEFAULT.pitch = 0;
-        DEFAULT.hasLook = false;
-        DEFAULT.hasPos = true;
-        DEFAULT.onGround = true;
+/**
+ * This is the wrapped version of the PacketPlayInFlyingPacket.
+ */
+public final class FlyingPacket implements WrappedPacketIn {
+    private final double x;
+    private final double y;
+    private final double z;
+    private final double yaw;
+    private final double pitch;
+    private final boolean onGround;
+
+    /**
+     * Instantiates a new Flying packet.
+     *
+     * @param x        the x
+     * @param y        the y
+     * @param z        the z
+     * @param yaw      the yaw
+     * @param pitch    the pitch
+     * @param onGround the on ground
+     */
+    public FlyingPacket(double x, double y, double z, double yaw, double pitch, boolean onGround) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.onGround = onGround;
     }
 
-    private double x;
-    private double y;
-    private double z;
-    private double yaw;
-    private double pitch;
-    private boolean hasLook;
-    private boolean hasPos;
-    private boolean onGround;
+    /**
+     * Gets x.
+     *
+     * @return the x
+     */
+    public double getX() {
+        return x;
+    }
 
-    public FlyingPacket() {
-        super(PacketConstants.In.FLYING);
+    /**
+     * Gets y.
+     *
+     * @return the y
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Gets z.
+     *
+     * @return the z
+     */
+    public double getZ() {
+        return z;
+    }
+
+    /**
+     * Gets yaw.
+     *
+     * @return the yaw
+     */
+    public double getYaw() {
+        return yaw;
+    }
+
+    /**
+     * Gets pitch.
+     *
+     * @return the pitch
+     */
+    public double getPitch() {
+        return pitch;
+    }
+
+    /**
+     * Whether or not the packet says the player is on the ground.
+     *
+     * @return the boolean
+     */
+    public boolean isOnGround() {
+        return onGround;
     }
 }
 

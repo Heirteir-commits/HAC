@@ -1,45 +1,10 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
-buildscript {
-    ext {
-        jarName = "HAC.Core.jar"
-    }
+plugins {
+    id 'base'
 }
 
 group 'com.heretere'
-version releaseVersion
+version PLUGIN_VERSION
 
-shadowJar {
-    destinationDirectory = shadowJarBuildPath
-    archiveFileName = jarName
-    relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
-}
-
-dependencies {
-    testImplementation('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
-        exclude group: 'org.spigotmc'
-    }
-
-    testImplementation(latestSpigot)
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
-    testImplementation('org.jetbrains:annotations:16.0.2')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.4.2')
-
-    compileOnlyApi('org.jetbrains:annotations:16.0.2')
-    compileOnlyApi('io.netty:netty-all:4.1.53.Final')
-    compileOnlyApi('com.flowpowered:flow-math:1.0.3')
-    compileOnlyApi(latestSpigot)
-
-    api(project(':hac-api'))
-    api(project(':hac-util'))
-
-    compileOnlyApi("com.google.errorprone:error_prone_annotations:2.4.0")
-    errorprone("com.google.errorprone:error_prone_core:2.4.0")
-}
-
-processResources {
-    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: releaseVersion]
-    }
+subprojects {
+    apply plugin: 'java-library'
 }

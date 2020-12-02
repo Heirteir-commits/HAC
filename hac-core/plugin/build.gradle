@@ -1,0 +1,65 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group 'com.heretere'
+version PLUGIN_VERSION
+
+dependencies {
+    compileOnlyApi(LATEST_SPIGOT)
+
+    api(project(':hac-core:proxy'))
+    api(project(':hac-core:all-versions'))
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: rootProject.PLUGIN_VERSION]
+    }
+}
+
+shadowJar {
+    doFirst {
+        dependencies {
+            if (!USE_EIGHT_R3) {
+                exclude(project(':hac-core:all-versions:1_8_R3'))
+            }
+            if (!USE_NINE_R2) {
+                exclude(project(':hac-core:all-versions:1_9_R2'))
+            }
+            if (!USE_TEN_R1) {
+                exclude(project(':hac-core:all-versions:1_10_R1'))
+            }
+            if (!USE_ELEVEN_R1) {
+                exclude(project(':hac-core:all-versions:1_11_R1'))
+            }
+            if (!USE_TWELVE_R1) {
+                exclude(project(':hac-core:all-versions:1_12_R1'))
+            }
+            if (!USE_THIRTEEN_R2) {
+                exclude(project(':hac-core:all-versions:1_13_R2'))
+            }
+            if (!USE_FOURTEEN_R1) {
+                exclude(project(':hac-core:all-versions:1_14_R1'))
+            }
+            if (!USE_FIFTEEN_R1) {
+                exclude(project(':hac-core:all-versions:1_15_R1'))
+            }
+            if (!USE_SIXTEEN_R3) {
+                exclude(project(':hac-core:all-versions:1_16_R3'))
+            }
+        }
+        relocate 'com.heretere.hac.core.proxy.versions.eight', 'cm.heretere.hac.core.proxy.versions.1_8_R3'
+        relocate 'com.heretere.hac.core.proxy.versions.nine', 'com.heretere.hac.core.proxy.versions.1_9_R2'
+        relocate 'com.heretere.hac.core.proxy.versions.ten', 'com.heretere.hac.core.proxy.versions.1_10_R1'
+        relocate 'com.heretere.hac.core.proxy.versions.eleven', 'com.heretere.hac.core.proxy.versions.1_11_R1'
+        relocate 'com.heretere.hac.core.proxy.versions.twelve', 'com.heretere.hac.core.proxy.versions.1_12_R1'
+        relocate 'com.heretere.hac.core.proxy.versions.thirteen', 'com.heretere.hac.core.proxy.versions.1_13_R1'
+        relocate 'com.heretere.hac.core.proxy.versions.com.heretere.hac.core.proxy.versions.fourteen', 'com.heretere.hac.core.proxy.versions.1_14_R1'
+        relocate 'com.heretere.hac.core.proxy.versions.com.heretere.hac.core.proxy.versions.fifteen', 'com.heretere.hac.core.proxy.versions.1_15_R1'
+        relocate 'com.heretere.hac.core.proxy.versions.sixteen', 'com.heretere.hac.core.proxy.versions.1_16_R3'
+        relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
+    }
+}

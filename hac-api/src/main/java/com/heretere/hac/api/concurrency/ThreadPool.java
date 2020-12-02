@@ -1,34 +1,39 @@
 package com.heretere.hac.api.concurrency;
 
+import com.heretere.hac.api.HACAPI;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.BiConsumer;
 
+/**
+ * This is the ThreadPool instance used for multi-threading the tasks ran inside of HAC.
+ * You can get an the default instance from {@link HACAPI#getThreadPool()}.
+ */
 public class ThreadPool {
-    @Getter
     private final ExecutorService pool;
 
-    @Getter
-    @Setter
-    private BiConsumer<? super Void, ? super Throwable> defaultErrorHandler;
-
-
+    /**
+     * Instantiates a new Thread pool.
+     */
     public ThreadPool() {
         this.pool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d").build());
-
-        this.defaultErrorHandler = (msg, ex) -> {
-            if (ex != null) {
-                ex.printStackTrace();
-            }
-        };
     }
 
+    /**
+     * Get the {@link ExecutorService}
+     *
+     * @return the {@link ExecutorService}
+     */
+    public ExecutorService getPool() {
+        return pool;
+    }
+
+    /**
+     * Calls {@link ExecutorService#shutdownNow()} to insure that when the plugin is disabled all tasks are cancelled.
+     * As they are no longer needed.
+     */
     public void unload() {
         this.pool.shutdownNow();
     }
-
 }

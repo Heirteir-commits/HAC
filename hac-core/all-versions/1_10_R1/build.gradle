@@ -1,0 +1,7 @@
+group 'com.heretere'
+version PLUGIN_VERSION
+
+dependencies {
+    /* Spigot Dependency */
+    compileOnlyApi(files(TEN_R1))
+}

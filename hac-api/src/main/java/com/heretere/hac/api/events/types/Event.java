@@ -1,12 +1,28 @@
 package com.heretere.hac.api.events.types;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+/**
+ * The type Event.
+ */
 public abstract class Event {
     private final Player player;
+
+    /**
+     * Instantiates a new Event.
+     *
+     * @param player the player
+     */
+    protected Event(Player player) {
+        this.player = player;
+    }
+
+    /**
+     * Gets player.
+     *
+     * @return the player
+     */
+    public Player getPlayer() {
+        return this.player;
+    }
 }

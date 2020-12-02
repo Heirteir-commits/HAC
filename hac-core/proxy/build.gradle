@@ -1,0 +1,71 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group 'com.heretere'
+version PLUGIN_VERSION
+
+dependencies {
+    compileOnlyApi('io.netty:netty-all:4.1.53.Final')
+    compileOnlyApi(LATEST_SPIGOT)
+
+    api('net.mikera:vectorz:0.67.0')
+    api(project(':hac-api'))
+    api(project(':hac-util'))
+}
+
+shadowJar {
+    dependsOn jar
+    archiveFileName = 'proxy.jar'
+    finalizedBy project(':hac-core:plugin').tasks.getByName('shadowJar')
+}
+
+task build1_8_R3 {
+    dependsOn rootProject.build1_8_R3
+    finalizedBy shadowJar
+}
+
+task build1_9_R2 {
+    dependsOn rootProject.build1_9_R2
+    finalizedBy shadowJar
+}
+
+task build1_10_R1 {
+    dependsOn rootProject.build1_10_R1
+    finalizedBy shadowJar
+}
+
+task build1_11_R1 {
+    dependsOn rootProject.build1_11_R1
+    finalizedBy shadowJar
+}
+
+task build1_12_R1 {
+    dependsOn rootProject.build1_12_R1
+    finalizedBy shadowJar
+}
+
+task build1_13_R2 {
+    dependsOn rootProject.build1_13_R2
+    finalizedBy shadowJar
+}
+
+task build1_14_R1 {
+    dependsOn rootProject.build1_14_R1
+    finalizedBy shadowJar
+}
+
+task build1_15_R1 {
+    dependsOn rootProject.build1_15_R1
+    finalizedBy shadowJar
+}
+
+task build1_16_R3 {
+    dependsOn rootProject.build1_16_R3
+    finalizedBy shadowJar
+}
+
+task 'Build All' {
+    dependsOn rootProject.'Build All'
+    finalizedBy shadowJar
+}

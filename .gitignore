@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/intellij+all,java,gradle,sonarqube,git
-# Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,java,gradle,sonarqube,git
+# Created by https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,sonarqube,git
+# Edit at https://www.toptal.com/developers/gitignore?templates=java,gradle,intellij+all,sonarqube,git
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -162,6 +162,8 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij+all,java,gradle,sonarqube,git
-**/buildtools
-**/logs
+# End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,sonarqube,git
+
+#Custom
+libs/*
+!libs/putspigotjarshere.txt
