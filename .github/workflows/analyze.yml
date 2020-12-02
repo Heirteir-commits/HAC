@@ -4,7 +4,7 @@ on:
     branches:
       - master
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 jobs:
   build:
     name: Analyze
@@ -17,28 +17,38 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Cache BuildTools Files
-        uses: actions/cache@v1
-        with:
-          path: ~/buildtools
-          key: ${{ runner.os }}-buildtools
-          restore-keys: ${{ runner.os }}-buildtools
-      - name: Run BuildTools
-        run: ./gradlew updateSpigot --info
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Gradle packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
+      - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+        - name: Cache BuildTools Files
+          uses: actions/cache@v1
+          with:
+            path: ./buildtools
+            key: ${{ runner.os }}-buildtools
+            restore-keys: ${{ runner.os }}-buildtools
+        - name: Run updateSpigot task
+          run: ./gradlew updateSpigot --info
+        - name: Cache SonarCloud packages
+          uses: actions/cache@v1
+          with:
+            path: ~/.sonar/cache
+            key: ${{ runner.os }}-sonar
+            restore-keys: ${{ runner.os }}-sonar
+        - name: Cache Gradle packages
+          uses: actions/cache@v1
+          with:
+            path: ~/.gradle/caches
+            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+            restore-keys: ${{ runner.os }}-gradle
+        - name: Build and analyze
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          run: ./gradlew build sonarqube --info
+        - name: Shadow jar
+          run: ./gradlew shadowJar
+        - name: Upload HAC.Core.jar artifact
+          uses: actions/upload-artifact@v2
+          with:
+            name: jars
+            path: ./hac-core/build/libs/HAC.Core.jar
+
