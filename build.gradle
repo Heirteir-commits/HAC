@@ -1,107 +1,46 @@
-buildscript {
-    ext {
-        /* Dirs */
-        //noinspection GroovyAssignabilityCheck
-        fileTreeSpigot = fileTree(buildDir.parentFile.path + '/buildtools/').matching {
-            include 'spigot*.jar'
-        }
-
-        if (fileTreeSpigot.size() != 0) {
-            //noinspection GroovyAssignabilityCheck
-            latestSpigot = files(fileTreeSpigot.iterator().next())
-        } else {
-            //noinspection GroovyAssignabilityCheck
-            latestSpigot = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
-        }
-
-        shadowJarBuildPath = file(buildDir.parentFile.path + '/jars/')
-        shadowJarBuildPath.mkdir()
-
-        releaseVersion = '0.1.6'
-    }
-
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-
-    dependencies {
-        classpath "io.freefair.gradle:lombok-plugin:5.3.0"
-        classpath "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0"
-        classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
-    }
-}
-
 plugins {
     id 'base'
-    id 'org.sonarqube' version '3.0'
+    id 'net.ltgt.errorprone' version '1.3.0' apply false
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "Heirteir-commits_HAC"
-        property "sonar.organization", "heirteir-commits"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property 'sonar.coverage.jacoco.xmlReportPaths',
-                project(':hac-util').buildDir.path + '/coverage.xml,' +
-                        project(':hac-api').buildDir.path + "/coverage.xml"
+ext {
+    /* define version for subprojects */
+    PLUGIN_VERSION = rootProject.version.toString()
 
-    }
+    /* define latest spigot API for subprojects */
+    LATEST_SPIGOT = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+
+    /* Spigot jar version */
+    /* Place a compiled Spigot Jar in the libs/ folder with the specified names seen here to build implementation */
+    /* You don't need all jar versions you just need the jar for the version you want to compile. */
+    EIGHT_R3 = file(buildDir.parentFile.path + '/libs/spigot-1.8.8.jar')
+    NINE_R2 = file(buildDir.parentFile.path + '/libs/spigot-1.9.4.jar')
+    TEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.10.2.jar')
+    ELEVEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.11.2.jar')
+    TWELVE_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.12.2.jar')
+    THIRTEEN_R2 = file(buildDir.parentFile.path + '/libs/spigot-1.13.2.jar')
+    FOURTEEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.14.4.jar')
+    FIFTEEN_R1 = file(buildDir.parentFile.path + '/libs/spigot-1.15.2.jar')
+    SIXTEEN_R3 = file(buildDir.parentFile.path + '/libs/spigot-1.16.4.jar')
+
+    USE_EIGHT_R3 = false
+    USE_NINE_R2 = false
+    USE_TEN_R1 = false
+    USE_ELEVEN_R1 = false
+    USE_TWELVE_R1 = false
+    USE_THIRTEEN_R2 = false
+    USE_FOURTEEN_R1 = false
+    USE_FIFTEEN_R1 = false
+    USE_SIXTEEN_R3 = false
 }
 
-task updateSpigot {
-    doLast {
-        def buildToolsDirectory = file(buildDir.parentFile.path + '/buildtools/')
-        buildToolsDirectory.mkdir()
-        new URL('https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar')
-                .withInputStream { i ->
-                    file(buildToolsDirectory.path + '/BuildTools.jar').withOutputStream {
-                        it << i
-                    }
-                }
+group 'com.heretere'
 
-        exec {
-            workingDir buildToolsDirectory.path
-            commandLine 'java', '-jar', 'BuildTools.jar', '--compile-if-changed', '--rev', 'latest'
-        }
-    }
-}
+/* This is used to change the version for all subprojects */
+version '0.0.6'
 
-subprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'net.ltgt.errorprone'
-    apply plugin: 'io.freefair.lombok'
-    apply plugin: 'jacoco'
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    /* Force clean task to run after shadowJar to make sure plugin version gets updated on build */
-    shadowJar {
-        finalizedBy rootProject.clean
-    }
-
-    rootProject.clean.dependsOn tasks.matching { it.name == "clean" }
-
-    compileJava {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    test {
-        useJUnitPlatform()
-        finalizedBy jacocoTestReport
-    }
-
-    jacocoTestReport {
-        reports {
-            xml.enabled = true
-            csv.enabled = false
-            html.enabled = false
-            xml.destination = file("$buildDir/coverage.xml")
-        }
-        dependsOn test
-    }
-
+/* Project wide dependencies */
+allprojects {
     repositories {
         mavenCentral()
         maven {
@@ -109,4 +48,89 @@ subprojects {
         }
     }
 
+    /* Apply errorprone to all project sources */
+    pluginManager.withPlugin('net.ltgt.errorprone') {
+        dependencies {
+            errorprone("com.google.errorprone:error_prone_core:2.4.0")
+        }
+    }
+
+    /* Project wide dependencies */
+    pluginManager.withPlugin('java-library') {
+        dependencies {
+            compileOnlyApi("org.jetbrains:annotations:16.0.2")
+        }
+    }
+}
+
+subprojects {
+    /* Project wide plugins */
+    apply plugin: 'net.ltgt.errorprone'
+}
+
+task build1_8_R3 {
+    doFirst {
+        USE_EIGHT_R3 = true
+    }
+}
+
+task build1_9_R2 {
+    doFirst {
+        USE_NINE_R2 = true
+    }
+}
+
+task build1_10_R1 {
+    doFirst {
+        USE_TEN_R1 = true
+    }
+}
+
+task build1_11_R1 {
+    doFirst {
+        USE_ELEVEN_R1 = true
+    }
+}
+
+task build1_12_R1 {
+    doFirst {
+        USE_TWELVE_R1 = true
+    }
+}
+
+task build1_13_R2 {
+    doFirst {
+        USE_THIRTEEN_R2 = true
+    }
+}
+
+task build1_14_R1 {
+    doFirst {
+        USE_FOURTEEN_R1 = true
+    }
+}
+
+task build1_15_R1 {
+    doFirst {
+        USE_FIFTEEN_R1 = true
+    }
+}
+
+task build1_16_R3 {
+    doFirst {
+        USE_SIXTEEN_R3 = true
+    }
+}
+
+/* Will build as many as possible depending on the available jars */
+task 'Build All' {
+    dependsOn build1_8_R3
+    dependsOn build1_9_R2
+    dependsOn build1_10_R1
+    dependsOn build1_11_R1
+    dependsOn build1_12_R1
+    dependsOn build1_13_R2
+    dependsOn build1_14_R1
+    dependsOn build1_15_R1
+    dependsOn build1_16_R3
 }

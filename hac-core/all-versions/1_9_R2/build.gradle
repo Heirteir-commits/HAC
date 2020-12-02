@@ -1,0 +1,10 @@
+group 'com.heretere'
+version PLUGIN_VERSION
+
+dependencies {
+    /* Spigot Dependency */
+    compileOnlyApi(files(NINE_R2))
+
+    implementation(project(':hac-movement:implementation'))
+}
+

@@ -1,8 +1,0 @@
-name: HAC-Core-Test
-version: 0.0.1
-main: com.heretere.hac.core.CoreTest
-prefix: '-'
-api-version: 1.13
-authors: [ Heretere ]
-description: The base framework for the other modular plugins in the susano framework.
-website: heretere.com
