@@ -22,8 +22,12 @@ jobs:
         with:
           url: "https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar"
           target: buildtools/
+      - name: Move to Build Tools directory
+        run: cd buildtools
       - name: Run Build Tools
         run: java -jar buildtools/BuildTools.jar --rev latest
+      - name: Go back to parent directory
+        run: cd ../
       - name: ls dir test
         run: ls -R
       - name: Cache SonarCloud packages
