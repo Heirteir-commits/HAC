@@ -11,16 +11,16 @@ public class Movement extends DependencyPlugin {
 
     @Override
     protected void enable() {
-
+        //Not Used Currently
     }
 
     @Override
     protected void disable() {
-
+        //Not Used Currently
     }
 
     @Override
     protected void load() {
-
+        //Not Used Currently
     }
 }

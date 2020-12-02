@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public final class Packet {
+public final class PacketConstants {
 
 
     public static <T> T getPacketTypeFromString(@NotNull Class<T> direction, @NotNull String input) {

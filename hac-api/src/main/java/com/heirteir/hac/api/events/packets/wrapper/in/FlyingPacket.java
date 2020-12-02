@@ -1,6 +1,6 @@
 package com.heirteir.hac.api.events.packets.wrapper.in;
 
-import com.heirteir.hac.api.events.packets.Packet;
+import com.heirteir.hac.api.events.packets.PacketConstants;
 import com.heirteir.hac.api.events.packets.wrapper.AbstractWrappedPacketIn;
 import lombok.Getter;
 
@@ -17,7 +17,7 @@ public final class FlyingPacket extends AbstractWrappedPacketIn {
     private boolean onGround;
 
     public FlyingPacket() {
-        super(Packet.In.FLYING);
+        super(PacketConstants.In.FLYING);
     }
 }
 

@@ -1,6 +1,6 @@
 package com.heirteir.hac.api.events.packets.wrapper.in;
 
-import com.heirteir.hac.api.events.packets.Packet;
+import com.heirteir.hac.api.events.packets.PacketConstants;
 import com.heirteir.hac.api.events.packets.wrapper.AbstractWrappedPacketIn;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ public final class EntityActionPacket extends AbstractWrappedPacketIn {
     private Action action;
 
     public EntityActionPacket() {
-        super(Packet.In.ENTITY_ACTION);
+        super(PacketConstants.In.ENTITY_ACTION);
     }
 
     @RequiredArgsConstructor
