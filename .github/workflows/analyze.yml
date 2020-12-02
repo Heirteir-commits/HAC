@@ -18,7 +18,7 @@ jobs:
         with:
           java-version: 11
       - name: Cache BuildTools Files
-        uses: action/cache@v1
+        uses: actions/cache@v1
         with:
           path: ~/buildtools
           key: ${{ runner.os }}-buildtools
