@@ -1,6 +1,6 @@
 package com.heirteir.hac.api.events.packets.wrapper.out;
 
-import com.heirteir.hac.api.events.packets.Packet;
+import com.heirteir.hac.api.events.packets.PacketConstants;
 import com.heirteir.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
 import lombok.Getter;
 
@@ -13,6 +13,6 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
     private double z;
 
     public EntityVelocityPacket() {
-        super(Packet.Out.ENTITY_VELOCITY);
+        super(PacketConstants.Out.ENTITY_VELOCITY);
     }
 }

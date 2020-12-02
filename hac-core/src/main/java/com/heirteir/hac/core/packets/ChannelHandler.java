@@ -1,7 +1,7 @@
 package com.heirteir.hac.core.packets;
 
 import com.heirteir.hac.api.events.ASyncPacketEventManager;
-import com.heirteir.hac.api.events.packets.Packet;
+import com.heirteir.hac.api.events.packets.PacketConstants;
 import com.heirteir.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
 import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.player.HACPlayer;
@@ -26,13 +26,13 @@ public final class ChannelHandler extends ChannelDuplexHandler {
     private CompletableFuture<Void> future;
 
     @Override
-    public void channelRead(io.netty.channel.ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         super.channelRead(ctx, msg);
 
         try {
-            Packet.In type = Packet.getPacketTypeFromString(Packet.In.class, msg.getClass().getSimpleName());
+            PacketConstants.In type = PacketConstants.getPacketTypeFromString(PacketConstants.In.class, msg.getClass().getSimpleName());
 
-            if (type.equals(Packet.In.UNKNOWN)) {
+            if (type.equals(PacketConstants.In.UNKNOWN)) {
                 return;
             }
 
@@ -47,9 +47,9 @@ public final class ChannelHandler extends ChannelDuplexHandler {
         super.write(ctx, msg, promise);
 
         try {
-            Packet.Out type = Packet.getPacketTypeFromString(Packet.Out.class, msg.getClass().getSimpleName());
+            PacketConstants.Out type = PacketConstants.getPacketTypeFromString(PacketConstants.Out.class, msg.getClass().getSimpleName());
 
-            if (type.equals(Packet.Out.UNKNOWN)) {
+            if (type.equals(PacketConstants.Out.UNKNOWN)) {
                 return;
             }
 

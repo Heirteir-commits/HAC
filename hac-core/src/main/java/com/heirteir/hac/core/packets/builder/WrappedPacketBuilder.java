@@ -25,7 +25,7 @@ public class WrappedPacketBuilder {
     private final Class<? extends WrappedPacket> rawWrappedPacketClass;
     private final WrappedClass wrappedPacketClass;
     private final Set<ConvertInfo<?, ?>> fields;
-    boolean valid = true;
+    private boolean valid = true;
     private WrappedConstructor wrappedConstructor;
 
     public WrappedPacketBuilder(String nmsPacketClass, Class<? extends WrappedPacket> wrappedPacketClass) {
