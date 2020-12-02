@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.core.player.data.location.PlayerData;
-import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.core.util.reflections.helper.WorldHelper;
 import com.heirteir.hac.movement.dynamic.entity.human.EntityHumanAccessor;
 import lombok.Getter;
 
@@ -75,7 +75,7 @@ public final class HACHumanWrapper {
     }
 
     private void updateModifiers() {
-        this.base.setWorld(API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getWorld(this.player.getBukkitPlayer()));
+        this.base.setWorld(API.INSTANCE.getReflections().getHelpers().getHelper(WorldHelper.class).getNMSWorld(this.player.getBukkitPlayer().getWorld()));
         this.base.setFlySpeed(this.player.getBukkitPlayer().getFlySpeed());
         this.base.setFlying(this.playerData.getCurrent().isFlying());
         this.base.setInvulnerable(true);

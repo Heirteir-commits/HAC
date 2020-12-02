@@ -107,6 +107,18 @@ public final class WrappedClass {
                         .orElseThrow(() -> new NoSuchMethodException(String.format("Method with name '%s', and parameters '%s' doesn't not found in class '%s'.", name, Arrays.toString(parameters), this.raw.getName()))));
     }
 
+    public WrappedMethod getMethodByParams(Class<?>... parameters) throws NoSuchMethodException {
+        return new WrappedMethod(this,
+                Arrays.stream(this.raw.getDeclaredMethods())
+                        .filter(
+                                method -> method.getParameterCount() == parameters.length &&
+                                        Arrays.equals(method.getParameterTypes(), parameters)
+                        )
+                        .findFirst()
+                        .orElseThrow(NoSuchMethodException::new)
+        );
+    }
+
     public <E extends Enum<?>> E getEnum(Class<E> clazz, String name) throws NoSuchFieldException {
         return Arrays.stream(clazz.getEnumConstants())
                 .filter(e -> e.name().equals(name))
