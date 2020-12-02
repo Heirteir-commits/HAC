@@ -38,7 +38,7 @@ class GithubDependencyTest {
         Assertions.assertEquals("HAC-Core", githubDependency.getName());
         Assertions.assertEquals("HAC-Core", githubDependency.toString());
 
-        githubDependency = new GithubDependency(plugin, "Dependency-Plugin", "Dependency-Plugin", "heirteir-commits/HAC", 75180, true, false);
+        githubDependency = new GithubDependency(plugin, "HAC.Core", "Dependency-Plugin", "heirteir-commits/HAC", 75180, true, false);
 
         this.checkExists(githubDependency);
 
