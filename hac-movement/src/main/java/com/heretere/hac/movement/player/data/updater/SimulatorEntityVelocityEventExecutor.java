@@ -3,7 +3,7 @@ package com.heretere.hac.movement.player.data.updater;
 import com.flowpowered.math.vector.Vector3f;
 import com.heretere.hac.api.events.types.Priority;
 import com.heretere.hac.api.events.types.packets.AbstractPacketEventExecutor;
-import com.heretere.hac.api.events.types.packets.wrapper.out.EntityVelocityPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.serverside.EntityVelocityPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.movement.player.data.Simulator;
 import org.apache.commons.lang.NotImplementedException;

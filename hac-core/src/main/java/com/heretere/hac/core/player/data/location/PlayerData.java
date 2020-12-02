@@ -3,7 +3,7 @@ package com.heretere.hac.core.player.data.location;
 import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3f;
 import com.heretere.hac.api.API;
-import com.heretere.hac.api.events.types.packets.wrapper.in.FlyingPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.util.reflections.helper.EntityHelper;
 import lombok.AccessLevel;

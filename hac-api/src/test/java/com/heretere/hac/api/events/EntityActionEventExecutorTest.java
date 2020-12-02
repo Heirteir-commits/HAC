@@ -2,7 +2,7 @@ package com.heretere.hac.api.events;
 
 import com.heretere.hac.api.events.types.Priority;
 import com.heretere.hac.api.events.types.packets.AbstractPacketEventExecutor;
-import com.heretere.hac.api.events.types.packets.wrapper.in.EntityActionPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.player.data.DataTest;
 import lombok.Getter;

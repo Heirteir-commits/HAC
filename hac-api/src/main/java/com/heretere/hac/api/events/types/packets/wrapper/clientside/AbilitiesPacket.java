@@ -1,4 +1,4 @@
-package com.heretere.hac.api.events.types.packets.wrapper.in;
+package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
 import com.heretere.hac.api.events.types.packets.PacketConstants;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
