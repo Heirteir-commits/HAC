@@ -1,10 +1,5 @@
 group 'com.heirteir'
-version pluginVersion
-
-jar {
-    destinationDirectory = shadowJarBuildPath
-    archiveFileName = 'HAC.API.jar'
-}
+version releaseVersion
 
 dependencies {
     testImplementation('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {

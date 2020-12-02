@@ -1,9 +1,5 @@
-plugins {
-    id "com.github.johnrengelman.shadow" version "6.1.0"
-}
-
 group 'com.heirteir'
-version pluginVersion
+version releaseVersion
 
 dependencies {
     testImplementation('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
