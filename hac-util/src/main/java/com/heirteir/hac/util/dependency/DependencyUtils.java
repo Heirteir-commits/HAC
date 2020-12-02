@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Set;
 
-public final class Dependencies {
+public final class DependencyUtils {
 
     public static boolean loadDependenciesFromPlugin(DependencyPlugin plugin) {
         Set<AbstractDependency> dependencies = Sets.newLinkedHashSet();
@@ -38,7 +38,7 @@ public final class Dependencies {
             dependencies.add(new GithubDependency(plugin.getClass().getAnnotation(Github.class)));
         }
 
-        return dependencies.stream().allMatch(Dependencies::loadDependency);
+        return dependencies.stream().allMatch(DependencyUtils::loadDependency);
     }
 
     private static boolean downloadDependency(AbstractDependency dependency) {
@@ -63,7 +63,7 @@ public final class Dependencies {
     }
 
     public static boolean loadDependency(AbstractDependency dependency) {
-        if (Dependencies.downloadDependency(dependency) && dependency.load()) {
+        if (DependencyUtils.downloadDependency(dependency) && dependency.load()) {
             Log.INSTANCE.info(String.format("Successfully loaded dependency '%s'.", dependency.getName()));
             return true;
         }
