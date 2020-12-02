@@ -13,7 +13,7 @@ include ':hac-core:all-versions:1_13_R2'
 include ':hac-core:all-versions:1_14_R1'
 include ':hac-core:all-versions:1_15_R1'
 include ':hac-core:all-versions:1_16_R3'
-include ':hac-core:implementation'
+include ':hac-core:proxy'
 include ':hac-core:plugin'
 /* Core end */
 

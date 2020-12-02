@@ -5,6 +5,6 @@ dependencies {
     /* Spigot Dependency */
     compileOnlyApi(files(EIGHT_R3))
 
-    compileOnlyApi(project(':hac-core:implementation'))
+    compileOnlyApi(project(':hac-core:proxy'))
 }
 

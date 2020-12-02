@@ -31,11 +31,11 @@ public final class PacketReferences {
     public abstract static class PacketReferenceHolder {
         private final Map<Class<?>, PacketReference<?>> packetReferences;
 
-        public PacketReferenceHolder() {
+        protected PacketReferenceHolder() {
             this.packetReferences = Maps.newHashMap();
         }
 
-        public PacketReference<?> get(Class<?> nmsClass) {
+        public final PacketReference<?> get(Class<?> nmsClass) {
             return this.packetReferences.get(nmsClass);
         }
 
@@ -51,7 +51,7 @@ public final class PacketReferences {
         private final PacketReference<EntityActionPacket> entityAction;
         private final PacketReference<FlyingPacket> flying;
 
-        protected ClientSide() {
+        private ClientSide() {
             super();
             this.abilities = new PacketReference<>(this, AbilitiesPacket.class);
             this.entityAction = new PacketReference<>(this, EntityActionPacket.class);
@@ -74,7 +74,7 @@ public final class PacketReferences {
     public static final class ServerSide extends PacketReferenceHolder {
         private final PacketReference<EntityVelocityPacket> entityVelocity;
 
-        protected ServerSide() {
+        private ServerSide() {
             super();
             this.entityVelocity = new PacketReference<>(this, EntityVelocityPacket.class);
         }
@@ -91,7 +91,7 @@ public final class PacketReferences {
 
         private boolean registered = false;
 
-        protected PacketReference(PacketReferenceHolder parent, Class<T> wrappedPacketClass) {
+        private PacketReference(PacketReferenceHolder parent, Class<T> wrappedPacketClass) {
             this.parent = parent;
             this.wrappedPacketClass = wrappedPacketClass;
         }

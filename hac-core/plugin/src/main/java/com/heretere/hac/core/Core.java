@@ -1,33 +1,31 @@
 package com.heretere.hac.core;
 
-import com.heretere.hac.core.implementation.versions.VersionImplementation;
-import com.heretere.hac.core.player.HACPlayerListUpdater;
+import com.heretere.hac.core.proxy.VersionProxy;
 import com.heretere.hac.util.implementation.VersionProcessor;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class Core extends JavaPlugin {
-    private VersionImplementation versionImplementation;
-    private HACPlayerListUpdater hacPlayerListUpdater;
+public final class Core extends JavaPlugin {
+    private VersionProxy versionProxy;
 
     @Override
     public void onLoad() {
-        Class<?> versionImplementationClass =
-                VersionProcessor.getLatestVersionImplementation(
+        Class<?> versionProxyClass =
+                VersionProcessor.getLatestVersionProxy(
                         "com.heretere.hac.core.implementation.versions"
                 );
 
-        if (versionImplementationClass == null) {
+        if (versionProxyClass == null) {
             throw new NotImplementedException(); //TODO: incorporate with logger.
         }
 
         try {
-            Object versionImplementationUnchecked = versionImplementationClass.getConstructor().newInstance();
+            Object versionProxyUnchecked = versionProxyClass.getConstructor().newInstance();
 
-            if (versionImplementationUnchecked instanceof VersionImplementation) {
-                this.versionImplementation = (VersionImplementation) versionImplementationUnchecked;
+            if (versionProxyUnchecked instanceof VersionProxy) {
+                this.versionProxy = (VersionProxy) versionProxyUnchecked;
             }
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace(); //TODO: move to logger
@@ -37,18 +35,13 @@ public class Core extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
-
-        this.versionImplementation.registerPackets();
-
-        this.hacPlayerListUpdater = new HACPlayerListUpdater(this);
+        this.versionProxy.baseLoad();
     }
 
     @Override
     public void onDisable() {
-        this.hacPlayerListUpdater.unload();
+        super.onDisable();
+        this.versionProxy.baseUnload();
     }
 
-    public VersionImplementation getVersionImplementation() {
-        return versionImplementation;
-    }
 }

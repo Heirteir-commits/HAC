@@ -13,7 +13,7 @@ public abstract class AbstractWrappedPacketOut implements WrappedPacket {
      *
      * @param entityId the entity id
      */
-    public AbstractWrappedPacketOut(int entityId) {
+    protected AbstractWrappedPacketOut(int entityId) {
         this.entityId = entityId;
     }
 

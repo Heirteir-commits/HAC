@@ -18,7 +18,7 @@ public final class VersionProcessor {
     /**
      * Possible versions that could be available.
      */
-    private static final Set<String> possibleVersions = Sets.newLinkedHashSet(
+    private static final Set<String> POSSIBLE_VERSIONS = Sets.newLinkedHashSet(
             Lists.newArrayList(
                     "1_8_R3",
                     "1_9_R2",
@@ -52,8 +52,8 @@ public final class VersionProcessor {
      * @return a {@link LinkedHashSet} of the available versions.
      */
     public static Set<String> getAvailableVersions(String basePackage) {
-        return VersionProcessor.possibleVersions.stream()
-                .filter(version -> VersionProcessor.findVersionImplementationClass(VersionProcessor.basePackageVersionAppend(basePackage, version), false) != null)
+        return VersionProcessor.POSSIBLE_VERSIONS.stream()
+                .filter(version -> VersionProcessor.findVersionProxyClass(VersionProcessor.basePackageVersionAppend(basePackage, version), false) != null)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -64,7 +64,7 @@ public final class VersionProcessor {
      * @param init Whether or not to add the class to the classloader if found.
      * @return the version implementation class.
      */
-    private static Class<?> findVersionImplementationClass(String path, boolean init) {
+    private static Class<?> findVersionProxyClass(String path, boolean init) {
         Class<?> clazz;
 
         try {
@@ -77,28 +77,28 @@ public final class VersionProcessor {
     }
 
     @Nullable
-    public static Class<?> getLatestVersionImplementation(String basePackage) {
-        Class<?> versionImplementationClass;
+    public static Class<?> getLatestVersionProxy(String basePackage) {
+        Class<?> versionProxyClass;
 
         String serverVersion = VersionProcessor.getServerVersionString();
         if (VersionProcessor.getAvailableVersions(basePackage).contains(serverVersion)) {
-            versionImplementationClass = VersionProcessor.findVersionImplementationClass(VersionProcessor.basePackageVersionAppend(basePackage, serverVersion), true);
+            versionProxyClass = VersionProcessor.findVersionProxyClass(VersionProcessor.basePackageVersionAppend(basePackage, serverVersion), true);
         } else {
-            versionImplementationClass = null;
+            versionProxyClass = null;
         }
 
-        return versionImplementationClass;
+        return versionProxyClass;
     }
 
     /**
      * concat the base package and version into a path to use with
-     * {@link VersionProcessor#findVersionImplementationClass(String, boolean)}.
+     * {@link VersionProcessor#findVersionProxyClass(String, boolean)}.
      *
      * @param basePackage the base package
      * @param version     the version
      * @return a concatenated path to the version implementation.
      */
     private static String basePackageVersionAppend(String basePackage, String version) {
-        return basePackage + "." + version + ".Implementation";
+        return basePackage + "." + version + ".Proxy";
     }
 }

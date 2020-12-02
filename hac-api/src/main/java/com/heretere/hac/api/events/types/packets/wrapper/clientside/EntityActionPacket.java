@@ -1,11 +1,11 @@
 package com.heretere.hac.api.events.types.packets.wrapper.clientside;
 
-import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
+import com.heretere.hac.api.events.types.packets.wrapper.WrappedPacketIn;
 
 /**
  * This is the wrapped version of the PacketPlayInEntityActionPacket.
  */
-public final class EntityActionPacket extends AbstractWrappedPacketIn {
+public final class EntityActionPacket implements WrappedPacketIn {
     private final Action action;
 
     /**

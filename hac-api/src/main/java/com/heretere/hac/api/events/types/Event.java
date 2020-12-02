@@ -13,7 +13,7 @@ public abstract class Event {
      *
      * @param player the player
      */
-    public Event(Player player) {
+    protected Event(Player player) {
         this.player = player;
     }
 

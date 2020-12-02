@@ -7,7 +7,7 @@ ext {
     /* define version for subprojects */
     PLUGIN_VERSION = rootProject.version.toString()
 
-    /* define latest spigot API for subprojects */
+    /* ine latest spigot API for subprojects */
     LATEST_SPIGOT = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
 
     /* Spigot jar version */

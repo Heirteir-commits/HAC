@@ -43,7 +43,7 @@ subprojects {
     /* Give all subprojects the hac-core:implementation project */
     pluginManager.withPlugin('java-library') {
         dependencies {
-            compileOnlyApi(project(':hac-core:implementation'))
+            compileOnlyApi(project(':hac-core:proxy'))
         }
     }
 }
