@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build
+    name: Analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
           url: "https://hub.spigotmc.org/jenkins/job/BuildTools/lastBuild/artifact/target/BuildTools.jar"
           target: buildtools/
       - name: Run Build Tools
-        run: java -jar buildtools/BuildTools.jar -o buildtools --rev latest
+        run: java -jar buildtools/BuildTools.jar -o buildtools --rev 1.16.3 #update to latest version support by plugin
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:

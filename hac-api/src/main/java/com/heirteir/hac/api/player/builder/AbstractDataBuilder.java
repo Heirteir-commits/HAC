@@ -1,17 +1,17 @@
 package com.heirteir.hac.api.player.builder;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.events.AbstractPacketEvent;
 import com.heirteir.hac.api.player.HACPlayer;
-
-import java.util.Set;
+import lombok.Getter;
 
 public abstract class AbstractDataBuilder<T> {
-    private final Set<AbstractPacketEvent<?>> events;
+    @Getter
+    private final ImmutableSet<AbstractPacketEvent<?>> events;
 
     protected AbstractDataBuilder(AbstractPacketEvent<?>... events) {
-        this.events = Sets.newHashSet(events);
+        this.events = ImmutableSet.copyOf(events);
     }
 
     public abstract T build(HACPlayer player);

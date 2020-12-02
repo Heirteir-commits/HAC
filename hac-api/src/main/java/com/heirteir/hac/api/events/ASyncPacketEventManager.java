@@ -5,16 +5,14 @@ import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class ASyncPacketEventManager {
-    private final Map<Class<? extends WrappedPacket>, List<AbstractPacketEvent<?>>> test;
+    private final Map<Class<? extends WrappedPacket>, List<AbstractPacketEvent<?>>> events;
 
     public ASyncPacketEventManager() {
-        this.test = Maps.newHashMap();
+        this.events = Maps.newHashMap();
     }
 
     public void addEvent(@NotNull AbstractPacketEvent<?> event) {
@@ -26,7 +24,7 @@ public final class ASyncPacketEventManager {
     }
 
     private List<AbstractPacketEvent<?>> getEvents(Class<? extends WrappedPacket> clazz) {
-        return this.test.computeIfAbsent(clazz, t -> new ArrayList<AbstractPacketEvent<?>>() {
+        return this.events.computeIfAbsent(clazz, t -> new ArrayList<AbstractPacketEvent<?>>() {
             @Override
             public boolean add(AbstractPacketEvent<?> abstractPacketEvent) {
                 boolean add = super.add(abstractPacketEvent);
@@ -41,5 +39,12 @@ public final class ASyncPacketEventManager {
                 .filter(event -> !event.update(player, packet))
                 .findFirst()
                 .ifPresent(event -> event.onStop(player, packet));
+    }
+
+    public List<AbstractPacketEvent<?>> getCurrentEvents() {
+        return this.events.values().stream()
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparingInt(event -> event.getPriority().ordinal()))
+                .collect(Collectors.toList());
     }
 }
