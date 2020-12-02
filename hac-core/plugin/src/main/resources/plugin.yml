@@ -1,0 +1,8 @@
+name: HAC-Core
+version: @version@
+main: com.heretere.hac.core.Core
+load: STARTUP
+prefix: '-'
+api-version: 1.13
+authors: [ Heretere ]
+website: heretere.com

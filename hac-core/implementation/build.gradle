@@ -1,6 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
 group 'com.heretere'
 version PLUGIN_VERSION
 
 dependencies {
+    compileOnlyApi('io.netty:netty-all:4.1.53.Final')
+    compileOnlyApi(LATEST_SPIGOT)
 
+    api(project(':hac-api'))
+    api(project(':hac-util'))
 }

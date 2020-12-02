@@ -1,17 +1,5 @@
 rootProject.name = 'hac'
 include ':hac-api'
-//include ':hac-core'
-//include ':hac-core:implementation'
-//include ':hac-core:1_8_R3'
-//include ':hac-core:1_9_R2'
-//include ':hac-core:1_10_R1'
-//include ':hac-core:1_11_R1'
-//include ':hac-core:1_12_R1'
-//include ':hac-core:1_13_R2'
-//include ':hac-core:1_14_R1'
-//include ':hac-core:1_15_R1'
-//include ':hac-core:1_16_R3'
-//include ':hac-util'
 
 /* Core */
 include ':hac-core'
@@ -44,3 +32,5 @@ include ':hac-movement:all-versions:1_15_R1'
 include ':hac-movement:all-versions:1_16_R3'
 include ':hac-movement:plugin'
 /* Movement end */
+
+include ':hac-util'

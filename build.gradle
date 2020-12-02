@@ -60,6 +60,12 @@ allprojects {
         dependencies {
             compileOnlyApi("org.jetbrains:annotations:16.0.2")
         }
+
+        compileJava {
+            /* Insure that all versions are compiled with 1.8 support */
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
     }
 }
 
