@@ -1,11 +1,11 @@
 name: HAC-Movement
 version: @version@
-main: com.heirteir.hac.movement.Movement
+main: com.heretere.hac.movement.Movement
 load: STARTUP
 prefix: '-'
 api-version: 1.13
-authors: [ Heirteir ]
+authors: [ Heretere ]
 description: The base framework for the other modular plugins in the susano framework.
-website: heirteir.com
+website: heretere.com
 softdepend:
   - HAC-Core

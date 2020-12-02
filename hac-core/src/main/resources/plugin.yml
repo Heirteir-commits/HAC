@@ -1,9 +1,9 @@
 name: HAC-Core
 version: @version@
-main: com.heirteir.hac.core.Core
+main: com.heretere.hac.core.Core
 load: STARTUP
 prefix: '-'
 api-version: 1.13
-authors: [ Heirteir ]
+authors: [ Heretere ]
 description: The base framework for the other modular plugins in the susano framework.
-website: heirteir.com
+website: heretere.com

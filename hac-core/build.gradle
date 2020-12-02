@@ -6,13 +6,13 @@ buildscript {
     }
 }
 
-group 'com.heirteir'
+group 'com.heretere'
 version releaseVersion
 
 shadowJar {
     destinationDirectory = shadowJarBuildPath
     archiveFileName = jarName
-    relocate 'com.heirteir.hac.util', 'com.heirteir.hac.core.util'
+    relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
 }
 
 dependencies {
@@ -33,6 +33,7 @@ dependencies {
     api(project(':hac-api'))
     api(project(':hac-util'))
 
+    compileOnlyApi("com.google.errorprone:error_prone_annotations:2.4.0")
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
 }
 
