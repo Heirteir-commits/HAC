@@ -1,4 +1,4 @@
-group 'com.heirteir'
+group 'com.heretere'
 version releaseVersion
 
 dependencies {
@@ -14,5 +14,6 @@ dependencies {
     compileOnlyApi('org.jetbrains:annotations:16.0.2')
     compileOnlyApi(latestSpigot)
 
+    compileOnlyApi("com.google.errorprone:error_prone_annotations:2.4.0")
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
 }
