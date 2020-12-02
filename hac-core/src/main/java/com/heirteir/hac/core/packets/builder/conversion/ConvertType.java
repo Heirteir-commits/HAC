@@ -6,5 +6,5 @@ public enum ConvertType {
     FLOAT,
     INTEGER,
     SHORT,
-    NONE
+    NONE;
 }
