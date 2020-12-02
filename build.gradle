@@ -17,7 +17,7 @@ buildscript {
         shadowJarBuildPath = file(buildDir.parentFile.path + '/jars/')
         shadowJarBuildPath.mkdir()
 
-        releaseVersion = '0.1.6'
+        releaseVersion = '0.1.5'
     }
 
     repositories {
