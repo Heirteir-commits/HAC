@@ -7,7 +7,9 @@ import com.heirteir.hac.core.player.HACPlayerListUpdater;
 import com.heirteir.hac.core.player.data.location.PlayerData;
 import com.heirteir.hac.core.player.data.location.PlayerDataBuilder;
 import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
+import com.heirteir.hac.util.dependency.Dependencies;
 import com.heirteir.hac.util.dependency.plugin.DependencyPlugin;
+import com.heirteir.hac.util.dependency.types.GithubDependency;
 import com.heirteir.hac.util.dependency.types.annotation.Maven;
 import com.heirteir.hac.util.logging.Log;
 import lombok.Getter;
@@ -64,6 +66,7 @@ public final class Core extends DependencyPlugin {
 
     @Override
     protected void load() {
-        //Not Used Currently
+        Log.INSTANCE.info("Checking for update...");
+        Dependencies.loadDependency(new GithubDependency("HAC.Core", "HAC-Core", "heirteir-commits/HAC", 75180, true, false)); //check for update
     }
 }
