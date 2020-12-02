@@ -16,6 +16,7 @@ public final class AbilitiesPacketBuilder extends PacketBuilder<AbilitiesPacket>
         PacketPlayInAbilities abilities = (PacketPlayInAbilities) packet;
 
         return new AbilitiesPacket(abilities.isFlying());
+        //
     }
 
     @Override
