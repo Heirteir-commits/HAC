@@ -2,7 +2,7 @@ package com.heretere.hac.core.player.data.location.updaters;
 
 import com.heretere.hac.api.events.types.Priority;
 import com.heretere.hac.api.events.types.packets.AbstractPacketEventExecutor;
-import com.heretere.hac.api.events.types.packets.wrapper.in.EntityActionPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.player.data.location.PlayerData;
 import org.apache.commons.lang.NotImplementedException;

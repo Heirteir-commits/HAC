@@ -2,7 +2,7 @@ package com.heretere.hac.movement.player.data.updater;
 
 import com.heretere.hac.api.events.types.Priority;
 import com.heretere.hac.api.events.types.packets.AbstractPacketEventExecutor;
-import com.heretere.hac.api.events.types.packets.wrapper.in.FlyingPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.movement.player.data.Simulator;
 import org.apache.commons.lang.NotImplementedException;

@@ -4,6 +4,7 @@ import com.heretere.hac.api.API;
 import com.heretere.hac.api.util.reflections.types.WrappedConstructor;
 import com.heretere.hac.api.util.reflections.types.WrappedField;
 import com.heretere.hac.api.util.reflections.types.WrappedMethod;
+import com.heretere.hac.api.util.reflections.version.ServerVersion;
 import com.heretere.hac.core.util.reflections.helper.EntityHelper;
 import com.heretere.hac.core.util.reflections.helper.WorldHelper;
 import com.heretere.hac.movement.Movement;
@@ -51,7 +52,7 @@ public class FireworksEntityCreator extends AbstractDynamicClassCreator implemen
                 case NINE_R1:
                 case NINE_R2:
                 case TEN_R1:
-                    super.getMovement().getLog().info("Server version less than 1.11.2 skipping.");
+                    super.getMovement().getLog().info("Server version less than " + ServerVersion.ELEVEN_R1.getPackageName() + " skipping.");
                     break;
                 case ELEVEN_R1:
                     methodName = "A_";

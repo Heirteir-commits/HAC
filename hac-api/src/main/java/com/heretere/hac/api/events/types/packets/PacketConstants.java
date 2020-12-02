@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketIn;
 import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketOut;
-import com.heretere.hac.api.events.types.packets.wrapper.in.AbilitiesPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.in.EntityActionPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.in.FlyingPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.out.EntityVelocityPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.AbilitiesPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.EntityActionPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.clientside.FlyingPacket;
+import com.heretere.hac.api.events.types.packets.wrapper.serverside.EntityVelocityPacket;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
