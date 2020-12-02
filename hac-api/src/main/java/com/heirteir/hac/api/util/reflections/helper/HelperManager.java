@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 public final class HelperManager {
-
     private final Map<Class<?>, Object> helpers;
 
     public HelperManager() {
@@ -23,5 +22,4 @@ public final class HelperManager {
     public <T> T getHelper(Class<T> clazz) {
         return clazz.cast(this.helpers.get(clazz));
     }
-
 }

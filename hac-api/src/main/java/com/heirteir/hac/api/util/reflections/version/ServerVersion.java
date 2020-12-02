@@ -8,7 +8,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @Getter
 public enum ServerVersion {
-    MIN(""),
+    MIN("1_8_R1"),
     EIGHT_R1("1_8_R1"),
     EIGHT_R2("1_8_R2"),
     EIGHT_R3("1_8_R3"),
@@ -23,7 +23,7 @@ public enum ServerVersion {
     FIFTEEN_R1("1_15_R1"),
     SIXTEEN_R1("1_16_R1"),
     SIXTEEN_R2("1_16_R2"),
-    MAX(""),
+    MAX("1_16_R2"),
     INVALID("");
 
     private final String packageName;
