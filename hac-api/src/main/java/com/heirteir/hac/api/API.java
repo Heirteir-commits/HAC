@@ -1,5 +1,6 @@
 package com.heirteir.hac.api;
 
+import com.heirteir.hac.api.concurrency.ThreadPool;
 import com.heirteir.hac.api.events.ASyncPacketEventManager;
 import com.heirteir.hac.api.player.HACPlayerList;
 import com.heirteir.hac.api.util.reflections.Reflections;
@@ -13,10 +14,12 @@ public enum API {
     private final Reflections reflections;
     private final ASyncPacketEventManager eventManager;
     private final HACPlayerList hacPlayerList;
+    private final ThreadPool threadPool;
 
     API() {
         this.reflections = new Reflections();
         this.eventManager = new ASyncPacketEventManager();
         this.hacPlayerList = new HACPlayerList();
+        this.threadPool = new ThreadPool();
     }
 }

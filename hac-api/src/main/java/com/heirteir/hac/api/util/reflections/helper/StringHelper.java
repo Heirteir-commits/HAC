@@ -1,6 +1,7 @@
 package com.heirteir.hac.api.util.reflections.helper;
 
 import com.google.common.collect.ImmutableSet;
+import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.util.reflections.Reflections;
 import org.apache.commons.lang.StringUtils;
 
@@ -11,6 +12,7 @@ public final class StringHelper {
 
     public StringHelper(Reflections reflections) {
         this.replacements = ImmutableSet.of(
+                new AbstractMap.SimpleImmutableEntry<>("%api%", API.class.getPackage().getName()),
                 new AbstractMap.SimpleImmutableEntry<>("%nms%", "net.minecraft.server.v" + reflections.getVersion().getPackageName()),
                 new AbstractMap.SimpleImmutableEntry<>("%cb%", "org.bukkit.craftbukkit.v" + reflections.getVersion().getPackageName())
         );

@@ -23,7 +23,7 @@ public final class ConvertInfo<T, K> {
         this.computations = Sets.newLinkedHashSet(computations);
     }
 
-    public void define(Object wrappedPacket, Object packet) throws IllegalAccessException {
+    public void define(Object wrappedPacket, Object packet) throws IllegalAccessException, NoSuchFieldException {
         Object value = this.nmsField.get(Object.class, packet);
         switch (this.convertType) {
             case FLOAT:

@@ -4,13 +4,17 @@ import com.flowpowered.math.vector.Vector3f;
 import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.core.player.data.location.PlayerData;
+import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
 import com.heirteir.hac.movement.dynamic.entity.human.EntityHumanAccessor;
 import lombok.Getter;
 
 import java.util.Objects;
 
 public final class HACHumanWrapper {
+    private final HACPlayer player;
     private final PlayerData playerData;
+
+    /* Accessors */
     private final EntityHumanAccessor base;
 
     @Getter
@@ -20,11 +24,16 @@ public final class HACHumanWrapper {
     private final int forward;
     private final boolean jump;
 
-    public HACHumanWrapper(HACPlayer player, EntityHumanAccessor base, int strafe, int forward, int jump) {
-        Objects.requireNonNull(base);
+    public HACHumanWrapper(HACPlayer player, EntityHumanAccessor base, Object foodMeta, int strafe, int forward, int jump) {
+        this.player = player;
         this.playerData = player.getDataManager().getData(PlayerData.class);
+
+        this.base = Objects.requireNonNull(base);
+        this.base.setFoodData(foodMeta);
+        this.base.setJustCreated(false);
+
         this.simulatorData = new SimulatorData();
-        this.base = base;
+
         this.strafe = strafe;
         this.forward = forward;
         this.jump = jump == 1;
@@ -66,17 +75,24 @@ public final class HACHumanWrapper {
     }
 
     private void updateModifiers() {
-        this.base.setSprinting(this.playerData.getCurrent().isSprinting());
-        this.base.setSneaking(this.playerData.getCurrent().isSneaking());
-        //TODO: Add Fly Speed
+        this.base.setWorld(API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getWorld(this.player.getBukkitPlayer()));
+        this.base.setFlySpeed(this.player.getBukkitPlayer().getFlySpeed());
         this.base.setFlying(this.playerData.getCurrent().isFlying());
         this.base.setInvulnerable(true);
+        this.base.hacSetFlag(1, this.playerData.getCurrent().isSneaking());
+        this.base.hacSetFlag(3, this.playerData.getCurrent().isSprinting());
+        this.base.hacSetFlag(7, this.playerData.getCurrent().isElytraFlying());
+        this.base.setJumpTicks(0);
+    }
 
-
-        try {
-            API.INSTANCE.getReflections().getNMSClass("EntityLiving").getFieldByName("bn").set(this.base, 0);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
+    private void updateFlying() {
+        if (this.playerData.getCurrent().isFlying()) {
+            if (this.playerData.getCurrent().isSneaking()) {
+                this.base.setMotY(this.base.getFlySpeed() * -3F);
+            }
+            if (this.jump) {
+                this.base.setMotY(this.base.getFlySpeed() * 3F);
+            }
         }
     }
 
@@ -85,7 +101,8 @@ public final class HACHumanWrapper {
         this.passEmulatorData();
         this.resetInputs();
         this.updateModifiers();
-        this.base.tick();
+        this.updateFlying();
+        this.base.hacTick();
         this.updateEmulatorData();
     }
 }

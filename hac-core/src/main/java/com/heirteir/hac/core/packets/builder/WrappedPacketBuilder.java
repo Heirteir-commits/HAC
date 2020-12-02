@@ -3,7 +3,7 @@ package com.heirteir.hac.core.packets.builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.heirteir.hac.api.API;
-import com.heirteir.hac.api.events.packets.wrapper.WrappedPacket;
+import com.heirteir.hac.api.events.types.packets.wrapper.WrappedPacket;
 import com.heirteir.hac.api.util.reflections.types.WrappedClass;
 import com.heirteir.hac.api.util.reflections.types.WrappedConstructor;
 import com.heirteir.hac.core.Core;
@@ -68,7 +68,7 @@ public final class WrappedPacketBuilder {
             for (ConvertInfo<?, ?> field : this.fields) {
                 field.define(packet, rawPacket);
             }
-        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+        } catch (NoSuchFieldException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             packet = null;
             this.core.getLog().reportFatalError(e);
         }

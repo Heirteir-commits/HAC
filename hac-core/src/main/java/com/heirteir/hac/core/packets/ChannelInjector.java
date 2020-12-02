@@ -1,6 +1,5 @@
 package com.heirteir.hac.core.packets;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.heirteir.hac.api.API;
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.api.util.reflections.types.WrappedField;
@@ -28,7 +27,6 @@ public final class ChannelInjector {
     private PacketBuilders builders;
 
     private ExecutorService channelChangeExecutor;
-    private ExecutorService pool;
 
     public ChannelInjector(Core core) {
         this.core = core;
@@ -38,7 +36,6 @@ public final class ChannelInjector {
 
             this.builders = new PacketBuilders(core);
             this.channelChangeExecutor = Executors.newSingleThreadExecutor();
-            this.pool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-channel-handler-thread-%d").build());
         } catch (NoSuchFieldException | IndexOutOfBoundsException e) {
             this.core.getLog().reportFatalError(e);
         }
@@ -46,7 +43,7 @@ public final class ChannelInjector {
 
     public void inject(HACPlayer player) {
         this.remove(player.getBukkitPlayer());
-        this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer()).addBefore(ChannelInjector.AFTER_KEY, ChannelInjector.HANDLER_KEY, new ChannelHandler(this.core, this.builders, this.pool, API.INSTANCE.getEventManager(), player)));
+        this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer()).addBefore(ChannelInjector.AFTER_KEY, ChannelInjector.HANDLER_KEY, new ChannelHandler(this.core, this.builders, API.INSTANCE.getEventManager(), player)));
     }
 
     public void remove(Player player) {
@@ -60,15 +57,18 @@ public final class ChannelInjector {
     }
 
     public void unload() {
-        this.pool.shutdownNow();
         this.channelChangeExecutor.shutdownNow();
     }
 
     private ChannelPipeline getPipeline(Player player) {
         ChannelPipeline output;
         try {
-            output = this.channel.get(Channel.class, this.networkManager.get(Object.class, API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getPlayerConnection(player))).pipeline();
-        } catch (IllegalAccessException e) {
+
+            output = this.channel.get(Channel.class,
+                    this.networkManager.get(Object.class,
+                            API.INSTANCE.getReflections().getHelpers().getHelper(PlayerHelper.class).getPlayerConnection(player)
+                    )).pipeline();
+        } catch (Exception e) {
             output = null;
             this.core.getLog().reportFatalError(e);
         }

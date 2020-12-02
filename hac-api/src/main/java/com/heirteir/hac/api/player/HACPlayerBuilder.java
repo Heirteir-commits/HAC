@@ -1,6 +1,5 @@
 package com.heirteir.hac.api.player;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.heirteir.hac.api.player.builder.AbstractDataBuilder;
 import org.bukkit.entity.Player;
@@ -27,11 +26,12 @@ public final class HACPlayerBuilder {
     public void unregisterDataBuilder(@NotNull Class<?> clazz) {
         AbstractDataBuilder<?> builder = this.builders.remove(clazz);
 
-        Preconditions.checkNotNull(builder, String.format("No builder registered of class '%s'.", clazz));
-        builder.removeUpdaters();
+        if (builder != null) {
+            builder.removeUpdaters();
 
-        this.playerList.getAll()
-                .forEach(player -> player.getDataManager().removeData(clazz));
+            this.playerList.getAll()
+                    .forEach(player -> player.getDataManager().removeData(clazz));
+        }
     }
 
     public HACPlayer build(Player player) {
