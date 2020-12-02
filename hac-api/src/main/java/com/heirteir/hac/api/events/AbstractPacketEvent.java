@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public abstract class AbstractPacketEvent<T extends WrappedPacket> implements Comparable<AbstractPacketEvent<T>> {
+public abstract class AbstractPacketEvent<T extends WrappedPacket> {
     private final Class<T> wrappedClass;
     private final Priority priority;
 
@@ -24,11 +24,6 @@ public abstract class AbstractPacketEvent<T extends WrappedPacket> implements Co
     }
 
     protected abstract void onStop(HACPlayer player, @NotNull T packet);
-
-    @Override
-    public int compareTo(@NotNull AbstractPacketEvent event) {
-        return Integer.compare(this.priority.ordinal(), event.priority.ordinal());
-    }
 
     public enum Priority {
         PRE_PROCESS,

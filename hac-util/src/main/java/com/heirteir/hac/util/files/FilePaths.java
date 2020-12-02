@@ -10,7 +10,7 @@ import java.nio.file.Path;
 public enum FilePaths {
     INSTANCE;
 
-    private static final String pluginFolderName = "HAC";
+    private static final String PLUGIN_FOLDER_NAME = "HAC";
 
     /* plugin data folder */
     private final Path pluginFolder;
@@ -18,6 +18,6 @@ public enum FilePaths {
     FilePaths() {
         Plugin plugin = JavaPlugin.getProvidingPlugin(FilePaths.class);
 
-        this.pluginFolder = plugin.getDataFolder().toPath().getParent().resolve(FilePaths.pluginFolderName);
+        this.pluginFolder = plugin.getDataFolder().toPath().getParent().resolve(FilePaths.PLUGIN_FOLDER_NAME);
     }
 }

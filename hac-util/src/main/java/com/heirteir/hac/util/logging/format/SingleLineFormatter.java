@@ -8,7 +8,7 @@ public class SingleLineFormatter extends Formatter {
     private final Pattern stripColor;
 
     public SingleLineFormatter() {
-        this.stripColor = Pattern.compile("\u001b\\[.*?m");
+        this.stripColor = Pattern.compile("\u001b\\[[^m]*+");
     }
 
     @Override

@@ -38,19 +38,19 @@ public class PacketBuilders {
 
         this.create("PacketPlayInEntityAction", EntityActionPacket.class)
                 .addField("animation", "action", ConvertType.NONE, Lists.newArrayList(
-                        new AbstractMap.SimpleImmutableEntry<>(Enum.class, (animation) -> EntityActionPacket.Action.fromString(((Enum<?>) animation).name()))
+                        new AbstractMap.SimpleImmutableEntry<>(Enum.class, animation -> EntityActionPacket.Action.fromString(animation.name()))
                 ));
 
         this.create("PacketPlayOutEntityVelocity", EntityVelocityPacket.class)
                 .addField("a", "entityId", ConvertType.INTEGER, null)
                 .addField("b", "x", ConvertType.DOUBLE, Lists.newArrayList(
-                        new AbstractMap.SimpleImmutableEntry<>(Double.class, (x) -> x / EntityVelocityPacket.CONVERSION)
+                        new AbstractMap.SimpleImmutableEntry<>(Double.class, x -> x / EntityVelocityPacket.CONVERSION)
                 ))
                 .addField("c", "y", ConvertType.DOUBLE, Lists.newArrayList(
-                        new AbstractMap.SimpleImmutableEntry<>(Double.class, (y) -> y / EntityVelocityPacket.CONVERSION)
+                        new AbstractMap.SimpleImmutableEntry<>(Double.class, y -> y / EntityVelocityPacket.CONVERSION)
                 ))
                 .addField("d", "z", ConvertType.DOUBLE, Lists.newArrayList(
-                        new AbstractMap.SimpleImmutableEntry<>(Double.class, (z) -> z / EntityVelocityPacket.CONVERSION)
+                        new AbstractMap.SimpleImmutableEntry<>(Double.class, z -> z / EntityVelocityPacket.CONVERSION)
                 ));
     }
 
