@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DependencyPluginTest extends DependencyPlugin {
     public DependencyPluginTest() {
@@ -27,11 +28,13 @@ public class DependencyPluginTest extends DependencyPlugin {
     @SneakyThrows
     @Override
     protected void disable() {
-        for (Path path : Files.walk(this.getPluginFolder().resolve("log"))
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList())) {
+        try (Stream<Path> files = Files.walk(this.getPluginFolder().resolve("log"))) {
+            for (Path path : files
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.toList())) {
 
-            Files.delete(path);
+                Files.delete(path);
+            }
         }
 
         Files.deleteIfExists(this.getPluginFolder().resolve("log"));

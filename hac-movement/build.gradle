@@ -6,12 +6,8 @@ buildscript {
     }
 }
 
-plugins {
-    id "com.github.johnrengelman.shadow" version "6.1.0"
-}
-
 group 'com.heirteir'
-version pluginVersion
+version releaseVersion
 
 shadowJar {
     destinationDirectory = shadowJarBuildPath
@@ -33,7 +29,8 @@ dependencies {
 }
 
 processResources {
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
     from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
+        filter ReplaceTokens, tokens: [version: releaseVersion]
     }
 }

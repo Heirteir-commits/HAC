@@ -93,7 +93,7 @@ public class GithubDependency extends AbstractDependency {
     @Override
     public Path getDownloadLocation() {
         if (updating) {
-            return super.getDependencyPlugin().getPluginFolder().getParent().resolve("upload").resolve(this.fileName + ".jar");
+            return super.getDependencyPlugin().getPluginFolder().getParent().resolve("update").resolve(this.fileName + ".jar");
         } else {
             return super.getDependencyPlugin().getPluginFolder().getParent().resolve(this.fileName + ".jar");
         }
