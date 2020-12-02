@@ -7,6 +7,20 @@ import lombok.Getter;
 //PacketPlayInFlying
 @Getter
 public final class FlyingPacket extends AbstractWrappedPacketIn {
+    public static final FlyingPacket DEFAULT;
+
+    static {
+        DEFAULT = new FlyingPacket();
+        DEFAULT.x = 0;
+        DEFAULT.y = 0;
+        DEFAULT.z = 0;
+        DEFAULT.yaw = 0;
+        DEFAULT.pitch = 0;
+        DEFAULT.hasLook = true;
+        DEFAULT.hasPos = true;
+        DEFAULT.onGround = true;
+    }
+
     private double x;
     private double y;
     private double z;
@@ -18,18 +32,6 @@ public final class FlyingPacket extends AbstractWrappedPacketIn {
 
     public FlyingPacket() {
         super(PacketConstants.In.FLYING);
-    }
-
-    public FlyingPacket(double x, double y, double z, double yaw, double pitch, boolean hasLook, boolean hasPos, boolean onGround) {
-        this();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.hasLook = hasLook;
-        this.hasPos = hasPos;
-        this.onGround = onGround;
     }
 }
 

@@ -10,15 +10,17 @@ import java.util.Arrays;
 //PacketPlayInEntityAction
 @Getter
 public final class EntityActionPacket extends AbstractWrappedPacketIn {
+    public static final EntityActionPacket DEFAULT;
+
+    static {
+        DEFAULT = new EntityActionPacket();
+        DEFAULT.action = Action.INVALID;
+    }
+
     private Action action;
 
     public EntityActionPacket() {
         super(PacketConstants.In.ENTITY_ACTION);
-    }
-
-    public EntityActionPacket(Action action) {
-        this();
-        this.action = action;
     }
 
     @RequiredArgsConstructor

@@ -7,6 +7,15 @@ import lombok.Getter;
 //PacketPlayOutEntityVelocity
 @Getter
 public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
+    public static final EntityVelocityPacket DEFAULT;
+
+    static {
+        DEFAULT = new EntityVelocityPacket();
+        DEFAULT.x = 0;
+        DEFAULT.y = 0;
+        DEFAULT.z = 0;
+    }
+
     public static final double CONVERSION = 8000D;
     private double x;
     private double y;
@@ -14,12 +23,5 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
 
     public EntityVelocityPacket() {
         super(PacketConstants.Out.ENTITY_VELOCITY);
-    }
-
-    public EntityVelocityPacket(double x, double y, double z) {
-        this();
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 }

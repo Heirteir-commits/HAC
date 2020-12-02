@@ -25,8 +25,9 @@ class LogTest {
 
     @Test
     void testLog() {
-        plugin.getLog().reportFatalError("Testing", false);
+        Log log = plugin.getLog();
+        log.reportFatalError("Testing", false);
 
-        Assertions.assertThrows(IllegalStateException.class, () -> plugin.getLog().open());
+        Assertions.assertThrows(IllegalStateException.class, log::open);
     }
 }
