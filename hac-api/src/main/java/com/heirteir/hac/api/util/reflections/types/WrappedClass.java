@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Getter
@@ -64,11 +65,16 @@ public final class WrappedClass {
      * @return WrappedField instance of the field
      */
     public WrappedField getFieldByType(Class<?> type, int index) {
-        if (index > this.getFields().size() + 1) {
+        List<Field> typeFields = this.getFields()
+                .stream()
+                .filter(field -> field.getType().equals(type))
+                .collect(Collectors.toList());
+
+        if (index > typeFields.size() + 1) {
             throw new IndexOutOfBoundsException(String.format("There are only '%d' fields with type '%s' in class '%s' but tried to access the field at index '%d'.", this.getFields().size() + 1, type.getName(), this.raw.getName(), index));
         }
 
-        return new WrappedField(this, this.getFields().get(index));
+        return new WrappedField(this, typeFields.get(index));
     }
 
     /**

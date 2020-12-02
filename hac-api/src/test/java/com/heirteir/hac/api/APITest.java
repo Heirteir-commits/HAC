@@ -3,11 +3,15 @@ package com.heirteir.hac.api;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import com.google.common.collect.Lists;
-import com.heirteir.hac.api.events.*;
-import com.heirteir.hac.api.events.packets.wrapper.in.AbilitiesPacket;
-import com.heirteir.hac.api.events.packets.wrapper.in.EntityActionPacket;
-import com.heirteir.hac.api.events.packets.wrapper.in.FlyingPacket;
-import com.heirteir.hac.api.events.packets.wrapper.out.EntityVelocityPacket;
+import com.heirteir.hac.api.events.AbilitiesPacketEventExecutorTest;
+import com.heirteir.hac.api.events.EntityActionEventExecutorTest;
+import com.heirteir.hac.api.events.EntityVelocityEventExecutorTest;
+import com.heirteir.hac.api.events.FlyingPacketEventExecutorTest;
+import com.heirteir.hac.api.events.types.packets.AbstractPacketEventExecutor;
+import com.heirteir.hac.api.events.types.packets.wrapper.in.AbilitiesPacket;
+import com.heirteir.hac.api.events.types.packets.wrapper.in.EntityActionPacket;
+import com.heirteir.hac.api.events.types.packets.wrapper.in.FlyingPacket;
+import com.heirteir.hac.api.events.types.packets.wrapper.out.EntityVelocityPacket;
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.api.player.builder.DataManager;
 import com.heirteir.hac.api.player.data.DataBuilderTest;
@@ -87,13 +91,13 @@ class APITest {
 
         Assertions.assertNotNull(dataManager.getData(DataTest.class));
 
-        AbilitiesPacketEventTest abilitiesPacketEventTest = (AbilitiesPacketEventTest) test.getEvents().asList().get(0);
-        EntityActionEventTest entityActionEventTest = new EntityActionEventTest();
-        EntityVelocityEventTest entityVelocityEventTest = new EntityVelocityEventTest();
-        FlyingPacketEventTest flyingPacketEventTest = new FlyingPacketEventTest();
+        AbilitiesPacketEventExecutorTest abilitiesPacketEventTest = (AbilitiesPacketEventExecutorTest) test.getEvents().asList().get(0);
+        EntityActionEventExecutorTest entityActionEventTest = new EntityActionEventExecutorTest();
+        EntityVelocityEventExecutorTest entityVelocityEventTest = new EntityVelocityEventExecutorTest();
+        FlyingPacketEventExecutorTest flyingPacketEventTest = new FlyingPacketEventExecutorTest();
 
         /* insert randomly to insure it is being properly sorted by the event manager */
-        List<AbstractPacketEvent<?>> events = Lists.newArrayList(
+        List<AbstractPacketEventExecutor<?>> events = Lists.newArrayList(
                 entityActionEventTest,
                 entityVelocityEventTest,
                 flyingPacketEventTest
@@ -101,9 +105,9 @@ class APITest {
 
         Collections.shuffle(events);
 
-        events.forEach(api.getEventManager()::addEvent);
+        events.forEach(api.getEventManager()::addPacketEvent);
 
-        events = api.getEventManager().getCurrentEvents();
+        events = api.getEventManager().getCurrentPacketEvents();
 
         Assertions.assertEquals(abilitiesPacketEventTest, events.get(0));
         Assertions.assertEquals(entityActionEventTest, events.get(1));
@@ -111,10 +115,10 @@ class APITest {
         Assertions.assertEquals(flyingPacketEventTest, events.get(3));
 
         /* Reflections testing for latest version */
-        api.getEventManager().run(player, AbilitiesPacket.DEFAULT);
-        api.getEventManager().run(player, EntityActionPacket.DEFAULT);
-        api.getEventManager().run(player, EntityVelocityPacket.DEFAULT);
-        api.getEventManager().run(player, FlyingPacket.DEFAULT);
+        api.getEventManager().callPacketEvent(player, AbilitiesPacket.DEFAULT);
+        api.getEventManager().callPacketEvent(player, EntityActionPacket.DEFAULT);
+        api.getEventManager().callPacketEvent(player, EntityVelocityPacket.DEFAULT);
+        api.getEventManager().callPacketEvent(player, FlyingPacket.DEFAULT);
 
         Assertions.assertTrue(abilitiesPacketEventTest.isRun1());
         Assertions.assertFalse(abilitiesPacketEventTest.isRun2());

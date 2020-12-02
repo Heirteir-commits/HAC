@@ -13,7 +13,6 @@ shadowJar {
     destinationDirectory = shadowJarBuildPath
     archiveFileName = jarName
     relocate 'com.heirteir.hac.util', 'com.heirteir.hac.core.util'
-    minimize()
 }
 
 dependencies {

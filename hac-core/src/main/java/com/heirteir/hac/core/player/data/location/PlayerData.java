@@ -3,7 +3,7 @@ package com.heirteir.hac.core.player.data.location;
 import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3f;
 import com.heirteir.hac.api.API;
-import com.heirteir.hac.api.events.packets.wrapper.in.FlyingPacket;
+import com.heirteir.hac.api.events.types.packets.wrapper.in.FlyingPacket;
 import com.heirteir.hac.api.player.HACPlayer;
 import com.heirteir.hac.core.util.reflections.helper.PlayerHelper;
 import lombok.AccessLevel;
