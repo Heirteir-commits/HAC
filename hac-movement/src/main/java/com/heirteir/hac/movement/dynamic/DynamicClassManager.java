@@ -1,15 +1,14 @@
 package com.heirteir.hac.movement.dynamic;
 
+import com.google.common.collect.ImmutableMap;
 import com.heirteir.hac.movement.Movement;
 import com.heirteir.hac.movement.dynamic.entity.human.HACHumanCreator;
 import javassist.ClassPool;
 import javassist.LoaderClassPath;
-import lombok.Getter;
 
 public final class DynamicClassManager {
     private final Movement movement;
-    @Getter
-    private final HACHumanCreator humanCreator;
+    private final ImmutableMap<Class<? extends AbstractDynamicClassCreator>, ? extends AbstractDynamicClassCreator> creators;
 
     public DynamicClassManager(Movement movement) {
         this.movement = movement;
@@ -17,16 +16,26 @@ public final class DynamicClassManager {
         ClassPool pool = new ClassPool(false);
         pool.appendClassPath(new LoaderClassPath(DynamicClassManager.class.getClassLoader()));
 
-        this.humanCreator = new HACHumanCreator(movement, pool);
+        this.creators = ImmutableMap.of(
+                HACHumanCreator.class, new HACHumanCreator(movement, pool)
+        );
+    }
+
+    public <T extends AbstractDynamicClassCreator> T getDynamicClass(Class<T> clazz) {
+        return clazz.cast(this.creators.get(clazz));
     }
 
     public void load() {
-        this.movement.getLog().info("Creating dynamic class HACHuman.");
-        this.humanCreator.load();
+        this.creators.values().forEach(creator -> {
+            this.movement.getLog().info(String.format("Attaching dynamic class '%s'.", creator.getName()));
+            creator.load();
+        });
     }
 
     public void unload() {
-        this.movement.getLog().info("Detaching dynamic class HACHuman.");
-        this.humanCreator.unload();
+        this.creators.values().forEach(creator -> {
+            this.movement.getLog().info(String.format("Detaching dynamic class '%s'.", creator.getName()));
+            creator.unload();
+        });
     }
 }

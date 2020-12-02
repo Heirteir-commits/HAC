@@ -7,8 +7,8 @@ import com.heirteir.hac.core.player.data.location.PlayerData;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-public final class EntityActionUpdater extends AbstractPacketEvent<EntityActionPacket> {
-    public EntityActionUpdater() {
+public final class PlayerDataEntityActionUpdater extends AbstractPacketEvent<EntityActionPacket> {
+    public PlayerDataEntityActionUpdater() {
         super(EntityActionPacket.class, Priority.PROCESS_1);
     }
 

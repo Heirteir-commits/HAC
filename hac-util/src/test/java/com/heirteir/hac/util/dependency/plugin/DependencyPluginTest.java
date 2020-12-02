@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DependencyPluginTest extends DependencyPlugin {
+public final class DependencyPluginTest extends DependencyPlugin {
     public DependencyPluginTest() {
         super("HAC");
     }

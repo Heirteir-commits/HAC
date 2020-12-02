@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
 @Getter
-public class EntityActionEventTest extends AbstractPacketEvent<EntityActionPacket> {
+public final class EntityActionEventTest extends AbstractPacketEvent<EntityActionPacket> {
     private boolean run1;
     private boolean run2;
 

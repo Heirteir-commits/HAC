@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
-public class DataManager {
+public final class DataManager {
     private final Map<Class<?>, Object> data;
 
     public DataManager() {
