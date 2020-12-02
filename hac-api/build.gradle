@@ -1,6 +1,11 @@
 group 'com.heirteir'
 version pluginVersion
 
+jar {
+    destinationDirectory = shadowJarBuildPath
+    archiveFileName = 'HAC.API.jar'
+}
+
 dependencies {
     testImplementation('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
         exclude group: 'org.spigotmc'
