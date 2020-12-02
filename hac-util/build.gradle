@@ -9,12 +9,12 @@ dependencies {
     testImplementation('com.github.seeseemelk:MockBukkit-v1.16:0.15.0') {
         exclude group: 'org.spigotmc'
     }
-    testImplementation(files(latestSpigot))
+    testImplementation(latestSpigot)
     testImplementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.4.2')
 
     compileOnlyApi('org.jetbrains:annotations:16.0.2')
-    compileOnlyApi(files(latestSpigot))
+    compileOnlyApi(latestSpigot)
 
     errorprone("com.google.errorprone:error_prone_core:2.4.0")
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
