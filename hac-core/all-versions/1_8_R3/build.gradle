@@ -1,10 +1,8 @@
 group 'com.heretere'
-version PLUGIN_VERSION
+version rootProject.version
 
 dependencies {
     /* Spigot Dependency */
-    compileOnlyApi(files(EIGHT_R3))
-
-    compileOnlyApi(project(':hac-core:proxy'))
+    compileOnlyApi(files(VERSIONS['1_8_R3'].spigotJar))
 }
 

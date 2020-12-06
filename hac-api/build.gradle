@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.heretere'
-version PLUGIN_VERSION
+version rootProject.version
 
 dependencies {
     compileOnlyApi(LATEST_SPIGOT)

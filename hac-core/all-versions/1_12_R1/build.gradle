@@ -1,8 +1,8 @@
 group 'com.heretere'
-version PLUGIN_VERSION
+version rootProject.version
 
 dependencies {
     /* Spigot Dependency */
-    compileOnlyApi(files(TWELVE_R1))
+    compileOnlyApi(files(VERSIONS['1_12_R1'].spigotJar))
 }
 

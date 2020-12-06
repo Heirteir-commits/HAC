@@ -5,61 +5,57 @@ plugins {
 }
 
 group 'com.heretere'
-version PLUGIN_VERSION
+version rootProject.version
 
 dependencies {
     compileOnlyApi(LATEST_SPIGOT)
 
-    api(project(':hac-core:proxy'))
-    api(project(':hac-core:all-versions'))
-}
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: rootProject.PLUGIN_VERSION]
-    }
+    api(project(PROJECT_PROXY))
+    api(project(PROJECT_ALL_VERSIONS))
 }
 
 shadowJar {
+    outputs.upToDateWhen { return false } //Will always rebuild fatjar since version inclusion can be changed.
     doFirst {
         dependencies {
-            if (!USE_EIGHT_R3) {
-                exclude(project(':hac-core:all-versions:1_8_R3'))
-            }
-            if (!USE_NINE_R2) {
-                exclude(project(':hac-core:all-versions:1_9_R2'))
-            }
-            if (!USE_TEN_R1) {
-                exclude(project(':hac-core:all-versions:1_10_R1'))
-            }
-            if (!USE_ELEVEN_R1) {
-                exclude(project(':hac-core:all-versions:1_11_R1'))
-            }
-            if (!USE_TWELVE_R1) {
-                exclude(project(':hac-core:all-versions:1_12_R1'))
-            }
-            if (!USE_THIRTEEN_R2) {
-                exclude(project(':hac-core:all-versions:1_13_R2'))
-            }
-            if (!USE_FOURTEEN_R1) {
-                exclude(project(':hac-core:all-versions:1_14_R1'))
-            }
-            if (!USE_FIFTEEN_R1) {
-                exclude(project(':hac-core:all-versions:1_15_R1'))
-            }
-            if (!USE_SIXTEEN_R3) {
-                exclude(project(':hac-core:all-versions:1_16_R3'))
+            /* excludes version is include is set to false for it */
+            VERSIONS.each { k, v ->
+                if (!v.include) {
+                    exclude(PROJECT_ALL_VERSIONS.toString() + v.projectAppend.toString())
+                }
             }
         }
-        relocate 'com.heretere.hac.core.proxy.versions.eight', 'cm.heretere.hac.core.proxy.versions.1_8_R3'
-        relocate 'com.heretere.hac.core.proxy.versions.nine', 'com.heretere.hac.core.proxy.versions.1_9_R2'
-        relocate 'com.heretere.hac.core.proxy.versions.ten', 'com.heretere.hac.core.proxy.versions.1_10_R1'
-        relocate 'com.heretere.hac.core.proxy.versions.eleven', 'com.heretere.hac.core.proxy.versions.1_11_R1'
-        relocate 'com.heretere.hac.core.proxy.versions.twelve', 'com.heretere.hac.core.proxy.versions.1_12_R1'
-        relocate 'com.heretere.hac.core.proxy.versions.thirteen', 'com.heretere.hac.core.proxy.versions.1_13_R1'
-        relocate 'com.heretere.hac.core.proxy.versions.com.heretere.hac.core.proxy.versions.fourteen', 'com.heretere.hac.core.proxy.versions.1_14_R1'
-        relocate 'com.heretere.hac.core.proxy.versions.com.heretere.hac.core.proxy.versions.fifteen', 'com.heretere.hac.core.proxy.versions.1_15_R1'
-        relocate 'com.heretere.hac.core.proxy.versions.sixteen', 'com.heretere.hac.core.proxy.versions.1_16_R3'
+
+        /* Relocates all versions to their correct name: VERSIONS can be found in rootProject build.gradle*/
+        VERSIONS.each { k, v ->
+            relocate VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.find.toString(),
+                    VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.replace.toString()
+        }
+
+        /* module specific */
+        relocate 'mikera', 'com.heretere.hac.core.libs.mikera'
+        relocate 'us.bpsm', 'com.heretere.hac.core.libs'
         relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
+
+        archiveFileName = 'HAC.Core.jar'
+    }
+}
+
+processResources {
+    doFirst {
+        File availableVersions = new File(sourceSets.main.resources.srcDirs[0].path, "available_versions.txt")
+        availableVersions.withWriter {
+            out ->
+                VERSIONS.each {
+                    k, v ->
+                        if (v.include) {
+                            out.println(k)
+                        }
+                }
+        }
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
     }
 }

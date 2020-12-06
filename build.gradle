@@ -4,34 +4,50 @@ plugins {
 }
 
 ext {
-    /* define version for subprojects */
-    PLUGIN_VERSION = rootProject.version.toString()
-
     /* ine latest spigot API for subprojects */
     LATEST_SPIGOT = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
 
     /* Spigot jar version */
     /* Place a compiled Spigot Jar in the libs/ folder with the specified names seen here to build implementation */
     /* You don't need all jar versions you just need the jar for the version you want to compile. */
-    EIGHT_R3 = file(buildDir.parentFile.path + '/libs/1_8_R3.jar') /* 1.8.8 */
-    NINE_R2 = file(buildDir.parentFile.path + '/libs/1_9_R2.jar') /* 1.9.4 */
-    TEN_R1 = file(buildDir.parentFile.path + '/libs/1_10_R1.jar') /* 1.10.2 */
-    ELEVEN_R1 = file(buildDir.parentFile.path + '/libs/1_11_R1.jar') /* 1.11.2 */
-    TWELVE_R1 = file(buildDir.parentFile.path + '/libs/1_12_R1.jar') /* 1.12.2 */
-    THIRTEEN_R2 = file(buildDir.parentFile.path + '/libs/1_13_R2.jar') /* 1.13.2 */
-    FOURTEEN_R1 = file(buildDir.parentFile.path + '/libs/1_14_R1.jar') /* 1.14.2 */
-    FIFTEEN_R1 = file(buildDir.parentFile.path + '/libs/1_15_R1.jar') /* 1.15.2 */
-    SIXTEEN_R3 = file(buildDir.parentFile.path + '/libs/1_16_R3.jar') /* 1.16.4 */
 
-    USE_EIGHT_R3 = false
-    USE_NINE_R2 = false
-    USE_TEN_R1 = false
-    USE_ELEVEN_R1 = false
-    USE_TWELVE_R1 = false
-    USE_THIRTEEN_R2 = false
-    USE_FOURTEEN_R1 = false
-    USE_FIFTEEN_R1 = false
-    USE_SIXTEEN_R3 = false
+    /* To define a new version just add a new index to the array and add the module to settings.gradle */
+    def tmpVersions = [
+            [find: 'eight', replace: '1_8_R3'],
+            [find: 'nine', replace: '1_9_R2'],
+            [find: 'ten', replace: '1_10_R1'],
+            [find: 'eleven', replace: '1_11_R1'],
+            [find: 'twelve', replace: '1_12_R1'],
+            [find: 'thirteen', replace: '1_13_R2'],
+            [find: 'fourteen', replace: '1_14_R1'],
+            [find: 'fifteen', replace: '1_15_R1'],
+            [find: 'sixteen', replace: '1_16_R3']
+    ]
+
+    VERSIONS = [:]
+
+    tmpVersions.each {
+        v ->
+            VERSIONS[v.replace] = [
+                    replacer     : v,
+                    spigotJar    : file(buildDir.parentFile.path + '/libs/' + v.replace + '.jar'),
+                    projectAppend: ':' + v.replace,
+                    include      : false
+            ]
+    }
+
+    def buildAll = task('Build All')
+
+    VERSIONS.each {
+        k, v ->
+            task(k.toString()) {
+                doFirst {
+                    v.include = true
+                }
+            }
+
+            buildAll.dependsOn k.toString()
+    }
 }
 
 group 'com.heretere'
@@ -72,71 +88,4 @@ allprojects {
 subprojects {
     /* Project wide plugins */
     apply plugin: 'net.ltgt.errorprone'
-}
-
-task build1_8_R3 {
-    doFirst {
-        USE_EIGHT_R3 = true
-    }
-}
-
-task build1_9_R2 {
-    doFirst {
-        USE_NINE_R2 = true
-    }
-}
-
-task build1_10_R1 {
-    doFirst {
-        USE_TEN_R1 = true
-    }
-}
-
-task build1_11_R1 {
-    doFirst {
-        USE_ELEVEN_R1 = true
-    }
-}
-
-task build1_12_R1 {
-    doFirst {
-        USE_TWELVE_R1 = true
-    }
-}
-
-task build1_13_R2 {
-    doFirst {
-        USE_THIRTEEN_R2 = true
-    }
-}
-
-task build1_14_R1 {
-    doFirst {
-        USE_FOURTEEN_R1 = true
-    }
-}
-
-task build1_15_R1 {
-    doFirst {
-        USE_FIFTEEN_R1 = true
-    }
-}
-
-task build1_16_R3 {
-    doFirst {
-        USE_SIXTEEN_R3 = true
-    }
-}
-
-/* Will build as many as possible depending on the available jars */
-task 'Build All' {
-    dependsOn build1_8_R3
-    dependsOn build1_9_R2
-    dependsOn build1_10_R1
-    dependsOn build1_11_R1
-    dependsOn build1_12_R1
-    dependsOn build1_13_R2
-    dependsOn build1_14_R1
-    dependsOn build1_15_R1
-    dependsOn build1_16_R3
 }

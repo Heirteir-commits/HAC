@@ -2,8 +2,17 @@ plugins {
     id 'base'
 }
 
+ext {
+    /* Per project names that should be applied to sub projects (used to easily copy and paste this to a new module) */
+    PROJECT_PREPEND = ':hac-core'
+    PROJECT_ALL_VERSIONS = PROJECT_PREPEND + ':all-versions'
+    PROJECT_PROXY = PROJECT_PREPEND + ':proxy'
+    PROJECT_PLUGIN = PROJECT_PREPEND + ':plugin'
+    VERSION_PACKAGE_ABSOLUTE = 'com.heretere.hac.core.proxy.versions.'
+}
+
 group 'com.heretere'
-version PLUGIN_VERSION
+version rootProject.version
 
 subprojects {
     apply plugin: 'java-library'

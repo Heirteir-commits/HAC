@@ -3,6 +3,7 @@ package com.heretere.hac.core;
 import com.heretere.hac.core.proxy.VersionProxy;
 import com.heretere.hac.util.implementation.VersionProcessor;
 import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,7 @@ public final class Core extends JavaPlugin {
     public void onLoad() {
         Class<?> versionProxyClass =
                 VersionProcessor.getLatestVersionProxy(
-                        "com.heretere.hac.core.implementation.versions"
+                        "com.heretere.hac.core.proxy.versions"
                 );
 
         if (versionProxyClass == null) {
@@ -22,7 +23,7 @@ public final class Core extends JavaPlugin {
         }
 
         try {
-            Object versionProxyUnchecked = versionProxyClass.getConstructor().newInstance();
+            Object versionProxyUnchecked = versionProxyClass.getConstructor(Plugin.class).newInstance(this);
 
             if (versionProxyUnchecked instanceof VersionProxy) {
                 this.versionProxy = (VersionProxy) versionProxyUnchecked;

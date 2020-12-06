@@ -1,41 +1,12 @@
 group 'com.heretere'
-version PLUGIN_VERSION
+version rootProject.version
 
 dependencies {
-    if (EIGHT_R3.exists()) {
-        implementation(project(':hac-core:all-versions:1_8_R3'))
-    }
-
-    if (NINE_R2.exists()) {
-        implementation(project(':hac-core:all-versions:1_9_R2'))
-    }
-
-    if (TEN_R1.exists()) {
-        implementation(project(':hac-core:all-versions:1_10_R1'))
-    }
-
-    if (ELEVEN_R1.exists()) {
-        implementation(project(':hac-core:all-versions:1_11_R1'))
-    }
-
-    if (TWELVE_R1.exists()) {
-        implementation(project(':hac-core:all-versions:1_12_R1'))
-    }
-
-    if (THIRTEEN_R2.exists()) {
-        implementation(project(':hac-core:all-versions:1_13_R2'))
-    }
-
-    if (FOURTEEN_R1.exists()) {
-        implementation(project(':hac-core:all-versions:1_14_R1'))
-    }
-
-    if (FIFTEEN_R1.exists()) {
-        implementation(project(':hac-core:all-versions:1_15_R1'))
-    }
-
-    if (SIXTEEN_R3.exists()) {
-        implementation(project(':hac-core:all-versions:1_16_R3'))
+    /* flags each version to be built is spigot jar is included */
+    VERSIONS.each { k, v ->
+        if (v.spigotJar.exists()) {
+            implementation(project(PROJECT_ALL_VERSIONS.toString() + v.projectAppend.toString()))
+        }
     }
 }
 
@@ -43,7 +14,7 @@ subprojects {
     /* Give all subprojects the hac-core:implementation project */
     pluginManager.withPlugin('java-library') {
         dependencies {
-            compileOnlyApi(project(':hac-core:proxy'))
+            compileOnlyApi(project(PROJECT_PROXY))
         }
     }
 }
