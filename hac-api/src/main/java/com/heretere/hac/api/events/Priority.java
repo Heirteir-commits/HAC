@@ -1,4 +1,4 @@
-package com.heretere.hac.api.events.types;
+package com.heretere.hac.api.events;
 
 /**
  * The enum Priority.

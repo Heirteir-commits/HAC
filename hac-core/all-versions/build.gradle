@@ -3,10 +3,11 @@ version rootProject.version
 
 dependencies {
     /* flags each version to be built is spigot jar is included */
-    VERSIONS.each { k, v ->
-        if (v.spigotJar.exists()) {
-            implementation(project(PROJECT_ALL_VERSIONS.toString() + v.projectAppend.toString()))
-        }
+    VERSIONS.each {
+        k, v ->
+            if (v.spigotJar.exists()) {
+                implementation project(PROJECT_ALL_VERSIONS.toString() + v.projectAppend.toString())
+            }
     }
 }
 
@@ -14,7 +15,7 @@ subprojects {
     /* Give all subprojects the hac-core:implementation project */
     pluginManager.withPlugin('java-library') {
         dependencies {
-            compileOnlyApi(project(PROJECT_PROXY))
+            compileOnlyApi project(PROJECT_PROXY)
         }
     }
 }

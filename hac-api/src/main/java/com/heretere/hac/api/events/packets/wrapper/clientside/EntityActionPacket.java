@@ -1,6 +1,6 @@
-package com.heretere.hac.api.events.types.packets.wrapper.clientside;
+package com.heretere.hac.api.events.packets.wrapper.clientside;
 
-import com.heretere.hac.api.events.types.packets.wrapper.WrappedPacketIn;
+import com.heretere.hac.api.events.packets.wrapper.WrappedPacketIn;
 
 /**
  * This is the wrapped version of the PacketPlayInEntityActionPacket.

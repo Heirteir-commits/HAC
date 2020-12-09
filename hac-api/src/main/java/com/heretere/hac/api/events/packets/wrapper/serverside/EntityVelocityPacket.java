@@ -1,6 +1,6 @@
-package com.heretere.hac.api.events.types.packets.wrapper.serverside;
+package com.heretere.hac.api.events.packets.wrapper.serverside;
 
-import com.heretere.hac.api.events.types.packets.wrapper.AbstractWrappedPacketOut;
+import com.heretere.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
 
 /**
  * A Wrapped version of the PacketPlayOutEntityVelocityPacket

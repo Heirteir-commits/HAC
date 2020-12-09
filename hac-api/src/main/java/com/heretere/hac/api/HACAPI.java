@@ -3,7 +3,7 @@ package com.heretere.hac.api;
 import com.google.common.base.Preconditions;
 import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.events.ASyncPacketEventManager;
-import com.heretere.hac.api.events.types.packets.PacketReferences;
+import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.player.HACPlayerList;
 import org.bukkit.plugin.Plugin;

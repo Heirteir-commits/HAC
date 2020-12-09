@@ -6,13 +6,11 @@ group 'com.heretere'
 version rootProject.version
 
 dependencies {
-    compileOnlyApi('io.netty:netty-all:4.1.53.Final')
-    compileOnlyApi(LATEST_SPIGOT)
+    compileOnlyApi 'io.netty:netty-all:4.1.53.Final'
+    compileOnlyApi LATEST_SPIGOT
 
-    api('net.mikera:vectorz:0.67.0')
-
-    api(project(':hac-api'))
-    api(project(':hac-util'))
+    api project(':hac-api')
+    api project(':hac-util')
 }
 
 shadowJar {
@@ -22,14 +20,17 @@ shadowJar {
 }
 
 afterEvaluate {
-    rootProject.VERSIONS.each { k, v ->
-        task(k.toString()) {
-            dependsOn rootProject.getTasksByName(k.toString(), false)[0]
-            finalizedBy shadowJar
-        }
+    rootProject.VERSIONS.each {
+        k, v ->
+            task(k.toString()) {
+                group TASK_GROUP_NAME
+                dependsOn rootProject.getTasksByName(k.toString(), false)[0]
+                finalizedBy shadowJar
+            }
     }
 
     task('Build All') {
+        group TASK_GROUP_NAME
         dependsOn rootProject.getTasksByName('Build All', false)[0]
         finalizedBy shadowJar
     }

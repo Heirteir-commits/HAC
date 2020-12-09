@@ -17,7 +17,7 @@ public final class HACPlayerBuilder {
 
     private final Map<Class<?>, AbstractDataBuilder<?>> builders;
 
-    HACPlayerBuilder(HACPlayerList playerList) {
+    HACPlayerBuilder(@NotNull HACPlayerList playerList) {
         this.playerList = playerList;
         this.builders = Maps.newLinkedHashMap();
     }
@@ -65,7 +65,7 @@ public final class HACPlayerBuilder {
      * @param player The Bukkit {@link org.bukkit.entity.Player}.
      * @return The built {@link HACPlayer}.
      */
-    public HACPlayer build(Player player) {
+    public HACPlayer build(@NotNull Player player) {
         HACPlayer hacPlayer = new HACPlayer(player);
         this.builders
                 .forEach((key, value) -> hacPlayer.getDataManager().addDataRaw(key, value.build(hacPlayer)));

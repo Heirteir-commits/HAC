@@ -1,10 +1,10 @@
 package com.heretere.hac.core.proxy.player.data.player;
 
 import com.google.common.base.Preconditions;
-import com.heretere.hac.api.events.types.packets.wrapper.clientside.FlyingPacket;
+import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
-import mikera.vectorz.Vector2;
-import mikera.vectorz.Vector3;
+import com.heretere.hac.core.util.vector.MutableVector2F;
+import com.heretere.hac.core.util.vector.MutableVector3F;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,15 +36,15 @@ public final class PlayerData {
     public void update(@NotNull FlyingPacket flyingPacket) {
         this.previous.apply(current);
 
-        this.current.location.setValues(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
-        this.current.velocity.setValues(
-                this.current.location.getX() - this.previous.location.getX(),
-                this.current.location.getY() - this.previous.location.getY(),
-                this.current.location.getZ() - this.previous.location.getZ()
+        this.current.getLocation().set(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
+        this.current.getVelocity().set(
+                this.current.getLocation().getX() - this.previous.getLocation().getX(),
+                this.current.getLocation().getY() - this.previous.getLocation().getY(),
+                this.current.getLocation().getZ() - this.previous.getLocation().getZ()
         );
-        this.current.direction.setValues(flyingPacket.getYaw(), flyingPacket.getPitch());
+        this.current.getDirection().set(flyingPacket.getYaw(), flyingPacket.getPitch());
 
-        this.current.onGround = flyingPacket.isOnGround();
+        this.current.setOnGround(flyingPacket.isOnGround());
     }
 
     /**
@@ -53,7 +53,7 @@ public final class PlayerData {
      * @return the current
      */
     public Data getCurrent() {
-        return current;
+        return this.current;
     }
 
     /**
@@ -62,7 +62,7 @@ public final class PlayerData {
      * @return the previous
      */
     public Data getPrevious() {
-        return previous;
+        return this.previous;
     }
 
     /**
@@ -71,9 +71,9 @@ public final class PlayerData {
      */
     public static final class Data {
         /* These vectors are mutable to avoid unneeded object creation at runtime. */
-        private final Vector3 location;
-        private final Vector3 velocity;
-        private final Vector2 direction;
+        private final MutableVector3F location;
+        private final MutableVector3F velocity;
+        private final MutableVector2F direction;
 
         private boolean onGround;
         private boolean sneaking;
@@ -81,14 +81,14 @@ public final class PlayerData {
         private boolean elytraFlying;
         private boolean flying;
 
-        private Data(@NotNull Player player) {
-            this.location = Vector3.of(
+        public Data(@NotNull Player player) {
+            this.location = new MutableVector3F(
                     player.getLocation().getX(),
                     player.getLocation().getY(),
                     player.getLocation().getZ()
             );
-            this.velocity = Vector3.of(0D, 0D, 0D);
-            this.direction = Vector2.of(
+            this.velocity = new MutableVector3F(0, 0, 0);
+            this.direction = new MutableVector2F(
                     player.getLocation().getYaw(),
                     player.getLocation().getPitch()
             );
@@ -100,7 +100,7 @@ public final class PlayerData {
             this.flying = player.isFlying();
         }
 
-        private void apply(@NotNull Data other) {
+        public void apply(@NotNull Data other) {
             this.location.set(other.location);
             this.velocity.set(other.velocity);
             this.direction.set(other.direction);
@@ -117,8 +117,8 @@ public final class PlayerData {
          *
          * @return the location
          */
-        public Vector3 getLocation() {
-            return location;
+        public MutableVector3F getLocation() {
+            return this.location;
         }
 
         /**
@@ -129,7 +129,7 @@ public final class PlayerData {
          * @param z the z
          */
         public void setLocation(double x, double y, double z) {
-            this.location.setValues(x, y, z);
+            this.location.set(x, y, z);
         }
 
         /**
@@ -137,8 +137,8 @@ public final class PlayerData {
          *
          * @return the velocity
          */
-        public Vector3 getVelocity() {
-            return velocity;
+        public MutableVector3F getVelocity() {
+            return this.velocity;
         }
 
         /**
@@ -149,7 +149,7 @@ public final class PlayerData {
          * @param dz the dz
          */
         public void setVelocity(double dx, double dy, double dz) {
-            this.velocity.setValues(dx, dy, dz);
+            this.velocity.set(dx, dy, dz);
         }
 
         /**
@@ -157,8 +157,8 @@ public final class PlayerData {
          *
          * @return the direction
          */
-        public Vector2 getDirection() {
-            return direction;
+        public MutableVector2F getDirection() {
+            return this.direction;
         }
 
         /**
@@ -168,7 +168,7 @@ public final class PlayerData {
          * @param pitch the pitch
          */
         public void setDirection(double yaw, double pitch) {
-            this.direction.setValues(yaw, pitch);
+            this.direction.set(yaw, pitch);
         }
 
         /**
@@ -177,7 +177,7 @@ public final class PlayerData {
          * @return the boolean
          */
         public boolean isOnGround() {
-            return onGround;
+            return this.onGround;
         }
 
         /**
@@ -195,7 +195,7 @@ public final class PlayerData {
          * @return the boolean
          */
         public boolean isSneaking() {
-            return sneaking;
+            return this.sneaking;
         }
 
         /**
@@ -213,7 +213,7 @@ public final class PlayerData {
          * @return the boolean
          */
         public boolean isSprinting() {
-            return sprinting;
+            return this.sprinting;
         }
 
         /**
@@ -231,7 +231,7 @@ public final class PlayerData {
          * @return the boolean
          */
         public boolean isElytraFlying() {
-            return elytraFlying;
+            return this.elytraFlying;
         }
 
         /**
@@ -249,7 +249,7 @@ public final class PlayerData {
          * @return the boolean
          */
         public boolean isFlying() {
-            return flying;
+            return this.flying;
         }
 
         /**

@@ -165,5 +165,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,sonarqube,git
 
 #Custom
-libs/*
-!libs/putspigotjarshere.txt
+put_spigot_jars_here/*
+!put_spigot_jars_here/readme.txt

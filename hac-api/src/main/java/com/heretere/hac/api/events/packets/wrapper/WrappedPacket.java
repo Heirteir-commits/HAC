@@ -1,4 +1,4 @@
-package com.heretere.hac.api.events.types.packets.wrapper;
+package com.heretere.hac.api.events.packets.wrapper;
 
 
 /**

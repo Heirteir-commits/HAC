@@ -1,17 +1,24 @@
 plugins {
     id 'base'
+    id 'idea'
     id 'net.ltgt.errorprone' version '1.3.0' apply false
 }
 
 ext {
+    /* Group name*/
+    TASK_GROUP_NAME = 'hac package'
+
     /* ine latest spigot API for subprojects */
     LATEST_SPIGOT = 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
 
     /* Spigot jar version */
-    /* Place a compiled Spigot Jar in the libs/ folder with the specified names seen here to build implementation */
+    /* Place a compiled Spigot Jar in the put_spigot_jars_here/ folder with the specified names seen here to build implementation */
     /* You don't need all jar versions you just need the jar for the version you want to compile. */
+    /* Jar names must be their nms version names eg: 1.8.8 = 1_8_R3, 1.9.4 = 1_9_R2 */
 
     /* To define a new version just add a new index to the array and add the module to settings.gradle */
+    VERSIONS = [:]
+
     def tmpVersions = [
             [find: 'eight', replace: '1_8_R3'],
             [find: 'nine', replace: '1_9_R2'],
@@ -24,23 +31,24 @@ ext {
             [find: 'sixteen', replace: '1_16_R3']
     ]
 
-    VERSIONS = [:]
-
     tmpVersions.each {
         v ->
             VERSIONS[v.replace] = [
                     replacer     : v,
-                    spigotJar    : file(buildDir.parentFile.path + '/libs/' + v.replace + '.jar'),
+                    spigotJar    : file(buildDir.parentFile.path + '/put_spigot_jars_here/' + v.replace + '.jar'),
                     projectAppend: ':' + v.replace,
                     include      : false
             ]
     }
 
-    def buildAll = task('Build All')
+    def buildAll = task('Build All') {
+        group TASK_GROUP_NAME
+    }
 
     VERSIONS.each {
         k, v ->
             task(k.toString()) {
+                group TASK_GROUP_NAME
                 doFirst {
                     v.include = true
                 }
@@ -67,14 +75,14 @@ allprojects {
     /* Apply errorprone to all project sources */
     pluginManager.withPlugin('net.ltgt.errorprone') {
         dependencies {
-            errorprone("com.google.errorprone:error_prone_core:2.4.0")
+            errorprone 'com.google.errorprone:error_prone_core:2.4.0'
         }
     }
 
     /* Project wide dependencies */
     pluginManager.withPlugin('java-library') {
         dependencies {
-            compileOnlyApi("org.jetbrains:annotations:16.0.2")
+            compileOnlyApi 'org.jetbrains:annotations:16.0.2'
         }
 
         compileJava {
@@ -87,5 +95,6 @@ allprojects {
 
 subprojects {
     /* Project wide plugins */
+    apply plugin: 'idea'
     apply plugin: 'net.ltgt.errorprone'
 }

@@ -1,11 +1,11 @@
 package com.heretere.hac.core.proxy.versions.fourteen.packets.builder.clientside;
 
-import com.heretere.hac.api.events.types.packets.builder.PacketBuilder;
-import com.heretere.hac.api.events.types.packets.wrapper.clientside.AbilitiesPacket;
+import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
+import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import net.minecraft.server.v1_14_R1.PacketPlayInAbilities;
 
-public final class AbilitiesPacketBuilder extends PacketBuilder<AbilitiesPacket> {
+public final class AbilitiesPacketBuilder extends AbstractPacketBuilder<AbilitiesPacket> {
 
     public AbilitiesPacketBuilder() {
         super(PacketPlayInAbilities.class);

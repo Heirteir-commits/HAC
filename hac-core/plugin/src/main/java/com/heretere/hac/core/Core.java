@@ -1,6 +1,6 @@
 package com.heretere.hac.core;
 
-import com.heretere.hac.core.proxy.VersionProxy;
+import com.heretere.hac.core.proxy.AbstractVersionProxy;
 import com.heretere.hac.util.implementation.VersionProcessor;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.Plugin;
@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 
 public final class Core extends JavaPlugin {
-    private VersionProxy versionProxy;
+    private AbstractVersionProxy versionProxy;
 
     @Override
     public void onLoad() {
@@ -25,8 +25,8 @@ public final class Core extends JavaPlugin {
         try {
             Object versionProxyUnchecked = versionProxyClass.getConstructor(Plugin.class).newInstance(this);
 
-            if (versionProxyUnchecked instanceof VersionProxy) {
-                this.versionProxy = (VersionProxy) versionProxyUnchecked;
+            if (versionProxyUnchecked instanceof AbstractVersionProxy) {
+                this.versionProxy = (AbstractVersionProxy) versionProxyUnchecked;
             }
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace(); //TODO: move to logger

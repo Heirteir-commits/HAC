@@ -1,13 +1,13 @@
-package com.heretere.hac.api.events.types.packets;
+package com.heretere.hac.api.events.packets;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.events.types.packets.builder.PacketBuilder;
-import com.heretere.hac.api.events.types.packets.wrapper.WrappedPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.clientside.AbilitiesPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.clientside.EntityActionPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.clientside.FlyingPacket;
-import com.heretere.hac.api.events.types.packets.wrapper.serverside.EntityVelocityPacket;
+import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
+import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
+import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
+import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
+import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
+import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
 
 import java.util.Map;
 
@@ -28,10 +28,10 @@ public final class PacketReferences {
         return this.serverSide;
     }
 
-    public abstract static class PacketReferenceHolder {
+    public abstract static class AbstractPacketReferenceHolder {
         private final Map<Class<?>, PacketReference<?>> packetReferences;
 
-        protected PacketReferenceHolder() {
+        protected AbstractPacketReferenceHolder() {
             this.packetReferences = Maps.newHashMap();
         }
 
@@ -39,23 +39,23 @@ public final class PacketReferences {
             return this.packetReferences.get(nmsClass);
         }
 
-        private void register(PacketReference<?> packetReference, PacketBuilder<?> builder) {
+        protected void register(PacketReference<?> packetReference, AbstractPacketBuilder<?> builder) {
             for (Class<?> nmsClass : builder.getPacketClasses()) {
                 this.packetReferences.put(nmsClass, packetReference);
             }
         }
     }
 
-    public static final class ClientSide extends PacketReferenceHolder {
+    public static final class ClientSide extends AbstractPacketReferenceHolder {
         private final PacketReference<AbilitiesPacket> abilities;
         private final PacketReference<EntityActionPacket> entityAction;
         private final PacketReference<FlyingPacket> flying;
 
         private ClientSide() {
             super();
-            this.abilities = new PacketReference<>(this, AbilitiesPacket.class);
-            this.entityAction = new PacketReference<>(this, EntityActionPacket.class);
-            this.flying = new PacketReference<>(this, FlyingPacket.class);
+            this.abilities = new PacketReference<>("abilities", this, AbilitiesPacket.class);
+            this.entityAction = new PacketReference<>("entity_action", this, EntityActionPacket.class);
+            this.flying = new PacketReference<>("flying", this, FlyingPacket.class);
         }
 
         public PacketReference<AbilitiesPacket> getAbilities() {
@@ -71,12 +71,12 @@ public final class PacketReferences {
         }
     }
 
-    public static final class ServerSide extends PacketReferenceHolder {
+    public static final class ServerSide extends AbstractPacketReferenceHolder {
         private final PacketReference<EntityVelocityPacket> entityVelocity;
 
         private ServerSide() {
             super();
-            this.entityVelocity = new PacketReference<>(this, EntityVelocityPacket.class);
+            this.entityVelocity = new PacketReference<>("entity_velocity", this, EntityVelocityPacket.class);
         }
 
         public PacketReference<EntityVelocityPacket> getEntityVelocity() {
@@ -85,18 +85,20 @@ public final class PacketReferences {
     }
 
     public static final class PacketReference<T extends WrappedPacket> {
-        private final PacketReferenceHolder parent;
+        private final String identifier;
+        private final AbstractPacketReferenceHolder parent;
         private final Class<T> wrappedPacketClass;
-        private PacketBuilder<T> builder;
+        private AbstractPacketBuilder<T> builder;
 
         private boolean registered = false;
 
-        private PacketReference(PacketReferenceHolder parent, Class<T> wrappedPacketClass) {
+        private PacketReference(String identifier, AbstractPacketReferenceHolder parent, Class<T> wrappedPacketClass) {
+            this.identifier = identifier;
             this.parent = parent;
             this.wrappedPacketClass = wrappedPacketClass;
         }
 
-        public void register(PacketBuilder<T> builder) {
+        public void register(AbstractPacketBuilder<T> builder) {
             Preconditions.checkState(!this.registered, "Already registered.");
             Preconditions.checkArgument(builder.getWrappedClass().equals(this.wrappedPacketClass),
                     "PacketBuilder class not of same type of PacketReference.");
@@ -110,9 +112,13 @@ public final class PacketReferences {
             return this.wrappedPacketClass;
         }
 
-        public PacketBuilder<T> getBuilder() {
+        public AbstractPacketBuilder<T> getBuilder() {
             Preconditions.checkState(this.registered, "Not registered.");
             return this.builder;
+        }
+
+        public String getIdentifier() {
+            return identifier;
         }
     }
 }

@@ -3,6 +3,6 @@ version rootProject.version
 
 dependencies {
     /* Spigot Dependency */
-    compileOnlyApi(files(VERSIONS['1_8_R3'].spigotJar))
+    compileOnlyApi files(VERSIONS['1_8_R3'].spigotJar)
 }
 

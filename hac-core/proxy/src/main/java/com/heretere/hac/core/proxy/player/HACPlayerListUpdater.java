@@ -2,7 +2,7 @@ package com.heretere.hac.core.proxy.player;
 
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.core.proxy.VersionProxy;
+import com.heretere.hac.core.proxy.AbstractVersionProxy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,9 +14,9 @@ import org.bukkit.plugin.Plugin;
 
 public final class HACPlayerListUpdater implements Listener {
     private final Plugin parent;
-    private final VersionProxy proxy;
+    private final AbstractVersionProxy proxy;
 
-    public HACPlayerListUpdater(Plugin parent, VersionProxy proxy) {
+    public HACPlayerListUpdater(Plugin parent, AbstractVersionProxy proxy) {
         this.parent = parent;
         this.proxy = proxy;
     }

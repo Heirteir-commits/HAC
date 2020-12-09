@@ -1,14 +1,14 @@
 package com.heretere.hac.core.proxy.versions.nine.packets.builder.serverside;
 
-import com.heretere.hac.api.events.types.packets.builder.PacketBuilder;
-import com.heretere.hac.api.events.types.packets.wrapper.serverside.EntityVelocityPacket;
+import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
+import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import net.minecraft.server.v1_9_R2.PacketPlayOutEntityVelocity;
 import org.apache.commons.lang.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 
-public final class EntityVelocityPacketBuilder extends PacketBuilder<EntityVelocityPacket> {
+public final class EntityVelocityPacketBuilder extends AbstractPacketBuilder<EntityVelocityPacket> {
     /* Have to use reflections since fields are private and they're no getters :( */
     private final Field id;
     private final Field x;

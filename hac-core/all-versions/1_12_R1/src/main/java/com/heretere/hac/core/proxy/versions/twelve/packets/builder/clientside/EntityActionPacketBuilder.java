@@ -1,11 +1,11 @@
 package com.heretere.hac.core.proxy.versions.twelve.packets.builder.clientside;
 
-import com.heretere.hac.api.events.types.packets.builder.PacketBuilder;
-import com.heretere.hac.api.events.types.packets.wrapper.clientside.EntityActionPacket;
+import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
+import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import net.minecraft.server.v1_12_R1.PacketPlayInEntityAction;
 
-public final class EntityActionPacketBuilder extends PacketBuilder<EntityActionPacket> {
+public final class EntityActionPacketBuilder extends AbstractPacketBuilder<EntityActionPacket> {
     public EntityActionPacketBuilder() {
         super(PacketPlayInEntityAction.class);
     }

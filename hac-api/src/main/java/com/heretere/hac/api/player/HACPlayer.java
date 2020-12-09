@@ -6,6 +6,7 @@ import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.player.builder.DataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -22,8 +23,9 @@ public final class HACPlayer {
     private final UUID uuid;
     private final DataManager dataManager;
 
+    HACPlayer(@NotNull Player player) {
+        Preconditions.checkNotNull(player, "Player is null.");
 
-    HACPlayer(Player player) {
         this.future = CompletableFuture.allOf();
 
         this.uuid = player.getUniqueId();
@@ -38,12 +40,16 @@ public final class HACPlayer {
      * @param runnable     The runnable to run in the {@link ThreadPool}.
      * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
      */
-    public void runTaskASync(Runnable runnable, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
+    public void runTaskASync(@NotNull Runnable runnable, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
         this.future = this.future
                 .thenRunAsync(runnable, HACAPI.getInstance().getThreadPool().getPool())
                 .whenCompleteAsync(
                         errorHandler == null ?
-                                (msg, ex) -> HACAPI.getInstance().getErrorHandler().getHandler().accept(ex) :
+                                (msg, ex) -> {
+                                    if (ex != null) {
+                                        HACAPI.getInstance().getErrorHandler().getHandler().accept(ex);
+                                    }
+                                } :
                                 errorHandler,
                         HACAPI.getInstance().getThreadPool().getPool());
     }

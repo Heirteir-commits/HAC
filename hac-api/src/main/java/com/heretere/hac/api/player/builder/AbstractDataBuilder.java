@@ -1,11 +1,10 @@
 package com.heretere.hac.api.player.builder;
 
-import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.types.packets.AbstractPacketEventExecutor;
 import com.google.common.collect.ImmutableSet;
-import com.heretere.hac.api.events.types.AbstractEventExecutor;
-import com.heretere.hac.api.player.*;
+import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.events.AbstractPacketEventExecutor;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.api.player.HACPlayerBuilder;
 import com.heretere.hac.api.player.HACPlayerList;
 
 /**
@@ -19,10 +18,10 @@ public abstract class AbstractDataBuilder<T> {
     private final ImmutableSet<AbstractPacketEventExecutor<?>> events;
 
     /**
-     * You can include a vararg set of {@link AbstractEventExecutor} these will be
+     * You can include a vararg set of {@link AbstractPacketEventExecutor} these will be
      * registered for you from {@link AbstractDataBuilder#registerUpdaters()}.
      *
-     * @param events The instances of {@link AbstractEventExecutor}
+     * @param events The instances of {@link AbstractPacketEventExecutor}
      */
     protected AbstractDataBuilder(AbstractPacketEventExecutor<?>... events) {
         this.events = ImmutableSet.copyOf(events);
@@ -42,18 +41,18 @@ public abstract class AbstractDataBuilder<T> {
      * Registered updaters from the supplied array in {@link AbstractDataBuilder#AbstractDataBuilder(AbstractPacketEventExecutor[])}
      */
     public void registerUpdaters() {
-        this.events.forEach(event -> HACAPI.getInstance().getEventManager().addPacketEvent(event));
+        this.events.forEach(HACAPI.getInstance().getEventManager()::registerPacketEventExecutor);
     }
 
     /**
      * unregisters updaters from the supplied array in {@link AbstractDataBuilder#AbstractDataBuilder(AbstractPacketEventExecutor[])}
      */
     public void unregisterUpdaters() {
-        this.events.forEach(event -> HACAPI.getInstance().getEventManager().removePacketEvent(event));
+        this.events.forEach(HACAPI.getInstance().getEventManager()::unregisterPacketEventExecutor);
     }
 
     /**
-     * Gets an {@link ImmutableSet} the {@link AbstractEventExecutor} linked to this builder.
+     * Gets an {@link ImmutableSet} the {@link AbstractPacketEventExecutor} linked to this builder.
      *
      * @return An {@link ImmutableSet} of the events linked by this builder.
      */

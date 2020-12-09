@@ -7,11 +7,13 @@ import com.heretere.hac.core.proxy.player.data.player.executors.PlayerDataEntity
 import com.heretere.hac.core.proxy.player.data.player.executors.PlayerDataFlyingExecutor;
 
 public final class PlayerDataBuilder extends AbstractDataBuilder<PlayerData> {
+    private static final String IDENTIFIER = "player_data";
+
     public PlayerDataBuilder() {
         super(
-                new PlayerDataAbilitiesExecutor(),
-                new PlayerDataEntityActionExecutor(),
-                new PlayerDataFlyingExecutor()
+                new PlayerDataAbilitiesExecutor(PlayerDataBuilder.IDENTIFIER),
+                new PlayerDataEntityActionExecutor(PlayerDataBuilder.IDENTIFIER),
+                new PlayerDataFlyingExecutor(PlayerDataBuilder.IDENTIFIER)
         );
     }
 

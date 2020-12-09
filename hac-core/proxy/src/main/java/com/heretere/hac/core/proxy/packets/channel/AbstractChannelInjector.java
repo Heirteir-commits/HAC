@@ -1,7 +1,7 @@
 package com.heretere.hac.core.proxy.packets.channel;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.types.packets.PacketReferences;
+import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.api.player.HACPlayer;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 /**
  * The type Channel injector base.
  */
-public abstract class ChannelInjectorBase {
+public abstract class AbstractChannelInjector {
     private static final String AFTER_KEY = "packet_handler";
     private static final String HANDLER_KEY = "hac_packet_handler";
 
@@ -24,7 +24,7 @@ public abstract class ChannelInjectorBase {
     /**
      * Instantiates a new Channel injector base.
      */
-    protected ChannelInjectorBase() {
+    protected AbstractChannelInjector() {
         this.channelChangeExecutor = Executors.newSingleThreadExecutor();
     }
 
@@ -36,7 +36,7 @@ public abstract class ChannelInjectorBase {
     public void inject(HACPlayer player) {
         this.remove(player);
         this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer())
-                .addBefore(ChannelInjectorBase.AFTER_KEY, ChannelInjectorBase.HANDLER_KEY, new HACChannelHandler(player)));
+                .addBefore(AbstractChannelInjector.AFTER_KEY, AbstractChannelInjector.HANDLER_KEY, new HACChannelHandler(player)));
     }
 
     /**
@@ -48,8 +48,8 @@ public abstract class ChannelInjectorBase {
         ChannelPipeline pipeline = this.getPipeline(player.getBukkitPlayer());
 
         this.channelChangeExecutor.execute(() -> {
-            if (pipeline.get(ChannelInjectorBase.HANDLER_KEY) != null) {
-                pipeline.remove(ChannelInjectorBase.HANDLER_KEY);
+            if (pipeline.get(AbstractChannelInjector.HANDLER_KEY) != null) {
+                pipeline.remove(AbstractChannelInjector.HANDLER_KEY);
             }
         });
     }
@@ -73,6 +73,7 @@ public abstract class ChannelInjectorBase {
         private final HACPlayer player;
 
         private HACChannelHandler(HACPlayer player) {
+            super();
             this.player = player;
         }
 
@@ -110,7 +111,8 @@ public abstract class ChannelInjectorBase {
 
             HACAPI.getInstance().getEventManager().callPacketEvent(
                     this.player,
-                    reference.getBuilder().create(this.player, packet)
+                    reference.getBuilder().create(this.player, packet),
+                    null
             );
         }
     }
