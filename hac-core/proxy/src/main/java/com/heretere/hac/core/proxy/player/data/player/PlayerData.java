@@ -37,10 +37,14 @@ public final class PlayerData {
         this.previous.apply(current);
 
         this.current.getLocation().set(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
+
+        MutableVector3F currentLocation = this.current.getLocation();
+        MutableVector3F previousLocation = this.previous.getLocation();
+
         this.current.getVelocity().set(
-                this.current.getLocation().getX() - this.previous.getLocation().getX(),
-                this.current.getLocation().getY() - this.previous.getLocation().getY(),
-                this.current.getLocation().getZ() - this.previous.getLocation().getZ()
+                currentLocation.getX() - previousLocation.getX(),
+                currentLocation.getY() - previousLocation.getY(),
+                currentLocation.getZ() - previousLocation.getZ()
         );
         this.current.getDirection().set(flyingPacket.getYaw(), flyingPacket.getPitch());
 

@@ -2,6 +2,7 @@ plugins {
     id 'base'
     id 'idea'
     id 'net.ltgt.errorprone' version '1.3.0' apply false
+    id 'org.sonarqube' version '3.0'
 }
 
 ext {
@@ -20,24 +21,24 @@ ext {
     VERSIONS = [:]
 
     def tmpVersions = [
-            [find: 'eight', replace: '1_8_R3'],
-            [find: 'nine', replace: '1_9_R2'],
-            [find: 'ten', replace: '1_10_R1'],
-            [find: 'eleven', replace: '1_11_R1'],
-            [find: 'twelve', replace: '1_12_R1'],
-            [find: 'thirteen', replace: '1_13_R2'],
-            [find: 'fourteen', replace: '1_14_R1'],
-            [find: 'fifteen', replace: '1_15_R1'],
-            [find: 'sixteen', replace: '1_16_R3']
+        [find: 'eight', replace: '1_8_R3'],
+        [find: 'nine', replace: '1_9_R2'],
+        [find: 'ten', replace: '1_10_R1'],
+        [find: 'eleven', replace: '1_11_R1'],
+        [find: 'twelve', replace: '1_12_R1'],
+        [find: 'thirteen', replace: '1_13_R2'],
+        [find: 'fourteen', replace: '1_14_R1'],
+        [find: 'fifteen', replace: '1_15_R1'],
+        [find: 'sixteen', replace: '1_16_R3']
     ]
 
     tmpVersions.each {
         v ->
             VERSIONS[v.replace] = [
-                    replacer     : v,
-                    spigotJar    : file(buildDir.parentFile.path + '/put_spigot_jars_here/' + v.replace + '.jar'),
-                    projectAppend: ':' + v.replace,
-                    include      : false
+                replacer     : v,
+                spigotJar    : file(buildDir.parentFile.path + '/put_spigot_jars_here/' + v.replace + '.jar'),
+                projectAppend: ':' + v.replace,
+                include      : false
             ]
     }
 
@@ -62,6 +63,14 @@ group 'com.heretere'
 
 /* This is used to change the version for all subprojects */
 version '0.0.6'
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "Heirteir-commits_HAC"
+        property "sonar.organization", "heirteir-commits"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
 
 /* Project wide dependencies */
 allprojects {

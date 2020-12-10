@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class ASyncPacketEventManager {
+public class AsyncPacketEventManager {
     private final Map<Class<? extends WrappedPacket>, PacketEventHandler> packetExecutors;
 
-    public ASyncPacketEventManager() {
+    public AsyncPacketEventManager() {
         this.packetExecutors = Maps.newHashMap();
     }
 

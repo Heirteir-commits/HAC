@@ -2,7 +2,7 @@ package com.heretere.hac.api;
 
 import com.google.common.base.Preconditions;
 import com.heretere.hac.api.concurrency.ThreadPool;
-import com.heretere.hac.api.events.ASyncPacketEventManager;
+import com.heretere.hac.api.events.AsyncPacketEventManager;
 import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.player.HACPlayerList;
@@ -31,7 +31,7 @@ public final class HACAPI {
         return HACAPI.instance;
     }
 
-    private final ASyncPacketEventManager eventManager;
+    private final AsyncPacketEventManager eventManager;
     private final ThreadPool threadPool;
     private final HACPlayerList hacPlayerList;
     private final ErrorHandler errorHandler;
@@ -42,7 +42,7 @@ public final class HACAPI {
     private HACAPI() {
         Preconditions.checkState(HACAPI.instance == null, "There can only be one instance of HACAPI.");
 
-        this.eventManager = new ASyncPacketEventManager();
+        this.eventManager = new AsyncPacketEventManager();
         this.threadPool = new ThreadPool();
         this.hacPlayerList = new HACPlayerList();
         this.errorHandler = new ErrorHandler();
@@ -73,7 +73,7 @@ public final class HACAPI {
      *
      * @return Global async event manager for HAC.
      */
-    public ASyncPacketEventManager getEventManager() {
+    public AsyncPacketEventManager getEventManager() {
         this.checkLoaded();
         return this.eventManager;
     }

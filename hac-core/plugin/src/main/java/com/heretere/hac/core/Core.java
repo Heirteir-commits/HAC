@@ -1,7 +1,7 @@
 package com.heretere.hac.core;
 
 import com.heretere.hac.core.proxy.AbstractVersionProxy;
-import com.heretere.hac.util.implementation.VersionProcessor;
+import com.heretere.hac.util.proxy.VersionProcessor;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 
 public final class Core extends JavaPlugin {
+
+
     private AbstractVersionProxy versionProxy;
 
     @Override
@@ -36,7 +38,14 @@ public final class Core extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+
+
+
         this.versionProxy.baseLoad();
+    }
+
+    private void loadVersionProxy() {
+        VersionProcessor.getVersionProxy()
     }
 
     @Override

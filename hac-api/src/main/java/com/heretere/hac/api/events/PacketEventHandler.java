@@ -3,13 +3,17 @@ package com.heretere.hac.api.events;
 import com.google.common.collect.Sets;
 import com.heretere.hac.api.player.HACPlayer;
 
+import java.util.Comparator;
 import java.util.Set;
 
 public final class PacketEventHandler {
     private final Set<AbstractPacketEventExecutor<?>> executors;
 
     public PacketEventHandler() {
-        this.executors = Sets.newTreeSet();
+        this.executors = Sets.newTreeSet(
+                Comparator.<AbstractPacketEventExecutor<?>, Priority>comparing(AbstractPacketEventExecutor::getPriority)
+                        .thenComparing(AbstractPacketEventExecutor::getIdentifier)
+        );
     }
 
     public void execute(HACPlayer player, Object wrappedPacket) {
