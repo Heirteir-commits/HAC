@@ -63,14 +63,14 @@ public final class Relocator {
             Set<Object> rules = Sets.newLinkedHashSet();
 
             for (Relocation relocation : dependency.getRelocations()) {
-                rules.add(relocationConstructor.newInstance(
-                        rules.add(relocationConstructor.newInstance(
+                rules.add(
+                        relocationConstructor.newInstance(
                                 relocation.from(),
                                 relocation.to(),
                                 Lists.newArrayList(),
                                 Lists.newArrayList()
-                        ))
-                ));
+                        )
+                );
             }
 
             jarRelocatorRunMethod.invoke(jarRelocatorConstructor.newInstance(dependency.getDownloadLocation().toFile(), dependency.getRelocatedLocation().toFile(), rules));

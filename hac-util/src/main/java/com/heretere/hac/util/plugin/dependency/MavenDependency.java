@@ -2,6 +2,7 @@ package com.heretere.hac.util.plugin.dependency;
 
 import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
+import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -9,6 +10,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Set;
 
 public final class MavenDependency extends AbstractDependency {
     private final String groupId;
@@ -16,16 +18,16 @@ public final class MavenDependency extends AbstractDependency {
     private final String version;
     private final String repoURL;
 
-    public MavenDependency(@NotNull AbstractHACPlugin parent, @NotNull String groupId, @NotNull String artifactId, @NotNull String version, @NotNull String repoURL) {
-        super(parent);
+    public MavenDependency(@NotNull AbstractHACPlugin parent, @NotNull String groupId, @NotNull String artifactId, @NotNull String version, @NotNull String repoURL, @NotNull Set<Relocation> relocations) {
+        super(parent, relocations);
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.repoURL = repoURL;
     }
 
-    public MavenDependency(@NotNull AbstractHACPlugin parent, @NotNull Maven maven) {
-        this(parent, maven.groupId(), maven.artifactId(), maven.version(), maven.repoUrl());
+    public MavenDependency(@NotNull AbstractHACPlugin parent, @NotNull Maven maven, @NotNull Set<Relocation> relocations) {
+        this(parent, maven.groupId(), maven.artifactId(), maven.version(), maven.repoUrl(), relocations);
     }
 
     @Override

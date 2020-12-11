@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +16,12 @@ public abstract class AbstractDependency {
     private final Set<Relocation> relocations;
 
     protected AbstractDependency(@NotNull AbstractHACPlugin parent, Relocation... relocations) {
+        this.parent = parent;
+
+        this.relocations = ImmutableSet.copyOf(relocations);
+    }
+
+    protected AbstractDependency(@NotNull AbstractHACPlugin parent, Collection<Relocation> relocations) {
         this.parent = parent;
 
         this.relocations = ImmutableSet.copyOf(relocations);

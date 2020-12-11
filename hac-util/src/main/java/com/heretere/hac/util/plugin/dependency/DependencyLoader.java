@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.Relocator;
+import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,15 +30,24 @@ public class DependencyLoader {
 
     public Set<AbstractDependency> getDependencies(Class<?> clazz) {
         Set<AbstractDependency> dependencies = Sets.newLinkedHashSet();
+        Set<Relocation> relocations = Sets.newLinkedHashSet();
+
+        if (clazz.isAnnotationPresent(Relocation.List.class)) {
+            relocations.addAll(Arrays.asList(clazz.getAnnotation(Relocation.List.class).value()));
+        }
+
+        if (clazz.isAnnotationPresent(Relocation.class)) {
+            relocations.add(clazz.getAnnotation(Relocation.class));
+        }
 
         if (clazz.isAnnotationPresent(Maven.List.class)) {
             for (Maven maven : clazz.getAnnotation(Maven.List.class).value()) {
-                dependencies.add(new MavenDependency(this.parent, maven));
+                dependencies.add(new MavenDependency(this.parent, maven, relocations));
             }
         }
 
         if (clazz.isAnnotationPresent(Maven.class)) {
-            dependencies.add(new MavenDependency(this.parent, clazz.getAnnotation(Maven.class)));
+            dependencies.add(new MavenDependency(this.parent, clazz.getAnnotation(Maven.class), relocations));
         }
 
         return dependencies;
