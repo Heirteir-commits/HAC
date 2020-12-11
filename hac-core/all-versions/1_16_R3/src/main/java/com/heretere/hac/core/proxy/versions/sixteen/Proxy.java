@@ -2,7 +2,7 @@ package com.heretere.hac.core.proxy.versions.sixteen;
 
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.events.packets.PacketReferences;
-import com.heretere.hac.core.proxy.AbstractVersionProxy;
+import com.heretere.hac.core.proxy.CoreVersionProxy;
 import com.heretere.hac.core.proxy.packets.channel.AbstractChannelInjector;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.AbilitiesPacketBuilder;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.EntityActionPacketBuilder;
@@ -11,7 +11,7 @@ import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside.E
 import com.heretere.hac.core.proxy.versions.sixteen.packets.channel.ChannelInjectorProxy;
 import org.bukkit.plugin.Plugin;
 
-public final class Proxy extends AbstractVersionProxy {
+public final class Proxy extends CoreVersionProxy {
     private final ChannelInjectorProxy channelInjectorProxy;
 
     public Proxy(Plugin parent) {

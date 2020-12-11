@@ -16,6 +16,9 @@ dependencies {
 
     api project(PROJECT_PROXY)
     api project(PROJECT_ALL_VERSIONS)
+
+    compileOnlyApi project(':hac-annotations')
+    annotationProcessor project(':hac-annotations')
 }
 
 shadowJar {
@@ -35,7 +38,7 @@ shadowJar {
         VERSIONS.each {
             k, v ->
                 relocate VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.find.toString(),
-                        VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.replace.toString()
+                    VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.replace.toString()
         }
 
         /* module specific */

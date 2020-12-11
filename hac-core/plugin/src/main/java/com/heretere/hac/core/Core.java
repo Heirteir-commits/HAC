@@ -1,57 +1,24 @@
 package com.heretere.hac.core;
 
-import com.heretere.hac.core.proxy.AbstractVersionProxy;
-import com.heretere.hac.util.proxy.VersionProcessor;
-import org.apache.commons.lang.NotImplementedException;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.heretere.hac.core.proxy.CoreVersionProxy;
+import com.heretere.hac.annotations.plugin.Plugin;
+import com.heretere.hac.util.proxy.AbstractProxyPlugin;
 
-import java.lang.reflect.InvocationTargetException;
+@Plugin(name = "HAC-Core", prefix = "-", version = "0.0.1")
+public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
 
-public final class Core extends JavaPlugin {
-
-
-    private AbstractVersionProxy versionProxy;
-
-    @Override
-    public void onLoad() {
-        Class<?> versionProxyClass =
-                VersionProcessor.getLatestVersionProxy(
-                        "com.heretere.hac.core.proxy.versions"
-                );
-
-        if (versionProxyClass == null) {
-            throw new NotImplementedException(); //TODO: incorporate with logger.
-        }
-
-        try {
-            Object versionProxyUnchecked = versionProxyClass.getConstructor(Plugin.class).newInstance(this);
-
-            if (versionProxyUnchecked instanceof AbstractVersionProxy) {
-                this.versionProxy = (AbstractVersionProxy) versionProxyUnchecked;
-            }
-        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace(); //TODO: move to logger
-        }
+    public Core() {
+        super("com.heretere.hac.core.proxy.versions", CoreVersionProxy.class);
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-
-
-
-        this.versionProxy.baseLoad();
-    }
-
-    private void loadVersionProxy() {
-        VersionProcessor.getVersionProxy()
-    }
-
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        this.versionProxy.baseUnload();
-    }
+//    @Override
+//    protected void enable() {
+//
+//    }
+//
+//    @Override
+//    protected void disable() {
+//
+//    }
 
 }

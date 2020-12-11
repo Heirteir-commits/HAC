@@ -5,13 +5,14 @@ import com.heretere.hac.core.proxy.packets.channel.AbstractChannelInjector;
 import com.heretere.hac.core.proxy.player.HACPlayerListUpdater;
 import com.heretere.hac.core.proxy.player.data.player.PlayerData;
 import com.heretere.hac.core.proxy.player.data.player.PlayerDataBuilder;
+import com.heretere.hac.util.proxy.AbstractVersionProxy;
 import org.bukkit.plugin.Plugin;
 
-public abstract class AbstractVersionProxy {
+public abstract class CoreVersionProxy extends AbstractVersionProxy {
     private final HACPlayerListUpdater hacPlayerListUpdater;
     private final PlayerDataBuilder playerDataBuilder;
 
-    protected AbstractVersionProxy(Plugin parent) {
+    protected CoreVersionProxy(Plugin parent) {
         this.hacPlayerListUpdater = new HACPlayerListUpdater(parent, this);
         this.playerDataBuilder = new PlayerDataBuilder();
     }
