@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 public final class HACPlayer {
     private CompletableFuture<Void> future;
 
-    private final UUID uuid;
+    private final Player player;
     private final DataManager dataManager;
 
     HACPlayer(@NotNull Player player) {
@@ -28,7 +28,7 @@ public final class HACPlayer {
 
         this.future = CompletableFuture.allOf();
 
-        this.uuid = player.getUniqueId();
+        this.player = player;
 
         this.dataManager = new DataManager();
     }
@@ -60,7 +60,7 @@ public final class HACPlayer {
      * @return The UUID of the player.
      */
     public UUID getUUID() {
-        return uuid;
+        return this.player.getUniqueId();
     }
 
     /**
@@ -69,11 +69,7 @@ public final class HACPlayer {
      * @return The Bukkit Player
      */
     public Player getBukkitPlayer() {
-        Player player = Bukkit.getPlayer(uuid);
-
-        Preconditions.checkNotNull(player, "Player with this UUID is offline.");
-
-        return player;
+        return this.player;
     }
 
     /**

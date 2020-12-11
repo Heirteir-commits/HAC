@@ -5,14 +5,16 @@ import com.heretere.hac.core.proxy.packets.channel.AbstractChannelInjector;
 import com.heretere.hac.core.proxy.player.HACPlayerListUpdater;
 import com.heretere.hac.core.proxy.player.data.player.PlayerData;
 import com.heretere.hac.core.proxy.player.data.player.PlayerDataBuilder;
+import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import com.heretere.hac.util.proxy.AbstractVersionProxy;
-import org.bukkit.plugin.Plugin;
 
-public abstract class CoreVersionProxy extends AbstractVersionProxy {
+public abstract class CoreVersionProxy implements AbstractVersionProxy {
+    private final AbstractHACPlugin parent;
     private final HACPlayerListUpdater hacPlayerListUpdater;
     private final PlayerDataBuilder playerDataBuilder;
 
-    protected CoreVersionProxy(Plugin parent) {
+    protected CoreVersionProxy(AbstractHACPlugin parent) {
+        this.parent = parent;
         this.hacPlayerListUpdater = new HACPlayerListUpdater(parent, this);
         this.playerDataBuilder = new PlayerDataBuilder();
     }
@@ -22,9 +24,10 @@ public abstract class CoreVersionProxy extends AbstractVersionProxy {
     public abstract AbstractChannelInjector getChannelInjector();
 
     public final void baseLoad() {
-        HACAPI.getInstance().getErrorHandler().setHandler((Throwable::printStackTrace));
+        HACAPI.getInstance().getErrorHandler().setHandler(ex -> this.parent.getLog().severe(ex));
 
         this.registerPackets();
+        this.parent.getLogger().info(() -> "Registering PlayerData");
         HACAPI.getInstance().getHacPlayerList().getBuilder().registerDataBuilder(PlayerData.class, playerDataBuilder);
 
         this.hacPlayerListUpdater.load();
@@ -33,6 +36,7 @@ public abstract class CoreVersionProxy extends AbstractVersionProxy {
     public final void baseUnload() {
         this.hacPlayerListUpdater.unload();
 
+        this.parent.getLog().info(() -> "Unregistering PlayerData");
         HACAPI.getInstance().getHacPlayerList().getBuilder().unregisterDataBuilder(PlayerData.class);
 
         this.unload();

@@ -2,6 +2,7 @@ package com.heretere.hac.util.plugin;
 
 import com.heretere.hac.util.plugin.dependency.DependencyLoader;
 import com.heretere.hac.util.plugin.logging.Log;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
@@ -52,6 +53,14 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
 
         if (this.dependencySuccess) {
             this.enable();
+        } else {
+            this.log.reportFatalError(() ->
+                            String.format("Could not download required dependencies. " +
+                                            "Please look at the latest.log in the '%s' folder to determine the issue.",
+                                    this.baseDirectory.getParent().relativize(this.baseDirectory.resolve("logs").resolve(this.prefix))),
+                    false
+            );
+            Bukkit.getPluginManager().disablePlugin(this);
         }
     }
 

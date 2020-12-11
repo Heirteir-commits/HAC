@@ -87,7 +87,7 @@ public class DependencyLoader {
                                     dependency.getName(),
                                     dependency.getManualURL().orElse(null),
                                     dependency.getDownloadLocation()),
-                    true);
+                    false);
         }
 
         return success;
@@ -103,7 +103,7 @@ public class DependencyLoader {
             if (relocate.isPresent()) {
                 success = false;
 
-                this.parent.getLog().reportFatalError(relocate.get(), true);
+                this.parent.getLog().reportFatalError(relocate.get(), false);
             }
         }
 
@@ -127,7 +127,7 @@ public class DependencyLoader {
                 method.setAccessible(true);
                 method.invoke(classLoader, dependency.getRelocatedLocation().toUri().toURL());
             } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException e) {
-                this.parent.getLog().reportFatalError(e, true);
+                this.parent.getLog().reportFatalError(e, false);
                 success = false;
             }
         }

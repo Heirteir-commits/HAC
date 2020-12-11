@@ -9,14 +9,16 @@ import com.heretere.hac.core.proxy.versions.eight.packets.builder.clientside.Ent
 import com.heretere.hac.core.proxy.versions.eight.packets.builder.clientside.FlyingPacketBuilder;
 import com.heretere.hac.core.proxy.versions.eight.packets.builder.serverside.EntityVelocityPacketBuilder;
 import com.heretere.hac.core.proxy.versions.eight.packets.channel.ChannelInjectorProxy;
-import org.bukkit.plugin.Plugin;
+import com.heretere.hac.util.plugin.AbstractHACPlugin;
 
 public final class Proxy extends CoreVersionProxy {
+    private final AbstractHACPlugin parent;
     private final ChannelInjectorProxy channelInjectorProxy;
 
-    public Proxy(Plugin parent) {
+    public Proxy(AbstractHACPlugin parent) {
         super(parent);
-        channelInjectorProxy = new ChannelInjectorProxy();
+        this.parent = parent;
+        channelInjectorProxy = new ChannelInjectorProxy(this.parent);
     }
 
     @Override
@@ -29,7 +31,7 @@ public final class Proxy extends CoreVersionProxy {
         packetReferences.getClientSide().getFlying().register(new FlyingPacketBuilder());
 
         //serverside
-        packetReferences.getServerSide().getEntityVelocity().register(new EntityVelocityPacketBuilder());
+        packetReferences.getServerSide().getEntityVelocity().register(new EntityVelocityPacketBuilder(this.parent));
     }
 
     @Override

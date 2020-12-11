@@ -29,9 +29,6 @@ public final class EntityActionPacketBuilder extends AbstractPacketBuilder<Entit
             case STOP_SPRINTING:
                 action = EntityActionPacket.Action.STOP_SPRINTING;
                 break;
-            case START_FALL_FLYING:
-                action = EntityActionPacket.Action.START_FALL_FLYING;
-                break;
             default:
                 action = EntityActionPacket.Action.INVALID;
         }

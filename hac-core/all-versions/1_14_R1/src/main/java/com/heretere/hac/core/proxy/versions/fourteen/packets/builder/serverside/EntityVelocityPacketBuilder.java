@@ -3,20 +3,24 @@ package com.heretere.hac.core.proxy.versions.fourteen.packets.builder.serverside
 import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
 import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import net.minecraft.server.v1_14_R1.PacketPlayOutEntityVelocity;
 import org.apache.commons.lang.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 
 public final class EntityVelocityPacketBuilder extends AbstractPacketBuilder<EntityVelocityPacket> {
+    private final AbstractHACPlugin parent;
     /* Have to use reflections since fields are private and they're no getters :( */
     private final Field id;
     private final Field x;
     private final Field y;
     private final Field z;
 
-    public EntityVelocityPacketBuilder() {
+    public EntityVelocityPacketBuilder(AbstractHACPlugin parent) {
         super(PacketPlayOutEntityVelocity.class);
+        this.parent = parent;
+
         this.id = FieldUtils.getDeclaredField(PacketPlayOutEntityVelocity.class, "a", true);
         this.x = FieldUtils.getDeclaredField(PacketPlayOutEntityVelocity.class, "b", true);
         this.y = FieldUtils.getDeclaredField(PacketPlayOutEntityVelocity.class, "c", true);
@@ -42,7 +46,8 @@ public final class EntityVelocityPacketBuilder extends AbstractPacketBuilder<Ent
             );
         } catch (IllegalAccessException e) {
             output = null;
-            e.printStackTrace(); //TODO: Change to logger
+
+            this.parent.getLog().severe(e);
         }
 
         return output;

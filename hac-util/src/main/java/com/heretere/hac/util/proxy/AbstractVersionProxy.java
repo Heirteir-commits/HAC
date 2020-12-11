@@ -1,4 +1,4 @@
 package com.heretere.hac.util.proxy;
 
-public class AbstractVersionProxy {
+public interface AbstractVersionProxy {
 }

@@ -2,7 +2,10 @@ package com.heretere.hac.core.proxy.packets.channel;
 
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.events.packets.PacketReferences;
+import com.heretere.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
+import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -16,6 +19,8 @@ import java.util.concurrent.Executors;
  * The type Channel injector base.
  */
 public abstract class AbstractChannelInjector {
+    private final AbstractHACPlugin parent;
+
     private static final String AFTER_KEY = "packet_handler";
     private static final String HANDLER_KEY = "hac_packet_handler";
 
@@ -24,7 +29,8 @@ public abstract class AbstractChannelInjector {
     /**
      * Instantiates a new Channel injector base.
      */
-    protected AbstractChannelInjector() {
+    protected AbstractChannelInjector(AbstractHACPlugin parent) {
+        this.parent = parent;
         this.channelChangeExecutor = Executors.newSingleThreadExecutor();
     }
 
@@ -36,7 +42,7 @@ public abstract class AbstractChannelInjector {
     public void inject(HACPlayer player) {
         this.remove(player);
         this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer())
-                .addBefore(AbstractChannelInjector.AFTER_KEY, AbstractChannelInjector.HANDLER_KEY, new HACChannelHandler(player)));
+                .addBefore(AbstractChannelInjector.AFTER_KEY, AbstractChannelInjector.HANDLER_KEY, new HACChannelHandler(this.parent, player)));
     }
 
     /**
@@ -70,10 +76,12 @@ public abstract class AbstractChannelInjector {
     protected abstract ChannelPipeline getPipeline(Player player);
 
     private static final class HACChannelHandler extends ChannelDuplexHandler {
+        private final AbstractHACPlugin parent;
         private final HACPlayer player;
 
-        private HACChannelHandler(HACPlayer player) {
+        private HACChannelHandler(AbstractHACPlugin parent, HACPlayer player) {
             super();
+            this.parent = parent;
             this.player = player;
         }
 
@@ -84,7 +92,7 @@ public abstract class AbstractChannelInjector {
             try {
                 this.handle(msg, false);
             } catch (Exception e) {
-                e.printStackTrace(); //TODO: move to logger
+                this.parent.getLog().severe(e);
             }
         }
 
@@ -95,7 +103,7 @@ public abstract class AbstractChannelInjector {
             try {
                 this.handle(msg, true);
             } catch (Exception e) {
-                e.printStackTrace(); //TODO: Move to logger
+                this.parent.getLog().severe(e);
             }
         }
 
@@ -109,11 +117,15 @@ public abstract class AbstractChannelInjector {
                 return;
             }
 
-            HACAPI.getInstance().getEventManager().callPacketEvent(
-                    this.player,
-                    reference.getBuilder().create(this.player, packet),
-                    null
-            );
+            WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
+
+            if (clientSide || ((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == player.getBukkitPlayer().getEntityId()) {
+                HACAPI.getInstance().getEventManager().callPacketEvent(
+                        this.player,
+                        wrappedPacket,
+                        null
+                );
+            }
         }
     }
 }

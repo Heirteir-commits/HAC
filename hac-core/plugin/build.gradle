@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
@@ -52,8 +50,7 @@ shadowJar {
     }
 }
 
-processResources {
-    duplicatesStrategy DuplicatesStrategy.INCLUDE
+task preProcessResources {
     doFirst {
         /* Write to a packaged versions file to include all versions packaged in this jar */
         PACKAGED_VERSIONS.withWriter {
@@ -66,8 +63,10 @@ processResources {
                 }
         }
     }
+}
 
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
-    }
+processResources {
+    dependsOn preProcessResources
+    outputs.upToDateWhen { return false } //Will always processResources since version inclusion can be changed.
+    duplicatesStrategy DuplicatesStrategy.INHERIT
 }

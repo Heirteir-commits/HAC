@@ -1,12 +1,14 @@
 package com.heretere.hac.api.events;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public class AsyncPacketEventManager {
@@ -27,6 +29,8 @@ public class AsyncPacketEventManager {
     private PacketEventHandler getPacketEventHandler(Class<? extends WrappedPacket> packetClass) {
         return this.packetExecutors.computeIfAbsent(packetClass, pc -> new PacketEventHandler());
     }
+
+    Set<Double> average = Sets.newHashSet();
 
     public void callPacketEvent(@NotNull HACPlayer player, @NotNull WrappedPacket packet, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
         player.runTaskASync(
