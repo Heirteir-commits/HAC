@@ -34,8 +34,18 @@ public final class MavenDependency extends AbstractDependency {
     }
 
     @Override
+    public boolean needsRelocation() {
+        return !Files.exists(this.getRelocatedLocation());
+    }
+
+    @Override
     public Path getDownloadLocation() {
         return super.getParent().getBaseDirectory().resolve("dependencies").resolve(this.getName() + ".jar");
+    }
+
+    @Override
+    public Path getRelocatedLocation() {
+        return super.getParent().getBaseDirectory().resolve("dependencies").resolve(this.getName() + "-relocated.jar");
     }
 
     @Override

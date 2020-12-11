@@ -18,7 +18,7 @@ public @interface Maven {
     String version();
 
     @NotNull
-    String repoUrl() default "https://repo1.maven.org/maven2";
+    String repoUrl() default "https://repo1.maven.org/maven2/";
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
@@ -26,4 +26,5 @@ public @interface Maven {
         @NotNull
         Maven[] value() default {};
     }
+
 }

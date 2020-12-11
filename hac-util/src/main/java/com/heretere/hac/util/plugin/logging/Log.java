@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -69,56 +70,50 @@ public final class Log {
         Preconditions.checkState(this.open, "Log file hasn't been created please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
     }
 
-    public void info(@NotNull String message) {
+    public void info(@NotNull Supplier<String> message) {
         this.checkState();
 
-        if (this.parent.getLogger().isLoggable(Level.INFO) && this.open) {
-            this.parent.getLogger().info(this.toLogMessage(message));
-        }
+        this.parent.getLogger().info(message);
     }
 
-    public void severe(@NotNull String message) {
+    public void severe(@NotNull Supplier<String> message) {
         this.checkState();
 
-        if (this.parent.getLogger().isLoggable(Level.SEVERE) && this.open) {
-            this.parent.getLogger().severe(this.toLogMessage(message));
-        }
+        this.parent.getLogger().severe(() -> this.toLogMessage(message.get()));
     }
 
     public void severe(@NotNull Throwable exception) {
         this.checkState();
 
-        if (this.parent.getLogger().isLoggable(Level.SEVERE) && this.open) {
-            this.parent.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
-        }
+        this.parent.getLogger().log(Level.SEVERE, exception, exception::getMessage);
     }
 
-    public void reportFatalError(@NotNull String message) {
-        this.reportFatalError(message, true);
-    }
-
-    public void reportFatalError(@NotNull String message, boolean shutdown) {
+    public void reportFatalError(@NotNull Supplier<String> message, boolean shutdown) {
         int splitSize = 60;
         int padding = 6;
         Iterable<String> header = Splitter.fixedLength(splitSize).split(String.format("'%s' ran into an error that has forced the plugin to stop. More information below:", this.parent.getName()));
-        Iterable<String> body = Splitter.fixedLength(splitSize).split(ChatColor.stripColor(message));
+        Iterable<String> body = Splitter.fixedLength(splitSize).split(ChatColor.stripColor(message.get()));
         String headTail = "&c" + StringUtils.repeat("=", splitSize + padding + 2);
         String headerTail = "&c|" + StringUtils.repeat("=", splitSize + padding) + "|";
 
-        this.severe(headTail);
-        header.forEach(line -> this.severe("&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
-        this.severe(headerTail);
-        body.forEach(line -> this.severe("&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
-        this.severe(headTail);
+        this.severe(() -> headTail);
+        header.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
+        this.severe(() -> headerTail);
+        body.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
+        this.severe(() -> headTail);
 
         if (shutdown && Bukkit.getPluginManager().isPluginEnabled(this.parent)) {
-            Bukkit.getPluginManager().disablePlugin(this.parent);
+            Bukkit.getScheduler().runTaskLater(this.parent, () -> {
+                if (Bukkit.getPluginManager().isPluginEnabled(this.parent)) {
+                    Bukkit.getPluginManager().disablePlugin(this.parent);
+                }
+            }, 0L);
         }
     }
 
-    public void reportFatalError(@NotNull Throwable exception) {
+    public void reportFatalError(@NotNull Throwable exception, boolean shutdown) {
         this.severe(exception);
-        this.reportFatalError(exception.getMessage());
+        this.reportFatalError(exception::getMessage, shutdown);
     }
 
     private enum ChatColorAnsi {
@@ -132,7 +127,6 @@ public final class Log {
             this.colorCode = colorCode;
             this.ansiCode = ansiCode;
         }
-
 
         private static String colorCodeToAnsi(String input) {
             String output = input;

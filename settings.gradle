@@ -1,9 +1,6 @@
 rootProject.name = 'hac'
 include ':hac-api'
 
-/* annotation processing */
-include ':hac-annotations'
-
 /* Core */
 include ':hac-core'
 include ':hac-core:all-versions'

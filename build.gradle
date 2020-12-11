@@ -77,7 +77,10 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
-            url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
+            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+        }
+        maven {
+            url 'https://jitpack.io'
         }
     }
 

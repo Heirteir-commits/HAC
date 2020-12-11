@@ -6,5 +6,5 @@ group 'com.heretere'
 version rootProject.version
 
 dependencies {
-    compileOnlyApi(LATEST_SPIGOT)
+    compileOnlyApi LATEST_SPIGOT
 }

@@ -17,8 +17,8 @@ dependencies {
     api project(PROJECT_PROXY)
     api project(PROJECT_ALL_VERSIONS)
 
-    compileOnlyApi project(':hac-annotations')
-    annotationProcessor project(':hac-annotations')
+    compileOnlyApi 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
 }
 
 shadowJar {
@@ -42,8 +42,6 @@ shadowJar {
         }
 
         /* module specific */
-        relocate 'mikera', 'com.heretere.hac.core.libs.mikera'
-        relocate 'us.bpsm', 'com.heretere.hac.core.libs'
         relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
 
         archiveFileName = 'HAC.Core.jar'
