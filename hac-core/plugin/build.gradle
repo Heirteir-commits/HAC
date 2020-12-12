@@ -47,12 +47,14 @@ shadowJar {
     doLast {
         /* Delete packaged versions because we only need them at compile time */
         delete PACKAGED_VERSIONS
+        delete file(PACKAGED_VERSIONS.getParentFile())
     }
 }
 
 task preProcessResources {
     doFirst {
         /* Write to a packaged versions file to include all versions packaged in this jar */
+        PACKAGED_VERSIONS.getParentFile().mkdirs()
         PACKAGED_VERSIONS.withWriter {
             out ->
                 VERSIONS.each {
@@ -68,5 +70,5 @@ task preProcessResources {
 processResources {
     dependsOn preProcessResources
     outputs.upToDateWhen { return false } //Will always processResources since version inclusion can be changed.
-    duplicatesStrategy DuplicatesStrategy.INHERIT
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
 }

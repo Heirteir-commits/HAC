@@ -9,9 +9,16 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 @Plugin(name = "HAC-Core", version = "0.0.1")
 @LogPrefix("-")
 @ApiVersion(ApiVersion.Target.v1_13)
+
 public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
+
     public Core() {
-        super("HAC", "Core", "com.heretere.hac.core.proxy.versions", CoreVersionProxy.class);
+        super(
+                "HAC",
+                "Core",
+                "com.heretere.hac.core.proxy.versions",
+                CoreVersionProxy.class
+        );
     }
 
     @Override
@@ -28,4 +35,5 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
     public void proxyDisable() {
         super.getProxy().baseUnload();
     }
+
 }

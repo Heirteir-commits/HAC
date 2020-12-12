@@ -1,7 +1,7 @@
 package com.heretere.hac.api.concurrency;
 
-import com.heretere.hac.api.HACAPI;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.heretere.hac.api.HACAPI;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +17,7 @@ public class ThreadPool {
      * Instantiates a new Thread pool.
      */
     public ThreadPool() {
-        this.pool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d").build());
+        this.pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder().setNameFormat("hac-thread-%d").build());
     }
 
     /**

@@ -62,8 +62,8 @@ public final class Log {
         this.open = false;
     }
 
-    private String toLogMessage(String message) {
-        return ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(parent.getPrefix() + message));
+    private Supplier<String> toLogMessage(Supplier<String> message) {
+        return () -> ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(parent.getPrefix() + message.get()));
     }
 
     private void checkState() {
@@ -73,19 +73,19 @@ public final class Log {
     public void info(@NotNull Supplier<String> message) {
         this.checkState();
 
-        this.parent.getLogger().info(message);
+        this.parent.getLogger().info(this.toLogMessage(message));
     }
 
     public void severe(@NotNull Supplier<String> message) {
         this.checkState();
 
-        this.parent.getLogger().severe(() -> this.toLogMessage(message.get()));
+        this.parent.getLogger().severe(this.toLogMessage(message));
     }
 
     public void severe(@NotNull Throwable exception) {
         this.checkState();
 
-        this.parent.getLogger().log(Level.SEVERE, exception, exception::getMessage);
+        this.parent.getLogger().log(Level.SEVERE, exception, this.toLogMessage(exception::getMessage));
     }
 
     public void reportFatalError(@NotNull Supplier<String> message, boolean shutdown) {

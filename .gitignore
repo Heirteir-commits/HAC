@@ -1,7 +1,3 @@
-
-# Created by https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,sonarqube,git
-# Edit at https://www.toptal.com/developers/gitignore?templates=java,gradle,intellij+all,sonarqube,git
-
 ### Git ###
 # Created by git for backups. To disable backups in Git:
 # $ git config --global mergetool.keepBackup false
@@ -48,14 +44,14 @@
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/artifacts
-# .idea/compiler.xml
-# .idea/jarRepositories.xml
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
 
 # CMake
 cmake-build-*/
@@ -98,10 +94,8 @@ fabric.properties
 
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
-*.iml
 modules.xml
 .idea/misc.xml
-*.ipr
 
 # Sonarlint plugin
 .idea/sonarlint
@@ -161,9 +155,8 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+**/out/
 
-# End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,sonarqube,git
-
-#Custom
+#Custom includes folder but excludes jars located inside
 put_spigot_jars_here/*
 !put_spigot_jars_here/readme.txt

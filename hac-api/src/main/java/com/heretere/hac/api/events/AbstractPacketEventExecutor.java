@@ -10,7 +10,7 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
     private final String identifier;
     private final Class<T> wrappedClass;
 
-    protected AbstractPacketEventExecutor(Priority priority, String identifier, PacketReferences.PacketReference<T> reference) {
+    protected AbstractPacketEventExecutor(@NotNull Priority priority, @NotNull String identifier, @NotNull PacketReferences.PacketReference<T> reference) {
         this.priority = priority;
         this.identifier = identifier + "_" + reference.getIdentifier();
         this.wrappedClass = reference.getWrappedPacketClass();

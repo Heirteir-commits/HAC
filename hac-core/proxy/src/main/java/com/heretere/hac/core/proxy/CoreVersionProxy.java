@@ -27,7 +27,7 @@ public abstract class CoreVersionProxy implements AbstractVersionProxy {
         HACAPI.getInstance().getErrorHandler().setHandler(ex -> this.parent.getLog().severe(ex));
 
         this.registerPackets();
-        this.parent.getLogger().info(() -> "Registering PlayerData");
+        this.parent.getLog().info(() -> "Registering player data builder.");
         HACAPI.getInstance().getHacPlayerList().getBuilder().registerDataBuilder(PlayerData.class, playerDataBuilder);
 
         this.hacPlayerListUpdater.load();
@@ -36,7 +36,7 @@ public abstract class CoreVersionProxy implements AbstractVersionProxy {
     public final void baseUnload() {
         this.hacPlayerListUpdater.unload();
 
-        this.parent.getLog().info(() -> "Unregistering PlayerData");
+        this.parent.getLog().info(() -> "Unregistering player data builder.");
         HACAPI.getInstance().getHacPlayerList().getBuilder().unregisterDataBuilder(PlayerData.class);
 
         this.unload();

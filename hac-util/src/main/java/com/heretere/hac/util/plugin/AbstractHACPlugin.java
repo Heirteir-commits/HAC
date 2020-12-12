@@ -18,7 +18,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
 
     protected AbstractHACPlugin(String baseDirectory, String prefix) {
         this.baseDirectory = this.getDataFolder().toPath().getParent().resolve(baseDirectory);
-        this.prefix = prefix;
+        this.prefix = "[" + prefix + "] ";
 
         this.log = new Log(this);
         this.log.open();
