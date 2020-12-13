@@ -1,6 +1,5 @@
 package com.heretere.hac.core.proxy.player.data.player;
 
-import com.google.common.base.Preconditions;
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.util.vector.MutableVector2F;
@@ -21,8 +20,6 @@ public final class PlayerData {
      * @param player the player
      */
     protected PlayerData(@NotNull HACPlayer player) {
-        Preconditions.checkNotNull(player, "Passed HACPlayer instance is null.");
-
         Player bukkitPlayer = player.getBukkitPlayer();
         this.current = new Data(bukkitPlayer);
         this.previous = new Data(bukkitPlayer);
@@ -46,6 +43,7 @@ public final class PlayerData {
                 currentLocation.getY() - previousLocation.getY(),
                 currentLocation.getZ() - previousLocation.getZ()
         );
+
         this.current.getDirection().set(flyingPacket.getYaw(), flyingPacket.getPitch());
 
         this.current.setOnGround(flyingPacket.isOnGround());

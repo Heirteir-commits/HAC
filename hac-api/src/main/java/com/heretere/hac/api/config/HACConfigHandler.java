@@ -49,8 +49,8 @@ public class HACConfigHandler {
             if (field.isAnnotationPresent(ConfigKey.class)) {
                 ConfigKey configKey = field.getAnnotation(ConfigKey.class);
 
-                ConfigField configField = (ConfigField)
-                        configValues.computeIfAbsent(configKey.value(), path -> new ConfigField(instance, path, configKey.comments()));
+                ConfigField<?> configField = (ConfigField<?>)
+                        configValues.computeIfAbsent(configKey.path(), path -> new ConfigField<>(field.getType(), instance, path, configKey.comments()));
 
                 Optional<Method> setter = Arrays.stream(clazz.getMethods())
                         .filter(method -> method.getName().equals(configKey.setter()))

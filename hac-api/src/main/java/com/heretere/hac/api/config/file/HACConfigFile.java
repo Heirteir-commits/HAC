@@ -21,8 +21,7 @@ import java.util.Set;
 public class HACConfigFile {
     private final YamlConfiguration configuration;
     private final Map<String, ConfigPath> entries;
-    private Path path;
-
+    private final Path path;
 
     public HACConfigFile(@NotNull Path path) {
         this.path = path;
@@ -60,9 +59,13 @@ public class HACConfigFile {
                 if (this.configuration.isConfigurationSection(string)) {
                     this.entries.put(string, new ConfigSection(string));
                 } else {
-                    ConfigField field = new ConfigField(null, string);
-                    field.setValue(configuration.get(string));
-                    this.entries.put(string, field);
+                    Object value = configuration.get(string);
+
+                    if (value != null) {
+                        ConfigField<?> field = new ConfigField<>(value.getClass(), null, string);
+                        field.setValueRaw(configuration.get(string));
+                        this.entries.put(string, field);
+                    }
                 }
             }
         } catch (IOException | InvalidConfigurationException e) {
@@ -74,10 +77,10 @@ public class HACConfigFile {
         this.recursiveAddPath(configPath);
 
         if (configPath.getType().equals(ConfigPath.Type.VALUE)) {
-            ConfigField field = (ConfigField) configPath;
+            ConfigField<?> field = (ConfigField<?>) configPath;
 
             if (this.configuration.contains(field.getPath())) {
-                field.setValue(this.configuration.get(field.getPath()));
+                field.setValueRaw(this.configuration.get(field.getPath()));
             }
         }
     }
@@ -108,7 +111,7 @@ public class HACConfigFile {
             }
 
             if (configPath.getType().equals(ConfigPath.Type.VALUE)) {
-                ConfigField field = (ConfigField) configPath;
+                ConfigField<?> field = (ConfigField<?>) configPath;
                 lines.add(indent + HACConfigFile.getPathString(configPath.getPath()) + ": " + field.getValue());
             }
         });

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigKey {
     @NotNull
-    String value();
+    String path();
 
     @NotNull
     String getter();

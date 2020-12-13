@@ -6,17 +6,18 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ConfigField extends ConfigPath {
+public class ConfigField<T> extends ConfigPath {
+    private final Class<T> type;
     private final WeakReference<?> instance;
     private Method getter;
     private Method setter;
-    private Object lastKnownValue;
+    private T lastKnownValue;
 
-    public ConfigField(Object instance, String path, String... comments) {
+    public ConfigField(Class<T> type, Object instance, String path, String... comments) {
         super(Type.VALUE, path, comments);
+        this.type = type;
         this.instance = new WeakReference<>(instance);
     }
-
 
     public void setGetter(Method getter) {
         this.getter = getter;
@@ -27,13 +28,14 @@ public class ConfigField extends ConfigPath {
         this.setter = setter;
     }
 
-    public Object getValue() {
-        Object output;
-        if (this.instance.get() == null) {
+    public T getValue() {
+        T output;
+        Object tmpInstance = this.instance.get();
+        if (tmpInstance == null) {
             output = this.lastKnownValue;
         } else {
             try {
-                output = this.lastKnownValue = this.getter.invoke(this.instance.get());
+                output = this.lastKnownValue = this.type.cast(this.getter.invoke(tmpInstance));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 output = null;
                 HACAPI.getInstance().getErrorHandler().getHandler().accept(e);
@@ -43,16 +45,19 @@ public class ConfigField extends ConfigPath {
         return output;
     }
 
-    public void setValue(Object value) {
-        if (this.instance.get() == null) {
-            this.lastKnownValue = value;
-        } else {
+    public void setValue(T value) {
+        this.lastKnownValue = value;
+        Object tmpInstance = this.instance.get();
+        if (tmpInstance != null) {
             try {
-                this.setter.invoke(this.instance.get(), value);
+                this.setter.invoke(tmpInstance, value);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 HACAPI.getInstance().getErrorHandler().getHandler().accept(e);
             }
         }
     }
 
+    public void setValueRaw(Object value) {
+        this.setValue(this.type.cast(value));
+    }
 }

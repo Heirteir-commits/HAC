@@ -1,5 +1,6 @@
 package com.heretere.hac.api.events;
 
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.heretere.hac.api.player.HACPlayer;
 
@@ -7,13 +8,15 @@ import java.util.Comparator;
 import java.util.Set;
 
 public final class PacketEventHandler {
-    private final Set<AbstractPacketEventExecutor<?>> executors;
+    private static final Comparator<AbstractPacketEventExecutor<?>> COMPARATOR =
+            Comparator.<AbstractPacketEventExecutor<?>, Priority>
+                    comparing(AbstractPacketEventExecutor::getPriority)
+                    .thenComparing(AbstractPacketEventExecutor::getIdentifier);
+
+    private Set<AbstractPacketEventExecutor<?>> executors;
 
     public PacketEventHandler() {
-        this.executors = Sets.newTreeSet(
-                Comparator.<AbstractPacketEventExecutor<?>, Priority>comparing(AbstractPacketEventExecutor::getPriority)
-                        .thenComparing(AbstractPacketEventExecutor::getIdentifier)
-        );
+        this.executors = ImmutableSortedSet.of();
     }
 
     public void execute(HACPlayer player, Object wrappedPacket) {
@@ -26,10 +29,22 @@ public final class PacketEventHandler {
     }
 
     public void addExecutor(AbstractPacketEventExecutor<?> executor) {
-        this.executors.add(executor);
+        Set<AbstractPacketEventExecutor<?>> set = this.tempTreeSet();
+        set.add(executor);
+
+        this.executors = ImmutableSortedSet.copyOf(PacketEventHandler.COMPARATOR, set);
     }
 
     public void removeExecutor(AbstractPacketEventExecutor<?> executor) {
-        this.executors.remove(executor);
+        Set<AbstractPacketEventExecutor<?>> set = this.tempTreeSet();
+        set.remove(executor);
+
+        this.executors = ImmutableSortedSet.copyOf(PacketEventHandler.COMPARATOR, set);
+    }
+
+    private Set<AbstractPacketEventExecutor<?>> tempTreeSet() {
+        Set<AbstractPacketEventExecutor<?>> set = Sets.newTreeSet(PacketEventHandler.COMPARATOR);
+        set.addAll(this.executors);
+        return set;
     }
 }
