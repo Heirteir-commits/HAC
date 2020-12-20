@@ -1,21 +1,25 @@
 package com.heretere.hac.api.config.file;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.heretere.hac.api.HACAPI;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
+import java.util.List;
 
 public abstract class ConfigPath {
+    private final HACAPI api;
+
     private final Type type;
     private final String path;
-    private final Set<String> comments;
+    private final List<String> comments;
     private final int indentLevel;
 
-    protected ConfigPath(Type type, String path, String... comments) {
+    protected ConfigPath(@NotNull HACAPI api, @NotNull Type type, @NotNull String path, @NotNull String... comments) {
+        this.api = api;
         this.type = type;
         this.path = path;
-        this.comments = Sets.newLinkedHashSet(Lists.newArrayList(comments));
+        this.comments = Lists.newArrayList(comments);
         indentLevel = StringUtils.countMatches(path, ".") * 2;
     }
 
@@ -23,11 +27,11 @@ public abstract class ConfigPath {
         return path;
     }
 
-    public void addComment(String comment) {
+    public void addComment(@NotNull String comment) {
         this.comments.add(comment);
     }
 
-    public Set<String> getComments() {
+    public List<String> getComments() {
         return this.comments;
     }
 
@@ -37,6 +41,10 @@ public abstract class ConfigPath {
 
     public int getIndentLevel() {
         return indentLevel;
+    }
+
+    protected HACAPI getAPI() {
+        return this.api;
     }
 
     public enum Type {

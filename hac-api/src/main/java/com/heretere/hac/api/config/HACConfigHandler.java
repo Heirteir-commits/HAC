@@ -10,6 +10,7 @@ import com.heretere.hac.api.config.file.ConfigPath;
 import com.heretere.hac.api.config.file.ConfigSection;
 import com.heretere.hac.api.config.file.HACConfigFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -19,17 +20,19 @@ import java.util.Map;
 import java.util.Optional;
 
 public class HACConfigHandler {
+    private final HACAPI api;
     private final Path basePath;
 
     private final Map<String, HACConfigFile> files;
 
-    public HACConfigHandler() {
+    public HACConfigHandler(@NotNull HACAPI api) {
+        this.api = api;
         this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class).getDataFolder().toPath().getParent().resolve("HAC");
 
         this.files = Maps.newHashMap();
     }
 
-    public void loadConfigClass(Object instance) {
+    public void loadConfigClass(@NotNull Object instance) {
         Class<?> clazz = instance.getClass();
 
         if (!clazz.isAnnotationPresent(ConfigFile.class)) {
@@ -42,7 +45,7 @@ public class HACConfigHandler {
 
         if (clazz.isAnnotationPresent(Section.class)) {
             Section section = clazz.getAnnotation(Section.class);
-            configValues.computeIfAbsent(section.key(), path -> new ConfigSection(path, section.comments()));
+            configValues.computeIfAbsent(section.key(), path -> new ConfigSection(this.api, path, section.comments()));
         }
 
         for (Field field : clazz.getDeclaredFields()) {
@@ -50,7 +53,7 @@ public class HACConfigHandler {
                 ConfigKey configKey = field.getAnnotation(ConfigKey.class);
 
                 ConfigField<?> configField = (ConfigField<?>)
-                        configValues.computeIfAbsent(configKey.path(), path -> new ConfigField<>(field.getType(), instance, path, configKey.comments()));
+                        configValues.computeIfAbsent(configKey.path(), path -> new ConfigField<>(this.api, field.getType(), instance, path, configKey.comments()));
 
                 Optional<Method> setter = Arrays.stream(clazz.getMethods())
                         .filter(method -> method.getName().equals(configKey.setter()))
@@ -59,7 +62,7 @@ public class HACConfigHandler {
                 if (setter.isPresent()) {
                     configField.setSetter(setter.get());
                 } else {
-                    HACAPI.getInstance().getErrorHandler().getHandler().accept(
+                    this.api.getErrorHandler().getHandler().accept(
                             new NoSuchMethodException(String.format(
                                     "Setter with name '%s' does not exist in class '%s'.",
                                     configKey.setter(),
@@ -75,7 +78,7 @@ public class HACConfigHandler {
                 if (getter.isPresent()) {
                     configField.setGetter(getter.get());
                 } else {
-                    HACAPI.getInstance().getErrorHandler().getHandler().accept(
+                    this.api.getErrorHandler().getHandler().accept(
                             new NoSuchMethodException(String.format(
                                     "Getter with name '%s' does not exist in class '%s'.",
                                     configKey.getter(),
@@ -93,8 +96,8 @@ public class HACConfigHandler {
         this.files.values().forEach(HACConfigFile::save);
     }
 
-    private HACConfigFile getConfigFile(ConfigFile path) {
-        return files.computeIfAbsent(path.value(), v -> new HACConfigFile(this, path));
+    private HACConfigFile getConfigFile(@NotNull ConfigFile path) {
+        return files.computeIfAbsent(path.value(), v -> new HACConfigFile(this.api, this, path));
     }
 
     public Path getBasePath() {

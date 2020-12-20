@@ -6,6 +6,8 @@ plugins {
 }
 
 ext {
+    SHADOW_JAR_OUTPUT_DIR = file(buildDir.parentFile.path + "/jars")
+    SHADOW_JAR_OUTPUT_DIR.mkdirs();
     /* Group name*/
     TASK_GROUP_NAME = 'hac package'
 
@@ -21,15 +23,15 @@ ext {
     VERSIONS = [:]
 
     def tmpVersions = [
-        [find: 'eight', replace: '1_8_R3'],
-        [find: 'nine', replace: '1_9_R2'],
-        [find: 'ten', replace: '1_10_R1'],
-        [find: 'eleven', replace: '1_11_R1'],
-        [find: 'twelve', replace: '1_12_R1'],
-        [find: 'thirteen', replace: '1_13_R2'],
-        [find: 'fourteen', replace: '1_14_R1'],
-        [find: 'fifteen', replace: '1_15_R1'],
-        [find: 'sixteen', replace: '1_16_R3']
+//        [find: 'eight', replace: '1_8_R3'],
+//        [find: 'nine', replace: '1_9_R2'],
+//        [find: 'ten', replace: '1_10_R1'],
+//        [find: 'eleven', replace: '1_11_R1'],
+//        [find: 'twelve', replace: '1_12_R1'],
+//        [find: 'thirteen', replace: '1_13_R2'],
+//        [find: 'fourteen', replace: '1_14_R1'],
+//        [find: 'fifteen', replace: '1_15_R1'],
+[find: 'sixteen', replace: '1_16_R3']
     ]
 
     tmpVersions.each {
@@ -76,9 +78,9 @@ sonarqube {
 allprojects {
     repositories {
         mavenCentral()
-        maven {
-            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
-        }
+        maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
+        maven { url 'https://papermc.io/repo/repository/maven-public/' }
+        maven { url 'https://repo.codemc.org/repository/maven-public/' }
     }
 
     /* Apply errorprone to all project sources */
@@ -91,13 +93,12 @@ allprojects {
     /* Project wide dependencies */
     pluginManager.withPlugin('java-library') {
         dependencies {
-            compileOnlyApi 'org.jetbrains:annotations:16.0.2'
+            compileOnlyApi 'org.jetbrains:annotations:20.1.0'
         }
 
         compileJava {
-            /* Insure that all versions are compiled with 1.8 support */
+            /* Ensure that all versions are compiled with 1.8 support */
             sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
         }
     }
 }

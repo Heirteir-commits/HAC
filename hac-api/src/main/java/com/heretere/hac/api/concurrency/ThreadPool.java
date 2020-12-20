@@ -17,7 +17,7 @@ public class ThreadPool {
      * Instantiates a new Thread pool.
      */
     public ThreadPool() {
-        this.pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactoryBuilder().setNameFormat("hac-thread-%d").build());
+        this.pool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d").build());
     }
 
     /**

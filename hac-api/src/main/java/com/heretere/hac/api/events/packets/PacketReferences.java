@@ -2,8 +2,8 @@ package com.heretere.hac.api.events.packets;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
+import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
 import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
@@ -32,7 +32,7 @@ public final class PacketReferences {
         private final Map<Class<?>, PacketReference<?>> packetReferences;
 
         protected AbstractPacketReferenceHolder() {
-            this.packetReferences = Maps.newHashMap();
+            this.packetReferences = Maps.newIdentityHashMap();
         }
 
         public final PacketReference<?> get(Class<?> nmsClass) {

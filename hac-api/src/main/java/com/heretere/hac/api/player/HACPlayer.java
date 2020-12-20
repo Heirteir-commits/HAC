@@ -1,6 +1,5 @@
 package com.heretere.hac.api.player;
 
-import com.google.common.base.Preconditions;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.player.builder.DataManager;
@@ -9,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -18,17 +18,18 @@ import java.util.function.BiConsumer;
  * for the plugin.
  */
 public final class HACPlayer {
+    private final HACAPI api;
     private CompletableFuture<Void> future;
 
-    private final Player player;
+    private final WeakReference<Player> player;
     private final DataManager dataManager;
 
-    HACPlayer(@NotNull Player player) {
-        Preconditions.checkNotNull(player, "Player is null.");
+    HACPlayer(@NotNull HACAPI api, @NotNull Player player) {
+        this.api = api;
 
         this.future = CompletableFuture.allOf();
 
-        this.player = player;
+        this.player = new WeakReference<>(player);
 
         this.dataManager = new DataManager();
     }
@@ -42,16 +43,16 @@ public final class HACPlayer {
      */
     public void runTaskASync(@NotNull Runnable runnable, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
         this.future = this.future
-                .thenRunAsync(runnable, HACAPI.getInstance().getThreadPool().getPool())
+                .thenRunAsync(runnable, this.api.getThreadPool().getPool())
                 .whenCompleteAsync(
                         errorHandler == null ?
                                 (msg, ex) -> {
                                     if (ex != null) {
-                                        HACAPI.getInstance().getErrorHandler().getHandler().accept(ex);
+                                        this.api.getErrorHandler().getHandler().accept(ex);
                                     }
                                 } :
                                 errorHandler,
-                        HACAPI.getInstance().getThreadPool().getPool());
+                        this.api.getThreadPool().getPool());
     }
 
     /**
@@ -60,7 +61,7 @@ public final class HACPlayer {
      * @return The UUID of the player.
      */
     public UUID getUUID() {
-        return this.player.getUniqueId();
+        return this.getBukkitPlayer().getUniqueId();
     }
 
     /**
@@ -69,7 +70,7 @@ public final class HACPlayer {
      * @return The Bukkit Player
      */
     public Player getBukkitPlayer() {
-        return this.player;
+        return this.player.get();
     }
 
     /**

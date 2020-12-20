@@ -1,0 +1,78 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+ext {
+    PACKAGED_VERSIONS = file(sourceSets.main.resources.srcDirs[0].path + "/packaged_versions.txt")
+}
+
+group 'com.heretere'
+version rootProject.version
+
+dependencies {
+    compileOnlyApi 'org.bstats:bstats-bukkit:1.7'
+    compileOnlyApi LATEST_SPIGOT
+
+    implementation project(PROJECT_PROXY)
+    implementation project(PROJECT_ALL_VERSIONS)
+
+    compileOnlyApi 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+}
+
+shadowJar {
+    outputs.upToDateWhen { return false } //Will always rebuild fatjar since version inclusion can be changed.
+    doFirst {
+        dependencies {
+            /* excludes version is include is set to false for it */
+            VERSIONS.each {
+                k, v ->
+                    if (!v.include) {
+                        exclude PROJECT_ALL_VERSIONS.toString() + v.projectAppend.toString()
+                    }
+            }
+        }
+
+        /* Relocates all versions to their correct name: VERSIONS can be found in rootProject build.gradle*/
+        VERSIONS.each {
+            k, v ->
+                relocate VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.find.toString(),
+                    VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.replace.toString()
+        }
+
+        /* module specific */
+        relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
+        relocate 'org.bstats.bukkit', 'com.heretere.hac.core.libs.bstats.bukkit'
+        relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
+
+        archiveFileName = 'HAC.Core.jar'
+        destinationDirectory = SHADOW_JAR_OUTPUT_DIR;
+    }
+    doLast {
+        /* Delete packaged versions because we only need them at compile time */
+        delete PACKAGED_VERSIONS
+        delete file(PACKAGED_VERSIONS.getParentFile())
+    }
+}
+
+task preProcessResources {
+    doFirst {
+        /* Write to a packaged versions file to include all versions packaged in this jar */
+        PACKAGED_VERSIONS.getParentFile().mkdirs()
+        PACKAGED_VERSIONS.withWriter {
+            out ->
+                VERSIONS.each {
+                    k, v ->
+                        if (v.spigotJar.exists() && v.include) {
+                            out.println(k)
+                        }
+                }
+        }
+    }
+}
+
+processResources {
+    dependsOn preProcessResources
+    outputs.upToDateWhen { return false } //Will always processResources since version inclusion can be changed.
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+}

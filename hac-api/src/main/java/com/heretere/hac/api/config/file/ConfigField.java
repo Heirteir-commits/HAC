@@ -1,6 +1,8 @@
 package com.heretere.hac.api.config.file;
 
 import com.heretere.hac.api.HACAPI;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
@@ -13,8 +15,8 @@ public class ConfigField<T> extends ConfigPath {
     private Method setter;
     private T lastKnownValue;
 
-    public ConfigField(Class<T> type, Object instance, String path, String... comments) {
-        super(Type.VALUE, path, comments);
+    public ConfigField(@NotNull HACAPI api, @NotNull Class<T> type, @Nullable Object instance, @NotNull String path, @NotNull String... comments) {
+        super(api, Type.VALUE, path, comments);
         this.type = type;
         this.instance = new WeakReference<>(instance);
     }
@@ -38,7 +40,7 @@ public class ConfigField<T> extends ConfigPath {
                 output = this.lastKnownValue = this.type.cast(this.getter.invoke(tmpInstance));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 output = null;
-                HACAPI.getInstance().getErrorHandler().getHandler().accept(e);
+                super.getAPI().getErrorHandler().getHandler().accept(e);
             }
         }
 
@@ -52,12 +54,16 @@ public class ConfigField<T> extends ConfigPath {
             try {
                 this.setter.invoke(tmpInstance, value);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                HACAPI.getInstance().getErrorHandler().getHandler().accept(e);
+                super.getAPI().getErrorHandler().getHandler().accept(e);
             }
         }
     }
 
     public void setValueRaw(Object value) {
         this.setValue(this.type.cast(value));
+    }
+
+    public Class<T> getClassType() {
+        return type;
     }
 }

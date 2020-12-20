@@ -8,6 +8,7 @@ import com.heretere.hac.util.plugin.dependency.DependencyLoader;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import com.heretere.hac.util.plugin.dependency.relocation.classloader.IsolatedClassLoader;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -65,8 +66,8 @@ public final class Relocator {
             for (Relocation relocation : dependency.getRelocations()) {
                 rules.add(
                         relocationConstructor.newInstance(
-                                relocation.from(),
-                                relocation.to(),
+                                StringUtils.replace(relocation.from(), "|", "."),
+                                StringUtils.replace(relocation.to(), "|", "."),
                                 Lists.newArrayList(),
                                 Lists.newArrayList()
                         )

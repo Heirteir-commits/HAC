@@ -1,0 +1,37 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group 'com.heretere'
+version rootProject.version
+
+dependencies {
+    compileOnlyApi 'io.netty:netty-all:4.1.53.Final'
+    compileOnlyApi LATEST_SPIGOT
+
+    api project(':hac-util')
+    compileOnlyApi project(':hac-core:core-proxy')
+}
+
+shadowJar {
+    dependsOn jar
+    archiveFileName = 'proxy.jar'
+    finalizedBy project(PROJECT_PLUGIN).tasks.getByName('shadowJar')
+}
+
+afterEvaluate {
+    rootProject.VERSIONS.each {
+        k, v ->
+            task(k.toString()) {
+                group TASK_GROUP_NAME
+                dependsOn rootProject.getTasksByName(k.toString(), false)[0]
+                finalizedBy shadowJar
+            }
+    }
+
+    task('Build All') {
+        group TASK_GROUP_NAME
+        dependsOn rootProject.getTasksByName('Build All', false)[0]
+        finalizedBy shadowJar
+    }
+}

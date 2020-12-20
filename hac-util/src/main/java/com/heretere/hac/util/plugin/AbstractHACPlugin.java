@@ -13,7 +13,6 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
 
     private final Log log;
 
-    private final DependencyLoader dependencyLoader;
     private boolean dependencySuccess;
 
     protected AbstractHACPlugin(String baseDirectory, String prefix) {
@@ -22,14 +21,13 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
 
         this.log = new Log(this);
         this.log.open();
-        this.dependencyLoader = new DependencyLoader(this);
     }
 
     @Override
     public final void onLoad() {
         super.onLoad();
 
-        this.dependencySuccess = this.dependencyLoader.loadDependencies();
+        this.dependencySuccess = new DependencyLoader(this).loadDependencies();
 
         if (this.dependencySuccess) {
             this.load();
@@ -57,7 +55,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
             this.log.reportFatalError(() ->
                             String.format("Could not download required dependencies. " +
                                             "Please look at the latest.log in the '%s' folder to determine the issue.",
-                                    this.baseDirectory.getParent().relativize(this.baseDirectory.resolve("logs").resolve(this.prefix))),
+                                    this.baseDirectory.getParent().relativize(this.baseDirectory.resolve("logs").resolve(this.getName()))),
                     false
             );
             Bukkit.getPluginManager().disablePlugin(this);
@@ -69,7 +67,6 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
     public abstract void enable();
 
     public abstract void disable();
-
 
     public Path getBaseDirectory() {
         return baseDirectory;

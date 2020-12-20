@@ -15,7 +15,7 @@ public final class DataManager {
      * Instantiates a new Data manager.
      */
     public DataManager() {
-        this.data = Maps.newHashMap();
+        this.data = Maps.newIdentityHashMap(); //Since we are only comparing classes identity hashmap is beneficial here for speed
     }
 
     /**

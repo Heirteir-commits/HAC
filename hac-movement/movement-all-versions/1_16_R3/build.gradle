@@ -1,0 +1,7 @@
+group 'com.heretere'
+version rootProject.version
+
+dependencies {
+    /* Spigot Dependency */
+    compileOnlyApi files(VERSIONS['1_16_R3'].spigotJar)
+}

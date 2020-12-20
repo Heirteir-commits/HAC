@@ -5,9 +5,9 @@ plugins {
 ext {
     /* Per project names that should be applied to sub projects (used to easily copy and paste this to a new module) */
     PROJECT_PREPEND = ':hac-core'
-    PROJECT_ALL_VERSIONS = PROJECT_PREPEND + ':all-versions'
-    PROJECT_PROXY = PROJECT_PREPEND + ':proxy'
-    PROJECT_PLUGIN = PROJECT_PREPEND + ':plugin'
+    PROJECT_ALL_VERSIONS = PROJECT_PREPEND + ':core-all-versions'
+    PROJECT_PROXY = PROJECT_PREPEND + ':core-proxy'
+    PROJECT_PLUGIN = PROJECT_PREPEND + ':core-plugin'
     VERSION_PACKAGE_ABSOLUTE = 'com.heretere.hac.core.proxy.versions.'
 }
 

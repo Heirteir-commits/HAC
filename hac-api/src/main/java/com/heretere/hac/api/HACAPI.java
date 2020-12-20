@@ -44,10 +44,10 @@ public final class HACAPI {
     private HACAPI() {
         Preconditions.checkState(HACAPI.instance == null, "There can only be one instance of HACAPI.");
 
-        this.configHandler = new HACConfigHandler();
+        this.configHandler = new HACConfigHandler(this);
         this.eventManager = new AsyncPacketEventManager();
         this.threadPool = new ThreadPool();
-        this.hacPlayerList = new HACPlayerList();
+        this.hacPlayerList = new HACPlayerList(this);
         this.errorHandler = new ErrorHandler();
         this.packetReferences = new PacketReferences();
 

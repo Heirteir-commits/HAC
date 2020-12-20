@@ -6,6 +6,7 @@ import com.heretere.hac.api.events.AbstractPacketEventExecutor;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.player.HACPlayerBuilder;
 import com.heretere.hac.api.player.HACPlayerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class is used to build dynamic player data at runtime. After created an instance it needs to be registered
@@ -15,6 +16,7 @@ import com.heretere.hac.api.player.HACPlayerList;
  * @param <T> The Data class that this builder creates.
  */
 public abstract class AbstractDataBuilder<T> {
+    private final HACAPI api;
     private final ImmutableSet<AbstractPacketEventExecutor<?>> events;
 
     /**
@@ -23,7 +25,8 @@ public abstract class AbstractDataBuilder<T> {
      *
      * @param events The instances of {@link AbstractPacketEventExecutor}
      */
-    protected AbstractDataBuilder(AbstractPacketEventExecutor<?>... events) {
+    protected AbstractDataBuilder(@NotNull HACAPI api, AbstractPacketEventExecutor<?>... events) {
+        this.api = api;
         this.events = ImmutableSet.copyOf(events);
     }
 
@@ -34,21 +37,21 @@ public abstract class AbstractDataBuilder<T> {
      * @param player The HACPlayer instance.
      * @return A built t data object.
      */
-    public abstract T build(HACPlayer player);
+    public abstract T build(@NotNull HACPlayer player);
 
 
     /**
      * Registered updaters from the supplied array in {@link AbstractDataBuilder#AbstractDataBuilder(AbstractPacketEventExecutor[])}
      */
     public void registerUpdaters() {
-        this.events.forEach(HACAPI.getInstance().getEventManager()::registerPacketEventExecutor);
+        this.events.forEach(this.api.getEventManager()::registerPacketEventExecutor);
     }
 
     /**
      * unregisters updaters from the supplied array in {@link AbstractDataBuilder#AbstractDataBuilder(AbstractPacketEventExecutor[])}
      */
     public void unregisterUpdaters() {
-        this.events.forEach(HACAPI.getInstance().getEventManager()::unregisterPacketEventExecutor);
+        this.events.forEach(this.api.getEventManager()::unregisterPacketEventExecutor);
     }
 
     /**

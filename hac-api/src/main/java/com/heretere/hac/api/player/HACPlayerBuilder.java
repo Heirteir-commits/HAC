@@ -1,7 +1,8 @@
 package com.heretere.hac.api.player;
 
-import com.heretere.hac.api.player.builder.AbstractDataBuilder;
 import com.google.common.collect.Maps;
+import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.player.builder.AbstractDataBuilder;
 import com.heretere.hac.api.player.builder.DataManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +14,13 @@ import java.util.Map;
  * reference inside of {@link DataManager}.
  */
 public final class HACPlayerBuilder {
+    private final HACAPI api;
     private final HACPlayerList playerList;
 
     private final Map<Class<?>, AbstractDataBuilder<?>> builders;
 
-    HACPlayerBuilder(@NotNull HACPlayerList playerList) {
+    HACPlayerBuilder(@NotNull HACAPI api, @NotNull HACPlayerList playerList) {
+        this.api = api;
         this.playerList = playerList;
         this.builders = Maps.newLinkedHashMap();
     }
@@ -40,7 +43,7 @@ public final class HACPlayerBuilder {
 
 
     /**
-     * Unregisters a {@link AbstractDataBuilder} from all {@link DataManager}
+     * Unregisters a {@link AbstractDataBuilder}0rom all {@link DataManager}
      * instances.
      *
      * @param clazz The {@link java.lang.Class} used to register the {@link AbstractDataBuilder}
@@ -66,7 +69,7 @@ public final class HACPlayerBuilder {
      * @return The built {@link HACPlayer}.
      */
     public HACPlayer build(@NotNull Player player) {
-        HACPlayer hacPlayer = new HACPlayer(player);
+        HACPlayer hacPlayer = new HACPlayer(this.api, player);
         this.builders
                 .forEach((key, value) -> hacPlayer.getDataManager().addDataRaw(key, value.build(hacPlayer)));
         return hacPlayer;

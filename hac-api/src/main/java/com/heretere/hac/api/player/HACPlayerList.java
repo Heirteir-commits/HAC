@@ -23,8 +23,8 @@ public final class HACPlayerList {
     /**
      * This constructor should only ever be called by {@link HACAPI}.
      */
-    public HACPlayerList() {
-        this.builder = new HACPlayerBuilder(this);
+    public HACPlayerList(HACAPI api) {
+        this.builder = new HACPlayerBuilder(api, this);
         this.players = Maps.newHashMap();
     }
 
