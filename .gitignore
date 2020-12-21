@@ -160,4 +160,3 @@ gradle-app.setting
 #Custom includes folder but excludes jars located inside
 put_spigot_jars_here/*
 !put_spigot_jars_here/readme.txt
-jars/*

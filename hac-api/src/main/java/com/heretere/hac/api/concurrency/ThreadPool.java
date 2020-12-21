@@ -1,16 +1,18 @@
 package com.heretere.hac.api.concurrency;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.heretere.hac.api.HACAPI;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * This is the ThreadPool instance used for multi-threading the tasks ran inside of HAC.
- * You can get an the default instance from {@link HACAPI#getThreadPool()}.
+ * You can get an the default instance from {@link com.heretere.hac.api.HACAPI#getThreadPool()}.
  */
 public class ThreadPool {
+    /**
+     * The executor service reference.
+     */
     private final ExecutorService pool;
 
     /**
@@ -21,7 +23,7 @@ public class ThreadPool {
     }
 
     /**
-     * Get the {@link ExecutorService}
+     * Get the {@link ExecutorService}.
      *
      * @return the {@link ExecutorService}
      */

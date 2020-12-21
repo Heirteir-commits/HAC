@@ -1,21 +1,26 @@
 package com.heretere.hac.api.player.builder;
 
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.player.HACPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 /**
- * This class is used by {@link HACPlayer} to handle all dynamic data that may be created for it.
+ * This class is used by {@link com.heretere.hac.api.player.HACPlayer} to handle all dynamic data that may be created
+ * for it.
  */
 public final class DataManager {
+    /**
+     * A map of the data objects attached ot his data manager.
+     */
     private final Map<Class<?>, Object> data;
 
     /**
      * Instantiates a new Data manager.
      */
     public DataManager() {
-        this.data = Maps.newIdentityHashMap(); //Since we are only comparing classes identity hashmap is beneficial here for speed
+        //Since we are only comparing classes identity hashmap is beneficial here for speed
+        this.data = Maps.newIdentityHashMap();
     }
 
     /**
@@ -25,11 +30,11 @@ public final class DataManager {
      * @param data  the data
      * @param <T>   the type of the data class
      */
-    public <T> void addDataRaw(Class<T> clazz, Object data) {
+    public <T> void addDataRaw(@NotNull final Class<T> clazz, @NotNull final Object data) {
         this.addData(clazz, clazz.cast(data));
     }
 
-    private <T> void addData(Class<T> clazz, T data) {
+    private <T> void addData(@NotNull final Class<T> clazz, @NotNull final T data) {
         this.data.put(clazz, data);
     }
 
@@ -38,7 +43,7 @@ public final class DataManager {
      *
      * @param clazz the class
      */
-    public void removeData(Class<?> clazz) {
+    public void removeData(@NotNull final Class<?> clazz) {
         this.data.remove(clazz);
     }
 
@@ -49,7 +54,7 @@ public final class DataManager {
      * @param clazz the class
      * @return the data
      */
-    public <T> T getData(Class<T> clazz) {
+    public <T> T getData(@NotNull final Class<T> clazz) {
         return clazz.cast(this.data.get(clazz));
     }
 }

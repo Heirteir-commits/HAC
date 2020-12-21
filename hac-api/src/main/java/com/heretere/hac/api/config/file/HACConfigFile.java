@@ -20,13 +20,34 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The type Hac config file.
+ */
 public class HACConfigFile {
+    /**
+     * The HAC API reference.
+     */
     private final HACAPI api;
+    /**
+     * The YAMLConfiguration that this class is backed by.
+     */
     private final YamlConfiguration configuration;
+    /**
+     * The map that handles organizing all the path locations.
+     */
     private final Map<String, ConfigPath> entries;
+    /**
+     * The path to the config file.
+     */
     private final Path path;
 
-    public HACConfigFile(@NotNull HACAPI api, @NotNull Path path) {
+    /**
+     * Instantiates a new Hac config file.
+     *
+     * @param api  the api
+     * @param path the path
+     */
+    public HACConfigFile(@NotNull final HACAPI api, @NotNull final Path path) {
         this.api = api;
         this.path = path;
 
@@ -36,11 +57,20 @@ public class HACConfigFile {
         this.load();
     }
 
-    public HACConfigFile(@NotNull HACAPI api, @NotNull HACConfigHandler configHandler, @NotNull ConfigFile file) {
+    /**
+     * Instantiates a new Hac config file.
+     *
+     * @param api           the api
+     * @param configHandler the config handler
+     * @param file          the file
+     */
+    public HACConfigFile(@NotNull final HACAPI api,
+                         @NotNull final HACConfigHandler configHandler,
+                         @NotNull final ConfigFile file) {
         this(api, configHandler.getBasePath().resolve(file.value()));
     }
 
-    private static String getPathString(String path) {
+    private static String getPathString(@NotNull final String path) {
         String output = StringUtils.substringAfterLast(path, ".");
 
         if (output.isEmpty()) {
@@ -67,7 +97,7 @@ public class HACConfigFile {
 
                     if (value != null) {
                         ConfigField<?> field = new ConfigField<>(this.api, value.getClass(), null, string);
-                        field.setValueRaw(configuration.get(string));
+                        field.setValueRaw(value);
                         this.entries.put(string, field);
                     }
                 }
@@ -77,19 +107,28 @@ public class HACConfigFile {
         }
     }
 
-    public void loadConfigPath(@NotNull ConfigPath configPath) {
+    /**
+     * Load config path.
+     *
+     * @param configPath the config path
+     */
+    public void loadConfigPath(@NotNull final ConfigPath configPath) {
         this.recursiveAddPath(configPath);
 
         if (configPath.getType().equals(ConfigPath.Type.VALUE)) {
             ConfigField<?> field = (ConfigField<?>) configPath;
 
             if (this.configuration.contains(field.getPath())) {
-                field.setValueRaw(this.configuration.getObject(field.getPath(), field.getClassType()));
+                Object value = this.configuration.getObject(field.getPath(), field.getClassType());
+
+                if (value != null) {
+                    field.setValueRaw(value);
+                }
             }
         }
     }
 
-    private void recursiveAddPath(ConfigPath path) {
+    private void recursiveAddPath(@NotNull final ConfigPath path) {
         if (!path.getComments().isEmpty() || path.getType().equals(ConfigPath.Type.VALUE)) {
             this.entries.put(path.getPath(), path);
         } else {
@@ -101,6 +140,9 @@ public class HACConfigFile {
         }
     }
 
+    /**
+     * Saves the yaml to the current file.
+     */
     public void save() {
         Yaml yaml = new Yaml();
         Set<String> lines = Sets.newLinkedHashSet();

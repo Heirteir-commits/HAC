@@ -17,19 +17,45 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
+/**
+ * This class adds some functionality to the plugin logger.
+ */
 public final class Log {
-    /* Plugin Parent */
+    /**
+     * Whenever an error is reported to the log file it will wrap it to this many characters.
+     */
+    private static final int ERROR_WRAP = 60;
+    /**
+     * Adds padding to the border of a reported error.
+     */
+    private static final int ERROR_PADDING = 3;
+
+    /**
+     * The parent plugin reference.
+     */
     private final AbstractHACPlugin parent;
 
-    /* Files */
+    /**
+     * The logging file location.
+     */
     private final Path loggingFile;
 
-    /* State Handler */
+    /**
+     * The state handler.
+     */
     private boolean open;
 
-    public Log(AbstractHACPlugin parent) {
+    /**
+     * Instantiates a new Log.
+     *
+     * @param parent the parent
+     */
+    public Log(@NotNull final AbstractHACPlugin parent) {
         this.parent = parent;
-        this.loggingFile = this.parent.getBaseDirectory().resolve("logs").resolve(parent.getName()).resolve("latest.log.txt");
+        this.loggingFile = this.parent.getBaseDirectory()
+                .resolve("logs")
+                .resolve(parent.getName())
+                .resolve("latest.log.txt");
 
         try {
             Files.createDirectories(this.loggingFile.getParent());
@@ -38,6 +64,9 @@ public final class Log {
         }
     }
 
+    /**
+     * Opens the logging file.
+     */
     public void open() {
         Preconditions.checkState(!this.open, "Log file already opened.");
 
@@ -52,6 +81,9 @@ public final class Log {
         }
     }
 
+    /**
+     * Closes the logging file.
+     */
     public void close() {
         Preconditions.checkState(this.open, "There is no log file to close.");
 
@@ -62,44 +94,68 @@ public final class Log {
         this.open = false;
     }
 
-    private Supplier<String> toLogMessage(Supplier<String> message) {
+    private Supplier<String> toLogMessage(@NotNull final Supplier<String> message) {
         return () -> ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(parent.getPrefix() + message.get()));
     }
 
     private void checkState() {
-        Preconditions.checkState(this.open, "Log file hasn't been created please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
+        Preconditions.checkState(this.open, "Log file hasn't been created. "
+                + "Please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
     }
 
-    public void info(@NotNull Supplier<String> message) {
+    /**
+     * Info.
+     *
+     * @param message the message
+     */
+    public void info(@NotNull final Supplier<String> message) {
         this.checkState();
 
         this.parent.getLogger().info(this.toLogMessage(message));
     }
 
-    public void severe(@NotNull Supplier<String> message) {
+    /**
+     * Severe.
+     *
+     * @param message the message
+     */
+    public void severe(@NotNull final Supplier<String> message) {
         this.checkState();
 
         this.parent.getLogger().severe(this.toLogMessage(message));
     }
 
-    public void severe(@NotNull Throwable exception) {
+    /**
+     * Severe.
+     *
+     * @param exception the exception
+     */
+    public void severe(@NotNull final Throwable exception) {
         this.checkState();
 
         this.parent.getLogger().log(Level.SEVERE, exception, this.toLogMessage(exception::getMessage));
     }
 
-    public void reportFatalError(@NotNull Supplier<String> message, boolean shutdown) {
-        int splitSize = 60;
-        int padding = 6;
-        Iterable<String> header = Splitter.fixedLength(splitSize).split(String.format("'%s' ran into an error that has forced the plugin to stop. More information below:", this.parent.getName()));
-        Iterable<String> body = Splitter.fixedLength(splitSize).split(ChatColor.stripColor(message.get()));
-        String headTail = "&c" + StringUtils.repeat("=", splitSize + padding + 2);
-        String headerTail = "&c|" + StringUtils.repeat("=", splitSize + padding) + "|";
+    /**
+     * Report fatal error.
+     *
+     * @param message  the message
+     * @param shutdown the shutdown
+     */
+    public void reportFatalError(@NotNull final Supplier<String> message, final boolean shutdown) {
+        Iterable<String> header = Splitter.fixedLength(ERROR_WRAP)
+                .split(String.format("'%s' ran into an error that has forced the plugin to stop."
+                        + " More information below:", this.parent.getName()));
+        Iterable<String> body = Splitter.fixedLength(ERROR_WRAP).split(ChatColor.stripColor(message.get()));
+        String headTail = "&c" + StringUtils.repeat("=", ERROR_WRAP + ERROR_PADDING + 2);
+        String headerTail = "&c|" + StringUtils.repeat("=", ERROR_WRAP + ERROR_PADDING) + "|";
 
         this.severe(() -> headTail);
-        header.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
+        header.forEach(line -> this.severe(() -> "&c|&r"
+                + StringUtils.center(line, ERROR_WRAP + ERROR_PADDING) + "&c|"));
         this.severe(() -> headerTail);
-        body.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line, splitSize + padding) + "&c|"));
+        body.forEach(line -> this.severe(() -> "&c|&r"
+                + StringUtils.center(line, ERROR_WRAP + ERROR_PADDING) + "&c|"));
         this.severe(() -> headTail);
 
         if (shutdown && Bukkit.getPluginManager().isPluginEnabled(this.parent)) {
@@ -111,24 +167,42 @@ public final class Log {
         }
     }
 
-    public void reportFatalError(@NotNull Throwable exception, boolean shutdown) {
+    /**
+     * Report fatal error.
+     *
+     * @param exception the exception
+     * @param shutdown  the shutdown
+     */
+    public void reportFatalError(@NotNull final Throwable exception, final boolean shutdown) {
         this.severe(exception);
         this.reportFatalError(exception::getMessage, shutdown);
     }
 
     private enum ChatColorAnsi {
+        /**
+         * Red chat color ansi.
+         */
         RED("&c", "\u001b[31m"),
+        /**
+         * Default chat color ansi.
+         */
         DEFAULT("&r", "\u001b[0m");
 
+        /**
+         * The minecraft color with & instead of the section symbol.
+         */
         private final String colorCode;
+        /**
+         * The ansi replacement for the color code.
+         */
         private final String ansiCode;
 
-        ChatColorAnsi(String colorCode, String ansiCode) {
+        ChatColorAnsi(@NotNull final String colorCode, @NotNull final String ansiCode) {
             this.colorCode = colorCode;
             this.ansiCode = ansiCode;
         }
 
-        private static String colorCodeToAnsi(String input) {
+        private static String colorCodeToAnsi(@NotNull final String input) {
             String output = input;
 
             for (ChatColorAnsi ansi : ChatColorAnsi.values()) {

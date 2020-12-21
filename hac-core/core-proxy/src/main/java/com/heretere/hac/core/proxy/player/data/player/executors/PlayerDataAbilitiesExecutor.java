@@ -10,7 +10,12 @@ import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecutor<AbilitiesPacket> {
-    public PlayerDataAbilitiesExecutor(String identifier) {
+    /**
+     * Instantiates a new Player data abilities executor.
+     *
+     * @param identifier the identifier
+     */
+    public PlayerDataAbilitiesExecutor(@NotNull final String identifier) {
         super(
                 Priority.PROCESS_1,
                 identifier,
@@ -19,13 +24,13 @@ public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecut
     }
 
     @Override
-    public boolean execute(@NotNull HACPlayer player, @NotNull AbilitiesPacket packet) {
+    public boolean execute(@NotNull final HACPlayer player, @NotNull final AbilitiesPacket packet) {
         player.getDataManager().getData(PlayerData.class).getCurrent().setFlying(packet.isFlying());
         return true;
     }
 
     @Override
-    public void onStop(@NotNull HACPlayer player, @NotNull AbilitiesPacket packet) {
+    public void onStop(@NotNull final HACPlayer player, @NotNull final AbilitiesPacket packet) {
         throw new NotImplementedException("Updater Class");
     }
 }

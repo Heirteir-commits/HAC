@@ -5,18 +5,21 @@ import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.events.AsyncPacketEventManager;
 import com.heretere.hac.api.events.packets.PacketReferences;
-import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.player.HACPlayerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
- * API for HAC
+ * API for HAC.
  */
 public final class HACAPI {
+    /**
+     * The singleton instance.
+     */
     private static HACAPI instance;
 
     /**
@@ -32,13 +35,34 @@ public final class HACAPI {
         return HACAPI.instance;
     }
 
+    /**
+     * The Config Handler instance.
+     */
     private final HACConfigHandler configHandler;
+    /**
+     * The Event Manager instance.
+     */
     private final AsyncPacketEventManager eventManager;
+    /**
+     * The ThreadPool instance.
+     */
     private final ThreadPool threadPool;
+    /**
+     * The player list instance.
+     */
     private final HACPlayerList hacPlayerList;
+    /**
+     * The error handler instance.
+     */
     private final ErrorHandler errorHandler;
+    /**
+     * The packet references instance.
+     */
     private final PacketReferences packetReferences;
 
+    /**
+     * Whether or not the api has been loaded.
+     */
     private boolean loaded;
 
     private HACAPI() {
@@ -72,6 +96,11 @@ public final class HACAPI {
         this.loaded = false;
     }
 
+    /**
+     * Gets config handler.
+     *
+     * @return the config handler
+     */
     public HACConfigHandler getConfigHandler() {
         this.checkLoaded();
         return this.configHandler;
@@ -99,8 +128,8 @@ public final class HACAPI {
     }
 
     /**
-     * Anytime a {@link HACPlayer} is created it is registered to this list. hac-core manages removing and adding players to the
-     * list.
+     * Anytime a {@link com.heretere.hac.api.player.HACPlayer} is created it is registered to this list.
+     * hac-core manages removing and adding players to the list.
      *
      * @return All HACPlayer instances registered by HAC.
      */
@@ -110,8 +139,8 @@ public final class HACAPI {
     }
 
     /**
-     * Anytime an error occurs inside the API it is sent to this {@link HACAPI.ErrorHandler}, errors outside the API should be handled
-     * by it's respective plugin.
+     * Anytime an error occurs inside the API it is sent to this {@link HACAPI.ErrorHandler},
+     * errors outside the API should be handled by it's respective plugin.
      *
      * @return The ErrorHandler for the API.
      */
@@ -119,6 +148,11 @@ public final class HACAPI {
         return this.errorHandler;
     }
 
+    /**
+     * Gets packet references.
+     *
+     * @return the packet references
+     */
     public PacketReferences getPacketReferences() {
         this.checkLoaded();
         return this.packetReferences;
@@ -129,6 +163,9 @@ public final class HACAPI {
      * error handler so error information can be outputted to a log.
      */
     public static final class ErrorHandler {
+        /**
+         * The handler that errors are passed to.
+         */
         private Consumer<Throwable> handler;
 
         private ErrorHandler() {
@@ -150,7 +187,7 @@ public final class HACAPI {
          *
          * @param handler The new error handling consumer.
          */
-        public void setHandler(Consumer<Throwable> handler) {
+        public void setHandler(@NotNull final Consumer<Throwable> handler) {
             this.handler = handler;
         }
     }

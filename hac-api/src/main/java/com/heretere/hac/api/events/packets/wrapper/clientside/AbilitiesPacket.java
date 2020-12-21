@@ -7,6 +7,9 @@ import com.heretere.hac.api.events.packets.wrapper.WrappedPacketIn;
  * This is a wrapped version of the PacketPlayInAbilitiesPacket.
  */
 public final class AbilitiesPacket implements WrappedPacketIn {
+    /**
+     * Represents if the player is currently flying or not.
+     */
     private final boolean flying;
 
 
@@ -15,7 +18,7 @@ public final class AbilitiesPacket implements WrappedPacketIn {
      *
      * @param flying the flying
      */
-    public AbilitiesPacket(boolean flying) {
+    public AbilitiesPacket(final boolean flying) {
         this.flying = flying;
     }
 

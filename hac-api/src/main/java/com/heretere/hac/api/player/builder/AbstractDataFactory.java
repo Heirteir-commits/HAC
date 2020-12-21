@@ -4,28 +4,35 @@ import com.google.common.collect.ImmutableSet;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.events.AbstractPacketEventExecutor;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.api.player.HACPlayerBuilder;
-import com.heretere.hac.api.player.HACPlayerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This class is used to build dynamic player data at runtime. After created an instance it needs to be registered
- * by using {@link HACPlayerBuilder#registerDataBuilder(Class, AbstractDataBuilder)}. You can get the
- * {@link HACPlayerBuilder} from {@link HACPlayerList#getBuilder()}.
+ * by using {@link com.heretere.hac.api.player.HACPlayerFactory#registerDataBuilder(Class, AbstractDataFactory)}.
+ * You can get the {@link com.heretere.hac.api.player.HACPlayerFactory} from
+ * {@link com.heretere.hac.api.player.HACPlayerList#getBuilder()}.
  *
  * @param <T> The Data class that this builder creates.
  */
-public abstract class AbstractDataBuilder<T> {
+public abstract class AbstractDataFactory<T> {
+    /**
+     * The HACAPI reference.
+     */
     private final HACAPI api;
+
+    /**
+     * These are automatically registered and unregistered by {@link com.heretere.hac.api.player.HACPlayerFactory}.
+     */
     private final ImmutableSet<AbstractPacketEventExecutor<?>> events;
 
     /**
      * You can include a vararg set of {@link AbstractPacketEventExecutor} these will be
-     * registered for you from {@link AbstractDataBuilder#registerUpdaters()}.
+     * registered for you from {@link AbstractDataFactory#registerUpdaters()}.
      *
+     * @param api    The HACAPI reference
      * @param events The instances of {@link AbstractPacketEventExecutor}
      */
-    protected AbstractDataBuilder(@NotNull HACAPI api, AbstractPacketEventExecutor<?>... events) {
+    protected AbstractDataFactory(@NotNull final HACAPI api, @NotNull final AbstractPacketEventExecutor<?>... events) {
         this.api = api;
         this.events = ImmutableSet.copyOf(events);
     }
@@ -41,14 +48,16 @@ public abstract class AbstractDataBuilder<T> {
 
 
     /**
-     * Registered updaters from the supplied array in {@link AbstractDataBuilder#AbstractDataBuilder(AbstractPacketEventExecutor[])}
+     * Registered updaters from the supplied array in
+     * {@link AbstractDataFactory#AbstractDataFactory(HACAPI, AbstractPacketEventExecutor[])}.
      */
     public void registerUpdaters() {
         this.events.forEach(this.api.getEventManager()::registerPacketEventExecutor);
     }
 
     /**
-     * unregisters updaters from the supplied array in {@link AbstractDataBuilder#AbstractDataBuilder(AbstractPacketEventExecutor[])}
+     * unregisters updaters from the supplied array in
+     * {@link AbstractDataFactory#AbstractDataFactory(HACAPI, AbstractPacketEventExecutor[])}.
      */
     public void unregisterUpdaters() {
         this.events.forEach(this.api.getEventManager()::unregisterPacketEventExecutor);

@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,15 +16,36 @@ import java.util.Arrays;
 import java.util.Set;
 
 public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extends AbstractHACPlugin {
+    /**
+     * This packed is created by the build.gradle it helps in figuring out what NMS versions this
+     * plugin supports at runtime.
+     */
     private static final String PACKAGED_VERSIONS_NAME = "packaged_versions.txt";
 
+    /**
+     * The base package location of the version proxies located in this plugin.
+     */
     private final String basePackage;
+
+    /**
+     * The T AbstractVersionProxy class type that should be found.
+     */
     private final Class<T> versionProxyClass;
 
+    /**
+     * The T version proxy instance.
+     */
     private T proxy;
+
+    /**
+     * Whether or not a version proxy was successfully found.
+     */
     private boolean success;
 
-    protected AbstractProxyPlugin(String baseDirectory, String prefix, String basePackage, Class<T> versionProxyClass) {
+    protected AbstractProxyPlugin(@NotNull final String baseDirectory,
+                                  @NotNull final String prefix,
+                                  @NotNull final String basePackage,
+                                  @NotNull final Class<T> versionProxyClass) {
         super(baseDirectory, prefix);
         this.basePackage = basePackage;
         this.versionProxyClass = versionProxyClass;
@@ -93,7 +115,11 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     private Set<String> getPackagedVersions() {
         InputStream in = this.getResource(AbstractProxyPlugin.PACKAGED_VERSIONS_NAME);
 
-        Preconditions.checkNotNull(in, "'%s' not located in jar. Please rebuild.", AbstractProxyPlugin.PACKAGED_VERSIONS_NAME);
+        Preconditions.checkNotNull(
+                in,
+                "'%s' not located in jar. Please rebuild.",
+                AbstractProxyPlugin.PACKAGED_VERSIONS_NAME
+        );
 
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
@@ -107,12 +133,26 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         return builder.build();
     }
 
+    /**
+     * Similar to {@link AbstractHACPlugin#load()} except it is passed after the proxy is loaded.
+     */
     public abstract void proxyLoad();
 
+    /**
+     * Similar to {@link AbstractHACPlugin#enable()} except it is passed after the proxy is loaded.
+     */
     public abstract void proxyEnable();
 
+    /**
+     * Similar to {@link AbstractHACPlugin#disable()} except it is passed after the proxy is loaded.
+     */
     public abstract void proxyDisable();
 
+    /**
+     * The T proxy instance.
+     *
+     * @return T version proxy instance.
+     */
     protected T getProxy() {
         return proxy;
     }

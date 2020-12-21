@@ -1,86 +1,191 @@
 package com.heretere.hac.core.util.math.vector;
 
-public class MutableVector2F {
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * This vector is completely mutable and represents a point in 2d space.
+ */
+public final class MutableVector2F {
+    /**
+     * The x location in 2d space.
+     */
     private float x;
+    /**
+     * The y location in 2d space.
+     */
     private float y;
 
-    public MutableVector2F(double x, double y) {
+    /**
+     * Instantiates a new Mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     */
+    public MutableVector2F(final double x, final double y) {
         this((float) x, (float) y);
     }
 
-    public MutableVector2F(float x, float y) {
+    /**
+     * Instantiates a new Mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     */
+    public MutableVector2F(final float x, final float y) {
         this.x = x;
         this.y = y;
     }
 
-    public MutableVector2F add(MutableVector2F other) {
+    /**
+     * Add mutable vector 2 f.
+     *
+     * @param other the other
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F add(@NotNull final MutableVector2F other) {
         return this.add(other.x, other.y);
     }
 
-    public MutableVector2F add(double x, double y) {
+    /**
+     * Add mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F add(final double x, final double y) {
         return this.add((float) x, (float) y);
     }
 
-    public MutableVector2F add(float x, float y) {
+    /**
+     * Add mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F add(final float x, final float y) {
         this.x += x;
         this.y += y;
 
         return this;
     }
 
-    public MutableVector2F subtract(MutableVector2F other) {
+    /**
+     * Subtract mutable vector 2 f.
+     *
+     * @param other the other
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F subtract(@NotNull final MutableVector2F other) {
         return this.subtract(other.x, other.y);
     }
 
-    public MutableVector2F subtract(double x, double y) {
+    /**
+     * Subtract mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F subtract(final double x, final double y) {
         return this.subtract((float) x, (float) y);
     }
 
-    public MutableVector2F subtract(float x, float y) {
+    /**
+     * Subtract mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F subtract(final float x, final float y) {
         this.x -= x;
         this.y -= y;
 
         return this;
     }
 
-    public MutableVector2F set(MutableVector2F other) {
+    /**
+     * Set mutable vector 2 f.
+     *
+     * @param other the other
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F set(@NotNull final MutableVector2F other) {
         return this.set(other.x, other.y);
     }
 
-    public MutableVector2F set(double x, double y) {
+    /**
+     * Set mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F set(final double x, final double y) {
         return this.set((float) x, (float) y);
     }
 
-    public MutableVector2F set(float x, float y) {
+    /**
+     * Set mutable vector 2 f.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the mutable vector 2 f
+     */
+    public MutableVector2F set(final float x, final float y) {
         this.x = x;
         this.y = y;
 
         return this;
     }
 
+    /**
+     * Gets x.
+     *
+     * @return the x
+     */
     public float getX() {
         return x;
     }
 
-    public float getY() {
-        return y;
-    }
-
-    public MutableVector2F setX(float x) {
+    /**
+     * Sets x.
+     *
+     * @param x the x
+     * @return the x
+     */
+    public MutableVector2F setX(final float x) {
         this.x = x;
         return this;
     }
 
-    public MutableVector2F setY(float y) {
+    /**
+     * Gets y.
+     *
+     * @return the y
+     */
+    public float getY() {
+        return y;
+    }
+
+    /**
+     * Sets y.
+     *
+     * @param y the y
+     * @return the y
+     */
+    public MutableVector2F setY(final float y) {
         this.y = y;
         return this;
     }
 
     @Override
     public String toString() {
-        return "MutableVector2F{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return "MutableVector2F{"
+                + "x=" + x
+                + ", y=" + y
+                + '}';
     }
 }

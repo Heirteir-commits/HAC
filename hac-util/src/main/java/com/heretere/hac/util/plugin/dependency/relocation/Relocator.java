@@ -18,47 +18,89 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * The type Relocator.
+ */
 @Maven(groupId = "org.ow2.asm", artifactId = "asm-commons", version = "6.0")
 @Maven(groupId = "org.ow2.asm", artifactId = "asm", version = "6.0")
 @Maven(groupId = "me.lucko", artifactId = "jar-relocator", version = "1.3")
 public final class Relocator {
-    private final AbstractHACPlugin parent;
-    private final DependencyLoader dependencyLoader;
+    /**
+     * Isolated class loader to stop from polluting the class path with unneeded packages.
+     */
     private final IsolatedClassLoader isolatedClassLoader;
 
+    /**
+     * The constructor of the jar relocator.
+     */
     private Constructor<?> jarRelocatorConstructor;
+    /**
+     * The method to run the jar relocator.
+     */
     private Method jarRelocatorRunMethod;
+    /**
+     * The relocation constructor.
+     */
     private Constructor<?> relocationConstructor;
 
 
-    public Relocator(@NotNull AbstractHACPlugin parent, @NotNull DependencyLoader dependencyLoader) {
-        this.parent = parent;
-        this.dependencyLoader = dependencyLoader;
-
+    /**
+     * Instantiates a new Relocator.
+     *
+     * @param parent           the parent
+     * @param dependencyLoader the dependency loader
+     */
+    public Relocator(@NotNull final AbstractHACPlugin parent, @NotNull final DependencyLoader dependencyLoader) {
         this.isolatedClassLoader = new IsolatedClassLoader();
 
-        Set<AbstractDependency> dependencies = this.dependencyLoader.getDependencies(Relocator.class);
+        Set<AbstractDependency> dependencies = dependencyLoader.getDependencies(Relocator.class);
 
-        boolean success = dependencies.stream().allMatch(this.dependencyLoader::downloadDependency);
+        boolean success = dependencies.stream().allMatch(dependencyLoader::downloadDependency);
 
         if (success) {
+            for (AbstractDependency dependency : dependencies) {
+                if (!this.isolatedClassLoader.addPath(dependency.getDownloadLocation())) {
+                    success = false;
+                    parent.getLog().reportFatalError(() -> "Failed to load dependency '"
+                            + dependency.getDownloadLocation() + "'."
+                            + "Please delete it and re-download it.", false);
+                    break;
+                }
+            }
             dependencies.forEach(dependency -> this.isolatedClassLoader.addPath(dependency.getDownloadLocation()));
         }
 
-        try {
-            Class<?> jarRelocatorClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.JarRelocator");
-            Class<?> relocationClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.Relocation");
+        if (success) {
+            try {
+                Class<?> jarRelocatorClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.JarRelocator");
+                Class<?> relocationClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.Relocation");
 
-            this.jarRelocatorConstructor = jarRelocatorClass.getConstructor(File.class, File.class, Collection.class);
-            this.jarRelocatorRunMethod = jarRelocatorClass.getMethod("run");
+                this.jarRelocatorConstructor = jarRelocatorClass.getConstructor(
+                        File.class,
+                        File.class,
+                        Collection.class
+                );
+                this.jarRelocatorRunMethod = jarRelocatorClass.getMethod("run");
 
-            relocationConstructor = relocationClass.getConstructor(String.class, String.class, Collection.class, Collection.class);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            this.parent.getLog().reportFatalError(e, true);
+                relocationConstructor = relocationClass.getConstructor(
+                        String.class,
+                        String.class,
+                        Collection.class,
+                        Collection.class
+                );
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                parent.getLog().reportFatalError(e, true);
+            }
         }
     }
 
-    public Optional<Throwable> relocate(@NotNull AbstractDependency dependency) {
+    /**
+     * Relocates the dependency. throws an optional throwable if an error occurred.
+     *
+     * @param dependency the dependency
+     * @return the optional
+     */
+    public Optional<Throwable> relocate(@NotNull final AbstractDependency dependency) {
         Optional<Throwable> output;
         try {
             Set<Object> rules = Sets.newLinkedHashSet();
@@ -74,7 +116,8 @@ public final class Relocator {
                 );
             }
 
-            jarRelocatorRunMethod.invoke(jarRelocatorConstructor.newInstance(dependency.getDownloadLocation().toFile(), dependency.getRelocatedLocation().toFile(), rules));
+            jarRelocatorRunMethod.invoke(jarRelocatorConstructor.newInstance(dependency.getDownloadLocation().toFile(),
+                    dependency.getRelocatedLocation().toFile(), rules));
             output = Optional.empty();
         } catch (ReflectiveOperationException e) {
             output = Optional.of(e);

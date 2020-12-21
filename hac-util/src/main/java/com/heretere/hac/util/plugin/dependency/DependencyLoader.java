@@ -5,6 +5,7 @@ import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.Relocator;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,16 +20,36 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * The type Dependency loader.
+ */
 public class DependencyLoader {
+    /**
+     * The HACPlugin reference.
+     */
     private final AbstractHACPlugin parent;
+    /**
+     * The relocator instance.
+     */
     private final Relocator relocator;
 
-    public DependencyLoader(AbstractHACPlugin parent) {
+    /**
+     * Instantiates a new Dependency loader.
+     *
+     * @param parent the parent
+     */
+    public DependencyLoader(@NotNull final AbstractHACPlugin parent) {
         this.parent = parent;
         this.relocator = new Relocator(parent, this);
     }
 
-    public Set<AbstractDependency> getDependencies(Class<?> clazz) {
+    /**
+     * Gets all the dependency annotations or a class and processes them into AbstractDependency objects.
+     *
+     * @param clazz the clazz
+     * @return the dependencies
+     */
+    public Set<AbstractDependency> getDependencies(@NotNull final Class<?> clazz) {
         Set<AbstractDependency> dependencies = Sets.newLinkedHashSet();
         Set<Relocation> relocations = Sets.newLinkedHashSet();
 
@@ -53,11 +74,22 @@ public class DependencyLoader {
         return dependencies;
     }
 
+    /**
+     * Attempts to load all the dependencies.
+     *
+     * @return true if all dependencies were successfully loaded
+     */
     public boolean loadDependencies() {
         return this.getDependencies(this.parent.getClass()).parallelStream().allMatch(this::loadDependency);
     }
 
-    public boolean downloadDependency(AbstractDependency dependency) {
+    /**
+     * Download dependency boolean.
+     *
+     * @param dependency the dependency
+     * @return the boolean
+     */
+    public boolean downloadDependency(@NotNull final AbstractDependency dependency) {
         boolean success = true;
 
         if (dependency.needsUpdate()) {
@@ -82,8 +114,9 @@ public class DependencyLoader {
         if (!success) {
             this.parent.getLog().reportFatalError(
                     () ->
-                            String.format("Failed to download dependency '%s'. " +
-                                            "Please download the dependency from: '%s' and place it into the folder '%s'.",
+                            String.format("Failed to download dependency '%s'. "
+                                            + "Please download the dependency from: '%s' "
+                                            + "and place it into the folder '%s'.",
                                     dependency.getName(),
                                     dependency.getManualURL().orElse(null),
                                     dependency.getDownloadLocation()),
@@ -93,7 +126,13 @@ public class DependencyLoader {
         return success;
     }
 
-    public boolean relocateDependency(AbstractDependency dependency) {
+    /**
+     * Relocates the packages in a dependency.
+     *
+     * @param dependency the dependency
+     * @return true if dependency was successfully relocated.
+     */
+    public boolean relocateDependency(@NotNull final AbstractDependency dependency) {
         boolean success = true;
 
         if (dependency.needsRelocation()) {
@@ -110,7 +149,13 @@ public class DependencyLoader {
         return success;
     }
 
-    public boolean loadDependency(AbstractDependency dependency) {
+    /**
+     * Load dependency boolean.
+     *
+     * @param dependency the dependency
+     * @return the boolean
+     */
+    public boolean loadDependency(@NotNull final AbstractDependency dependency) {
         boolean success = this.downloadDependency(dependency);
 
         if (success) {
@@ -126,7 +171,8 @@ public class DependencyLoader {
                 Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                 method.setAccessible(true);
                 method.invoke(classLoader, dependency.getRelocatedLocation().toUri().toURL());
-            } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | MalformedURLException
+                    | IllegalAccessException | InvocationTargetException e) {
                 this.parent.getLog().reportFatalError(e, false);
                 success = false;
             }

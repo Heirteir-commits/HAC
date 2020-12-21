@@ -7,13 +7,19 @@ import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 
+/**
+ * The type Movement.
+ */
 /* Plugin.yml */
 @Plugin(name = "HAC-Movement", version = "0.0.1")
 @LogPrefix("-")
 @ApiVersion(ApiVersion.Target.v1_13)
 @Dependency("HAC-Core")
 
-public class Movement extends AbstractProxyPlugin<AbstractMovementVersionProxy> {
+public final class Movement extends AbstractProxyPlugin<AbstractMovementVersionProxy> {
+    /**
+     * The entry point for the HAC movement module.
+     */
     public Movement() {
         super(
                 "HAC",

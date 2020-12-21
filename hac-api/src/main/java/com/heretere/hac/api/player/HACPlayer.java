@@ -1,9 +1,7 @@
 package com.heretere.hac.api.player;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.concurrency.ThreadPool;
 import com.heretere.hac.api.player.builder.DataManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,13 +16,31 @@ import java.util.function.BiConsumer;
  * for the plugin.
  */
 public final class HACPlayer {
+    /**
+     * The HAC API reference.
+     */
     private final HACAPI api;
+    /**
+     * A WeakReference to the player to make sure this class doesn't stop the player from being garbage collected.
+     */
+    private final WeakReference<Player> player;
+    /**
+     * The data manager instance for this HACPlayer.
+     */
+    private final DataManager dataManager;
+    /**
+     * The chained CompletableFutures. The goal of this is to allow for a thread per player design approach.
+     * Without created a bunch of new threads on the server.
+     */
     private CompletableFuture<Void> future;
 
-    private final WeakReference<Player> player;
-    private final DataManager dataManager;
-
-    HACPlayer(@NotNull HACAPI api, @NotNull Player player) {
+    /**
+     * Instantiates a new Hac player.
+     *
+     * @param api    the api
+     * @param player the player
+     */
+    HACPlayer(@NotNull final HACAPI api, @NotNull final Player player) {
         this.api = api;
 
         this.future = CompletableFuture.allOf();
@@ -35,28 +51,29 @@ public final class HACPlayer {
     }
 
     /**
-     * This passes a runnable to the {@link ThreadPool}. Anything passed to this method is ran in
-     * guaranteed serial order.
+     * This passes a runnable to the {@link com.heretere.hac.api.concurrency.ThreadPool}.
+     * Anything passed to this method is ran in guaranteed serial order.
      *
-     * @param runnable     The runnable to run in the {@link ThreadPool}.
+     * @param runnable     The runnable to run in the {@link com.heretere.hac.api.concurrency.ThreadPool}.
      * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
      */
-    public void runTaskASync(@NotNull Runnable runnable, @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler) {
+    public void runTaskASync(@NotNull final Runnable runnable,
+                             @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler) {
         this.future = this.future
                 .thenRunAsync(runnable, this.api.getThreadPool().getPool())
                 .whenCompleteAsync(
-                        errorHandler == null ?
-                                (msg, ex) -> {
-                                    if (ex != null) {
-                                        this.api.getErrorHandler().getHandler().accept(ex);
-                                    }
-                                } :
-                                errorHandler,
+                        errorHandler == null
+                                ? (msg, ex) -> {
+                            if (ex != null) {
+                                this.api.getErrorHandler().getHandler().accept(ex);
+                            }
+                        }
+                                : errorHandler,
                         this.api.getThreadPool().getPool());
     }
 
     /**
-     * The {@link java.util.UUID} of the player used for the HACPlayer
+     * The {@link java.util.UUID} of the player used for the HACPlayer.
      *
      * @return The UUID of the player.
      */
@@ -65,7 +82,8 @@ public final class HACPlayer {
     }
 
     /**
-     * Get's the player instance using {@link Bukkit#getPlayer(UUID)}. Should only be used at init or destroy of HACPlayer.
+     * Get's the player instance using {@link org.bukkit.Bukkit#getPlayer(UUID)}.
+     * Should only be used at init or destroy of HACPlayer.
      *
      * @return The Bukkit Player
      */

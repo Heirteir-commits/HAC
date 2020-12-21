@@ -7,7 +7,7 @@ plugins {
 
 ext {
     SHADOW_JAR_OUTPUT_DIR = file(buildDir.parentFile.path + "/jars")
-    SHADOW_JAR_OUTPUT_DIR.mkdirs();
+    SHADOW_JAR_OUTPUT_DIR.mkdirs()
     /* Group name*/
     TASK_GROUP_NAME = 'hac package'
 
@@ -106,5 +106,14 @@ allprojects {
 subprojects {
     /* Project wide plugins */
     apply plugin: 'idea'
+    apply plugin: 'checkstyle'
 //    apply plugin: 'net.ltgt.errorprone'
+    checkstyle {
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        configProperties = [
+            'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
+        ]
+        ignoreFailures = true
+        showViolations = true
+    }
 }

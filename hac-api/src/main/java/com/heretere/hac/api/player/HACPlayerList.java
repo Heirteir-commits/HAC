@@ -17,14 +17,22 @@ import java.util.UUID;
  */
 public final class HACPlayerList {
 
-    private final HACPlayerBuilder builder;
+    /**
+     * The HACPlayer factory instance.
+     */
+    private final HACPlayerFactory builder;
+    /**
+     * A map of all the registered players.
+     */
     private final Map<UUID, HACPlayer> players;
 
     /**
      * This constructor should only ever be called by {@link HACAPI}.
+     *
+     * @param api the api
      */
-    public HACPlayerList(HACAPI api) {
-        this.builder = new HACPlayerBuilder(api, this);
+    public HACPlayerList(@NotNull final HACAPI api) {
+        this.builder = new HACPlayerFactory(api, this);
         this.players = Maps.newHashMap();
     }
 
@@ -34,7 +42,7 @@ public final class HACPlayerList {
      * @param uuid The UUID of the Bukkit {@link org.bukkit.entity.Player}.
      * @return An instance of {@link HACPlayer} from the player list.
      */
-    public HACPlayer getPlayer(@NotNull UUID uuid) {
+    public HACPlayer getPlayer(@NotNull final UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
 
         Preconditions.checkNotNull(player, String.format("No player online with uuid '%s'", uuid));
@@ -48,7 +56,7 @@ public final class HACPlayerList {
      * @param player The {@link org.bukkit.entity.Player} object.
      * @return An instance of {@link HACPlayer} from the player list.
      */
-    public HACPlayer getPlayer(@NotNull Player player) {
+    public HACPlayer getPlayer(@NotNull final Player player) {
         return this.players.computeIfAbsent(player.getUniqueId(), id -> this.builder.build(player));
     }
 
@@ -58,7 +66,7 @@ public final class HACPlayerList {
      * @param uuid The UUID of the Bukkit {@link org.bukkit.entity.Player}.
      * @return The removed {@link HACPlayer} instance.
      */
-    public HACPlayer removePlayer(@NotNull UUID uuid) {
+    public HACPlayer removePlayer(@NotNull final UUID uuid) {
         return this.players.remove(uuid);
     }
 
@@ -68,7 +76,7 @@ public final class HACPlayerList {
      * @param player The {@link org.bukkit.entity.Player} object.
      * @return The removed {@link HACPlayer} instance.
      */
-    public HACPlayer removePlayer(@NotNull Player player) {
+    public HACPlayer removePlayer(@NotNull final Player player) {
         return this.removePlayer(player.getUniqueId());
     }
 
@@ -83,11 +91,11 @@ public final class HACPlayerList {
     }
 
     /**
-     * The {@link HACPlayerBuilder} instance used to create {@link HACPlayer} instances.
+     * The {@link HACPlayerFactory} instance used to create {@link HACPlayer} instances.
      *
-     * @return An {@link HACPlayerBuilder} instance.
+     * @return An {@link HACPlayerFactory} instance.
      */
-    public HACPlayerBuilder getBuilder() {
+    public HACPlayerFactory getBuilder() {
         return builder;
     }
 }

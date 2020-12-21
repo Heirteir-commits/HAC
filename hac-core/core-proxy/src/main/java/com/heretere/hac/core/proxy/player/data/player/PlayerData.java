@@ -8,10 +8,17 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class handles basic player information for things such as position and velocity along with various player states.
+ * This class handles basic player information
+ * for things such as position and velocity along with various player states.
  */
 public final class PlayerData {
+    /**
+     * The current data object this player data represents.
+     */
     private final Data current;
+    /**
+     * The data from the previous tick.
+     */
     private final Data previous;
 
     /**
@@ -19,7 +26,7 @@ public final class PlayerData {
      *
      * @param player the player
      */
-    protected PlayerData(@NotNull HACPlayer player) {
+    protected PlayerData(@NotNull final HACPlayer player) {
         Player bukkitPlayer = player.getBukkitPlayer();
         this.current = new Data(bukkitPlayer);
         this.previous = new Data(bukkitPlayer);
@@ -30,7 +37,7 @@ public final class PlayerData {
      *
      * @param flyingPacket the flying packet
      */
-    public void update(@NotNull FlyingPacket flyingPacket) {
+    public void update(@NotNull final FlyingPacket flyingPacket) {
         this.previous.apply(current);
 
         this.current.getLocation().set(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
@@ -73,17 +80,47 @@ public final class PlayerData {
      */
     public static final class Data {
         /* These vectors are mutable to avoid unneeded object creation at runtime. */
+
+        /**
+         * The player's location.
+         */
         private final MutableVector3F location;
+        /**
+         * The player's velocity.
+         */
         private final MutableVector3F velocity;
+        /**
+         * The player's direction yaw being x and pitch being y.
+         */
         private final MutableVector2F direction;
 
+        /**
+         * Whether or not the player say's they're on the ground.
+         */
         private boolean onGround;
+        /**
+         * The sneaking state of the player.
+         */
         private boolean sneaking;
+        /**
+         * The sprinting state of the player.
+         */
         private boolean sprinting;
+        /**
+         * If the player is flying with elytra.
+         */
         private boolean elytraFlying;
+        /**
+         * If the player is flying.
+         */
         private boolean flying;
 
-        public Data(@NotNull Player player) {
+        /**
+         * Instantiates a new Data instance shouldn't be used more than once.
+         *
+         * @param player the bukkit player
+         */
+        public Data(@NotNull final Player player) {
             this.location = new MutableVector3F(
                     player.getLocation().getX(),
                     player.getLocation().getY(),
@@ -104,7 +141,12 @@ public final class PlayerData {
             this.flying = player.isFlying();
         }
 
-        public void apply(@NotNull Data other) {
+        /**
+         * Applies the data from another data object to this object.
+         *
+         * @param other Data
+         */
+        public void apply(@NotNull final Data other) {
             this.location.set(other.location);
             this.velocity.set(other.velocity);
             this.direction.set(other.direction);
@@ -132,7 +174,7 @@ public final class PlayerData {
          * @param y the y
          * @param z the z
          */
-        public void setLocation(double x, double y, double z) {
+        public void setLocation(final double x, final double y, final double z) {
             this.location.set(x, y, z);
         }
 
@@ -152,7 +194,7 @@ public final class PlayerData {
          * @param dy the dy
          * @param dz the dz
          */
-        public void setVelocity(double dx, double dy, double dz) {
+        public void setVelocity(final double dx, final double dy, final double dz) {
             this.velocity.set(dx, dy, dz);
         }
 
@@ -171,7 +213,7 @@ public final class PlayerData {
          * @param yaw   the yaw
          * @param pitch the pitch
          */
-        public void setDirection(double yaw, double pitch) {
+        public void setDirection(final double yaw, final double pitch) {
             this.direction.set(yaw, pitch);
         }
 
@@ -189,7 +231,7 @@ public final class PlayerData {
          *
          * @param onGround the on ground
          */
-        public void setOnGround(boolean onGround) {
+        public void setOnGround(final boolean onGround) {
             this.onGround = onGround;
         }
 
@@ -207,7 +249,7 @@ public final class PlayerData {
          *
          * @param sneaking the sneaking
          */
-        public void setSneaking(boolean sneaking) {
+        public void setSneaking(final boolean sneaking) {
             this.sneaking = sneaking;
         }
 
@@ -225,7 +267,7 @@ public final class PlayerData {
          *
          * @param sprinting the sprinting
          */
-        public void setSprinting(boolean sprinting) {
+        public void setSprinting(final boolean sprinting) {
             this.sprinting = sprinting;
         }
 
@@ -243,7 +285,7 @@ public final class PlayerData {
          *
          * @param elytraFlying the elytra flying
          */
-        public void setElytraFlying(boolean elytraFlying) {
+        public void setElytraFlying(final boolean elytraFlying) {
             this.elytraFlying = elytraFlying;
         }
 
@@ -261,7 +303,7 @@ public final class PlayerData {
          *
          * @param flying the flying
          */
-        public void setFlying(boolean flying) {
+        public void setFlying(final boolean flying) {
             this.flying = flying;
         }
     }

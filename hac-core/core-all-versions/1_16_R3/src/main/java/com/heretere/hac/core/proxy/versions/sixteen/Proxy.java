@@ -4,18 +4,33 @@ import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.core.proxy.CoreVersionProxy;
 import com.heretere.hac.core.proxy.packets.channel.AbstractChannelInjector;
-import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.AbilitiesPacketBuilder;
-import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.EntityActionPacketBuilder;
-import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.FlyingPacketBuilder;
-import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside.EntityVelocityPacketBuilder;
+import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.AbilitiesPacketFactory;
+import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.EntityActionPacketFactory;
+import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.FlyingPacketFactory;
+import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside.EntityVelocityPacketFactory;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.channel.ChannelInjectorProxy;
 import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Proxy.
+ */
 public final class Proxy extends CoreVersionProxy {
+    /**
+     * The parent plugin reference.
+     */
     private final AbstractHACPlugin parent;
+    /**
+     * The injector used to attach channel handlers to all players.
+     */
     private final ChannelInjectorProxy channelInjectorProxy;
 
-    public Proxy(AbstractHACPlugin parent) {
+    /**
+     * Instantiates a new Proxy.
+     *
+     * @param parent the parent
+     */
+    public Proxy(@NotNull final AbstractHACPlugin parent) {
         super(parent);
         this.parent = parent;
         channelInjectorProxy = new ChannelInjectorProxy(this.parent);
@@ -26,12 +41,12 @@ public final class Proxy extends CoreVersionProxy {
         PacketReferences packetReferences = HACAPI.getInstance().getPacketReferences();
 
         //clientside
-        packetReferences.getClientSide().getAbilities().register(new AbilitiesPacketBuilder());
-        packetReferences.getClientSide().getEntityAction().register(new EntityActionPacketBuilder());
-        packetReferences.getClientSide().getFlying().register(new FlyingPacketBuilder());
+        packetReferences.getClientSide().getAbilities().register(new AbilitiesPacketFactory());
+        packetReferences.getClientSide().getEntityAction().register(new EntityActionPacketFactory());
+        packetReferences.getClientSide().getFlying().register(new FlyingPacketFactory());
 
         //serverside
-        packetReferences.getServerSide().getEntityVelocity().register(new EntityVelocityPacketBuilder(this.parent));
+        packetReferences.getServerSide().getEntityVelocity().register(new EntityVelocityPacketFactory(this.parent));
     }
 
     @Override

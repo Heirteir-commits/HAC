@@ -1,15 +1,22 @@
 package com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside;
 
-import com.heretere.hac.api.events.packets.builder.AbstractPacketBuilder;
+import com.heretere.hac.api.events.packets.factory.AbstractPacketFactory;
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.proxy.player.data.player.PlayerData;
 import com.heretere.hac.core.util.math.vector.MutableVector2F;
 import com.heretere.hac.core.util.math.vector.MutableVector3F;
 import net.minecraft.server.v1_16_R3.PacketPlayInFlying;
+import org.jetbrains.annotations.NotNull;
 
-public final class FlyingPacketBuilder extends AbstractPacketBuilder<FlyingPacket> {
-    public FlyingPacketBuilder() {
+/**
+ * The type Flying packet factory.
+ */
+public final class FlyingPacketFactory extends AbstractPacketFactory<FlyingPacket> {
+    /**
+     * Instantiates a new Flying packet factory.
+     */
+    public FlyingPacketFactory() {
         super(
                 PacketPlayInFlying.class,
                 PacketPlayInFlying.PacketPlayInPositionLook.class,
@@ -19,7 +26,7 @@ public final class FlyingPacketBuilder extends AbstractPacketBuilder<FlyingPacke
     }
 
     @Override
-    public FlyingPacket create(HACPlayer player, Object packet) {
+    public FlyingPacket create(@NotNull final HACPlayer player, @NotNull final Object packet) {
         PacketPlayInFlying flying = (PacketPlayInFlying) packet;
         PlayerData playerData = player.getDataManager().getData(PlayerData.class);
 

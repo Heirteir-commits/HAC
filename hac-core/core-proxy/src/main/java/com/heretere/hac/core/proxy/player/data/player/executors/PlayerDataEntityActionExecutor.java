@@ -9,9 +9,17 @@ import com.heretere.hac.core.proxy.player.data.player.PlayerData;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Player data entity action executor.
+ */
 public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExecutor<EntityActionPacket> {
 
-    public PlayerDataEntityActionExecutor(String identifier) {
+    /**
+     * Instantiates a new Player data entity action executor.
+     *
+     * @param identifier the identifier
+     */
+    public PlayerDataEntityActionExecutor(@NotNull final String identifier) {
         super(
                 Priority.PROCESS_1,
                 identifier,
@@ -20,7 +28,7 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
     }
 
     @Override
-    public boolean execute(@NotNull HACPlayer player, @NotNull EntityActionPacket packet) {
+    public boolean execute(@NotNull final HACPlayer player, @NotNull final EntityActionPacket packet) {
         PlayerData data = player.getDataManager().getData(PlayerData.class);
 
         switch (packet.getAction()) {
@@ -47,7 +55,7 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
     }
 
     @Override
-    public void onStop(@NotNull HACPlayer player, @NotNull EntityActionPacket packet) {
+    public void onStop(@NotNull final HACPlayer player, @NotNull final EntityActionPacket packet) {
         throw new NotImplementedException("Updater Class.");
     }
 }

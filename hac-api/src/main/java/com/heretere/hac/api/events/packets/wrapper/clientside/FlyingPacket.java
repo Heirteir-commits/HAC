@@ -7,11 +7,30 @@ import com.heretere.hac.api.events.packets.wrapper.WrappedPacketIn;
  * This is the wrapped version of the PacketPlayInFlyingPacket.
  */
 public final class FlyingPacket implements WrappedPacketIn {
+    /**
+     * The x location of the packet.
+     */
     private final double x;
+    /**
+     * The y location of the packet.
+     */
     private final double y;
+    /**
+     * The z location of the packet.
+     */
     private final double z;
+    /**
+     * The yaw of the packet.
+     */
     private final double yaw;
+    /**
+     * The pitch of the packet.
+     */
     private final double pitch;
+
+    /**
+     * if that packet is on the ground.
+     */
     private final boolean onGround;
 
     /**
@@ -24,7 +43,12 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @param pitch    the pitch
      * @param onGround the on ground
      */
-    public FlyingPacket(double x, double y, double z, double yaw, double pitch, boolean onGround) {
+    public FlyingPacket(final double x,
+                        final double y,
+                        final double z,
+                        final double yaw,
+                        final double pitch,
+                        final boolean onGround) {
         this.x = x;
         this.y = y;
         this.z = z;

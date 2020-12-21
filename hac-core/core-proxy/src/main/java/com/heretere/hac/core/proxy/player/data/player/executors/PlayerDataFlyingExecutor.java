@@ -9,8 +9,16 @@ import com.heretere.hac.core.proxy.player.data.player.PlayerData;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The type Player data flying executor.
+ */
 public final class PlayerDataFlyingExecutor extends AbstractPacketEventExecutor<FlyingPacket> {
-    public PlayerDataFlyingExecutor(String identifier) {
+    /**
+     * Instantiates a new Player data flying executor.
+     *
+     * @param identifier the identifier
+     */
+    public PlayerDataFlyingExecutor(@NotNull final String identifier) {
         super(
                 Priority.PROCESS_1,
                 identifier,
@@ -19,13 +27,13 @@ public final class PlayerDataFlyingExecutor extends AbstractPacketEventExecutor<
     }
 
     @Override
-    public boolean execute(@NotNull HACPlayer player, @NotNull FlyingPacket packet) {
+    public boolean execute(@NotNull final HACPlayer player, @NotNull final FlyingPacket packet) {
         player.getDataManager().getData(PlayerData.class).update(packet);
         return true;
     }
 
     @Override
-    public void onStop(@NotNull HACPlayer player, @NotNull FlyingPacket packet) {
+    public void onStop(@NotNull final HACPlayer player, @NotNull final FlyingPacket packet) {
         throw new NotImplementedException("Updater Class.");
     }
 }

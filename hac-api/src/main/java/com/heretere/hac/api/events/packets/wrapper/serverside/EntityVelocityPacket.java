@@ -3,7 +3,7 @@ package com.heretere.hac.api.events.packets.wrapper.serverside;
 import com.heretere.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
 
 /**
- * A Wrapped version of the PacketPlayOutEntityVelocityPacket
+ * A Wrapped version of the PacketPlayOutEntityVelocityPacket.
  */
 public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
     /**
@@ -11,18 +11,28 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
      */
     public static final double CONVERSION = 8000D;
 
+    /**
+     * The dx of this velocity packet.
+     */
     private final double x;
+    /**
+     * the dy of this velocity packet.
+     */
     private final double y;
+    /**
+     * The dz of this velocity packet.
+     */
     private final double z;
 
     /**
      * Instantiates a new Entity velocity packet.
      *
-     * @param x the x
-     * @param y the y
-     * @param z the z
+     * @param entityId the entityId
+     * @param x        the x
+     * @param y        the y
+     * @param z        the z
      */
-    public EntityVelocityPacket(int entityId, double x, double y, double z) {
+    public EntityVelocityPacket(final int entityId, final double x, final double y, final double z) {
         super(entityId);
         this.x = x;
         this.y = y;

@@ -7,21 +7,36 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 
-public class IsolatedClassLoader extends URLClassLoader {
+/**
+ * This class handles loading some dependencies that are needed for loading other dependencies, but not
+ * need afterwards.
+ */
+public final class IsolatedClassLoader extends URLClassLoader {
     static {
         ClassLoader.registerAsParallelCapable();
     }
 
-    public IsolatedClassLoader(@NotNull URL... urls) {
+    /**
+     * Instantiates a new Isolated class loader.
+     *
+     * @param urls the urls
+     */
+    public IsolatedClassLoader(@NotNull final URL... urls) {
         super(urls, ClassLoader.getSystemClassLoader().getParent());
     }
 
     @Override
-    public void addURL(@NotNull URL url) {
+    public void addURL(@NotNull final URL url) {
         super.addURL(url);
     }
 
-    public boolean addPath(@NotNull Path path) {
+    /**
+     * Add path boolean.
+     *
+     * @param path the path
+     * @return the boolean
+     */
+    public boolean addPath(@NotNull final Path path) {
         try {
             this.addURL(path.toUri().toURL());
             return true;

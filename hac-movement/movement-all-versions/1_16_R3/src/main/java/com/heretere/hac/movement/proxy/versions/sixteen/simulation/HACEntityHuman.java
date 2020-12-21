@@ -1,7 +1,14 @@
 package com.heretere.hac.movement.proxy.versions.sixteen.simulation;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R3.BlockPosition;
+import net.minecraft.server.v1_16_R3.EntityHuman;
+import net.minecraft.server.v1_16_R3.MinecraftKey;
+import net.minecraft.server.v1_16_R3.SoundCategory;
+import net.minecraft.server.v1_16_R3.SoundEffect;
+import net.minecraft.server.v1_16_R3.TagsFluid;
+import net.minecraft.server.v1_16_R3.Vec3D;
+import net.minecraft.server.v1_16_R3.World;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 
 public class HACEntityHuman extends EntityHuman {

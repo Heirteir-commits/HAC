@@ -29,8 +29,16 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
 public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
+    /**
+     * The id for this plugin on bstats.
+     *
+     * @see <a href="https://bstats.org">http://bstats.org</a>
+     */
     private static final int BSTATS_ID = 9648;
 
+    /**
+     * Instantiates core.
+     */
     public Core() {
         super(
                 "HAC",

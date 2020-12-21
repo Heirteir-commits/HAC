@@ -19,20 +19,44 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The type Hac config handler.
+ */
 public class HACConfigHandler {
+    /**
+     * The HAC API reference.
+     */
     private final HACAPI api;
+    /**
+     * The base path of the config files.
+     */
     private final Path basePath;
 
+    /**
+     * Only currently loaded files.
+     */
     private final Map<String, HACConfigFile> files;
 
-    public HACConfigHandler(@NotNull HACAPI api) {
+    /**
+     * Instantiates a new Hac config handler.
+     *
+     * @param api the api
+     */
+    public HACConfigHandler(@NotNull final HACAPI api) {
         this.api = api;
-        this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class).getDataFolder().toPath().getParent().resolve("HAC");
+        this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class).getDataFolder().toPath()
+                .getParent()
+                .resolve("HAC");
 
         this.files = Maps.newHashMap();
     }
 
-    public void loadConfigClass(@NotNull Object instance) {
+    /**
+     * Load config class.
+     *
+     * @param instance the instance
+     */
+    public void loadConfigClass(@NotNull final Object instance) {
         Class<?> clazz = instance.getClass();
 
         if (!clazz.isAnnotationPresent(ConfigFile.class)) {
@@ -53,7 +77,8 @@ public class HACConfigHandler {
                 ConfigKey configKey = field.getAnnotation(ConfigKey.class);
 
                 ConfigField<?> configField = (ConfigField<?>)
-                        configValues.computeIfAbsent(configKey.path(), path -> new ConfigField<>(this.api, field.getType(), instance, path, configKey.comments()));
+                        configValues.computeIfAbsent(configKey.path(), path ->
+                                new ConfigField<>(this.api, field.getType(), instance, path, configKey.comments()));
 
                 Optional<Method> setter = Arrays.stream(clazz.getMethods())
                         .filter(method -> method.getName().equals(configKey.setter()))
@@ -92,14 +117,22 @@ public class HACConfigHandler {
         configValues.values().forEach(file::loadConfigPath);
     }
 
+    /**
+     * Saves all the loaded config files.
+     */
     public void unload() {
         this.files.values().forEach(HACConfigFile::save);
     }
 
-    private HACConfigFile getConfigFile(@NotNull ConfigFile path) {
+    private HACConfigFile getConfigFile(@NotNull final ConfigFile path) {
         return files.computeIfAbsent(path.value(), v -> new HACConfigFile(this.api, this, path));
     }
 
+    /**
+     * Gets base path.
+     *
+     * @return the base path
+     */
     public Path getBasePath() {
         return basePath;
     }
