@@ -12,12 +12,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Set;
 
 public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extends AbstractHACPlugin {
     /**
-     * This packed is created by the build.gradle it helps in figuring out what NMS versions this
+     * This .txt is created by the build.gradle it helps in figuring out what NMS versions this
      * plugin supports at runtime.
      */
     private static final String PACKAGED_VERSIONS_NAME = "packaged_versions.txt";
@@ -57,7 +58,6 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
 
     @Override
     public final void load() {
-
         this.success = this.loadProxy();
 
         if (this.success) {
@@ -122,7 +122,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         );
 
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             reader.lines()
                     .filter(line -> !line.trim().isEmpty())
                     .forEach(line -> builder.add(line.trim()));
@@ -153,7 +153,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
      *
      * @return T version proxy instance.
      */
-    protected T getProxy() {
+    public T getProxy() {
         return proxy;
     }
 }

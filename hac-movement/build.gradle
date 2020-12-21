@@ -5,7 +5,7 @@ plugins {
 ext {
     /* Per project names that should be applied to sub projects (used to easily copy and paste this to a new module) */
     PROJECT_PREPEND = ':hac-movement'
-    PROJECT_ALL_VERSIONS = PROJECT_PREPEND + ':movement-all-versions'
+    PROJECT_ALL_VERSIONS = PROJECT_PREPEND + ':movement-nms'
     PROJECT_PROXY = PROJECT_PREPEND + ':movement-proxy'
     PROJECT_PLUGIN = PROJECT_PREPEND + ':movement-plugin'
     VERSION_PACKAGE_ABSOLUTE = 'com.heretere.hac.movement.proxy.versions.'

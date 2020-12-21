@@ -86,7 +86,7 @@ allprojects {
     /* Apply errorprone to all project sources */
     pluginManager.withPlugin('net.ltgt.errorprone') {
         dependencies {
-//            errorprone 'com.google.errorprone:error_prone_core:2.4.0'
+            errorprone 'com.google.errorprone:error_prone_core:2.4.0'
         }
     }
 
@@ -107,7 +107,7 @@ subprojects {
     /* Project wide plugins */
     apply plugin: 'idea'
     apply plugin: 'checkstyle'
-//    apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'net.ltgt.errorprone'
     checkstyle {
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
         configProperties = [

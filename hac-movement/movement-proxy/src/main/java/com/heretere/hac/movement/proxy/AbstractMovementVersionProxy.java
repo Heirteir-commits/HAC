@@ -1,18 +1,9 @@
 package com.heretere.hac.movement.proxy;
 
-import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.movement.proxy.player.data.simulator.Simulator;
-import com.heretere.hac.movement.proxy.player.data.simulator.SimulatorFactory;
 import com.heretere.hac.util.proxy.AbstractVersionProxy;
 
 public abstract class AbstractMovementVersionProxy implements AbstractVersionProxy {
-    /**
-     * The factory responsible for attaching a simulator to each HACPlayer.
-     */
-    private final SimulatorFactory simulatorFactory;
-
     protected AbstractMovementVersionProxy() {
-        this.simulatorFactory = new SimulatorFactory(HACAPI.getInstance(), this);
     }
 
     /**
@@ -20,8 +11,6 @@ public abstract class AbstractMovementVersionProxy implements AbstractVersionPro
      * proxy.
      */
     public final void baseLoad() {
-        HACAPI.getInstance().getHacPlayerList().getBuilder()
-                .registerDataBuilder(Simulator.class, this.simulatorFactory);
         this.load();
     }
 
@@ -30,7 +19,6 @@ public abstract class AbstractMovementVersionProxy implements AbstractVersionPro
      */
     public final void baseUnload() {
         this.unload();
-        HACAPI.getInstance().getHacPlayerList().getBuilder().unregisterDataBuilder(Simulator.class);
     }
 
     protected abstract void load();

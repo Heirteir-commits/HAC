@@ -1,6 +1,10 @@
 package com.heretere.hac.core;
 
+import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.core.player.HACPlayerListUpdater;
 import com.heretere.hac.core.proxy.CoreVersionProxy;
+import com.heretere.hac.core.proxy.player.PlayerData;
+import com.heretere.hac.core.proxy.player.PlayerDataFactory;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import com.heretere.hac.util.proxy.AbstractProxyPlugin;
@@ -37,6 +41,15 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
     private static final int BSTATS_ID = 9648;
 
     /**
+     * The class responsible for updating the HACPlayerList in the api.
+     */
+    private HACPlayerListUpdater hacPlayerListUpdater;
+    /**
+     * The factory responsible for creating new PlayerData instances for each HACPlayer.
+     */
+    private PlayerDataFactory playerDataFactory;
+
+    /**
      * Instantiates core.
      */
     public Core() {
@@ -50,18 +63,35 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
 
     @Override
     public void proxyLoad() {
-        //none
+        this.hacPlayerListUpdater = new HACPlayerListUpdater(this);
+        this.playerDataFactory = new PlayerDataFactory(HACAPI.getInstance());
     }
 
     @Override
     public void proxyEnable() {
+
+
         new Metrics(this, Core.BSTATS_ID);
+
+        HACAPI.getInstance().getErrorHandler().setHandler(ex -> this.getLog().severe(ex));
+
+        this.getLog().info(() -> "Registering player data builder.");
+        HACAPI.getInstance().getHacPlayerList().getBuilder().registerDataBuilder(PlayerData.class, playerDataFactory);
+
+        this.hacPlayerListUpdater.load();
         super.getProxy().baseLoad();
     }
 
     @Override
     public void proxyDisable() {
         super.getProxy().baseUnload();
+
+        this.hacPlayerListUpdater.unload();
+
+        this.getLog().info(() -> "Unregistering player data builder.");
+        HACAPI.getInstance().getHacPlayerList().getBuilder().unregisterDataBuilder(PlayerData.class);
+
+        HACAPI.getInstance().unload();
     }
 
 }

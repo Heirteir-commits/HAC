@@ -44,7 +44,9 @@ public class HACConfigHandler {
      */
     public HACConfigHandler(@NotNull final HACAPI api) {
         this.api = api;
-        this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class).getDataFolder().toPath()
+        this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class)
+                .getDataFolder()
+                .toPath()
                 .getParent()
                 .resolve("HAC");
 
