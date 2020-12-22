@@ -13,22 +13,33 @@ public abstract class AbstractCheck<T extends WrappedPacket> extends AbstractPac
      */
     private final String baseIdentifier;
 
-    protected AbstractCheck(@NotNull final Priority priority,
-                            @NotNull final String identifier,
-                            @NotNull final PacketReferences.PacketReference<T> reference) {
+    protected AbstractCheck(
+            @NotNull final Priority priority,
+            @NotNull final String identifier,
+            @NotNull final PacketReferences.PacketReference<T> reference
+    ) {
         super(priority, identifier, reference);
         this.baseIdentifier = identifier;
     }
 
     @Override
-    public final boolean execute(@NotNull final HACPlayer player, @NotNull final T packet) {
+    public final boolean execute(
+            @NotNull final HACPlayer player,
+            @NotNull final T packet
+    ) {
         return !this.isEnabled() || this.check(player, packet);
     }
 
-    protected abstract boolean check(@NotNull HACPlayer player, @NotNull T packet);
+    protected abstract boolean check(
+            @NotNull HACPlayer player,
+            @NotNull T packet
+    );
 
     @Override
-    public abstract void onStop(@NotNull HACPlayer player, @NotNull T packet);
+    public abstract void onStop(
+            @NotNull HACPlayer player,
+            @NotNull T packet
+    );
 
     /**
      * Gets the base identifier value of this check.

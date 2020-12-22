@@ -83,8 +83,10 @@ public final class PacketReferences {
          * @param packetReference the packet reference
          * @param builder         the builder
          */
-        protected void register(@NotNull final PacketReference<?> packetReference,
-                                @NotNull final AbstractPacketFactory<?> builder) {
+        protected void register(
+                @NotNull final PacketReference<?> packetReference,
+                @NotNull final AbstractPacketFactory<?> builder
+        ) {
             for (Class<?> nmsClass : builder.getPacketClasses()) {
                 this.packetReferences.put(nmsClass, packetReference);
             }
@@ -197,9 +199,11 @@ public final class PacketReferences {
          */
         private boolean registered = false;
 
-        private PacketReference(@NotNull final String identifier,
-                                @NotNull final AbstractPacketReferenceHolder parent,
-                                @NotNull final Class<T> wrappedPacketClass) {
+        private PacketReference(
+                @NotNull final String identifier,
+                @NotNull final AbstractPacketReferenceHolder parent,
+                @NotNull final Class<T> wrappedPacketClass
+        ) {
             this.identifier = identifier;
             this.parent = parent;
             this.wrappedPacketClass = wrappedPacketClass;
@@ -212,8 +216,10 @@ public final class PacketReferences {
          */
         public void register(@NotNull final AbstractPacketFactory<T> builder) {
             Preconditions.checkState(!this.registered, "Already registered.");
-            Preconditions.checkArgument(builder.getWrappedClass().equals(this.wrappedPacketClass),
-                    "PacketBuilder class not of same type of PacketReference.");
+            Preconditions.checkArgument(
+                    builder.getWrappedClass().equals(this.wrappedPacketClass),
+                    "PacketBuilder class not of same type of PacketReference."
+            );
             this.builder = builder;
             this.parent.register(this, this.builder);
             this.registered = true;

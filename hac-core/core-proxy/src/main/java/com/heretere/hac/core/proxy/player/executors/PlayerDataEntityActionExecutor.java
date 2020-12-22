@@ -28,7 +28,10 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
     }
 
     @Override
-    public boolean execute(@NotNull final HACPlayer player, @NotNull final EntityActionPacket packet) {
+    public boolean execute(
+            @NotNull final HACPlayer player,
+            @NotNull final EntityActionPacket packet
+    ) {
         PlayerData data = player.getDataManager().getData(PlayerData.class);
 
         switch (packet.getAction()) {
@@ -55,7 +58,10 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
     }
 
     @Override
-    public void onStop(@NotNull final HACPlayer player, @NotNull final EntityActionPacket packet) {
+    public void onStop(
+            @NotNull final HACPlayer player,
+            @NotNull final EntityActionPacket packet
+    ) {
         throw new NotImplementedException("Updater Class.");
     }
 }

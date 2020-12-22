@@ -23,13 +23,19 @@ public final class SimulatorFlyingExecutor extends AbstractPacketEventExecutor<F
     }
 
     @Override
-    protected boolean execute(@NotNull final HACPlayer player, @NotNull final FlyingPacket packet) {
+    protected boolean execute(
+            @NotNull final HACPlayer player,
+            @NotNull final FlyingPacket packet
+    ) {
         player.getDataManager().getData(Simulator.class).update();
         return true;
     }
 
     @Override
-    protected void onStop(@NotNull final HACPlayer player, @NotNull final FlyingPacket packet) {
+    protected void onStop(
+            @NotNull final HACPlayer player,
+            @NotNull final FlyingPacket packet
+    ) {
         throw new NotImplementedException();
     }
 }

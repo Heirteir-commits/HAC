@@ -40,7 +40,10 @@ public final class HACPlayer {
      * @param api    the api
      * @param player the player
      */
-    HACPlayer(@NotNull final HACAPI api, @NotNull final Player player) {
+    HACPlayer(
+            @NotNull final HACAPI api,
+            @NotNull final Player player
+    ) {
         this.api = api;
 
         this.future = CompletableFuture.allOf();
@@ -57,19 +60,16 @@ public final class HACPlayer {
      * @param runnable     The runnable to run in the {@link com.heretere.hac.api.concurrency.ThreadPool}.
      * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
      */
-    public void runTaskASync(@NotNull final Runnable runnable,
-                             @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler) {
-        this.future = this.future
-                .thenRunAsync(runnable, this.api.getThreadPool().getPool())
-                .whenCompleteAsync(
-                        errorHandler == null
-                                ? (msg, ex) -> {
-                            if (ex != null) {
-                                this.api.getErrorHandler().getHandler().accept(ex);
-                            }
-                        }
-                                : errorHandler,
-                        this.api.getThreadPool().getPool());
+    public void runTaskASync(
+            @NotNull final Runnable runnable,
+            @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler
+    ) {
+        this.future = this.future.thenRunAsync(runnable, this.api.getThreadPool().getPool())
+                                 .whenCompleteAsync(errorHandler == null ? (msg, ex) -> {
+                                     if (ex != null) {
+                                         this.api.getErrorHandler().getHandler().accept(ex);
+                                     }
+                                 } : errorHandler, this.api.getThreadPool().getPool());
     }
 
     /**

@@ -53,7 +53,10 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
     }
 
     @Override
-    public EntityVelocityPacket create(@NotNull final HACPlayer player, @NotNull final Object packet) {
+    public EntityVelocityPacket create(
+            @NotNull final HACPlayer player,
+            @NotNull final Object packet
+    ) {
         PacketPlayOutEntityVelocity velocity = (PacketPlayOutEntityVelocity) packet;
 
         EntityVelocityPacket output;

@@ -27,7 +27,10 @@ public final class HACPlayerFactory {
      */
     private final Map<Class<?>, AbstractDataFactory<?>> builders;
 
-    HACPlayerFactory(@NotNull final HACAPI api, @NotNull final HACPlayerList playerList) {
+    HACPlayerFactory(
+            @NotNull final HACAPI api,
+            @NotNull final HACPlayerList playerList
+    ) {
         this.api = api;
         this.playerList = playerList;
         this.builders = Maps.newLinkedHashMap();
@@ -43,7 +46,10 @@ public final class HACPlayerFactory {
      * @param clazz   The {@link java.lang.Class} the {@link AbstractDataFactory} outputs.
      * @param builder The {@link AbstractDataFactory} instance.
      */
-    public <T> void registerDataBuilder(@NotNull final Class<T> clazz, final @NotNull AbstractDataFactory<T> builder) {
+    public <T> void registerDataBuilder(
+            @NotNull final Class<T> clazz,
+            final @NotNull AbstractDataFactory<T> builder
+    ) {
         this.builders.put(clazz, builder);
         this.playerList.getAll().forEach(player -> player.getDataManager().addDataRaw(clazz, builder.build(player)));
         builder.registerUpdaters();
@@ -63,8 +69,7 @@ public final class HACPlayerFactory {
         if (builder != null) {
             builder.unregisterUpdaters();
 
-            this.playerList.getAll()
-                    .forEach(player -> player.getDataManager().removeData(clazz));
+            this.playerList.getAll().forEach(player -> player.getDataManager().removeData(clazz));
         }
     }
 
@@ -78,8 +83,7 @@ public final class HACPlayerFactory {
      */
     public HACPlayer build(@NotNull final Player player) {
         HACPlayer hacPlayer = new HACPlayer(this.api, player);
-        this.builders
-                .forEach((key, value) -> hacPlayer.getDataManager().addDataRaw(key, value.build(hacPlayer)));
+        this.builders.forEach((key, value) -> hacPlayer.getDataManager().addDataRaw(key, value.build(hacPlayer)));
         return hacPlayer;
     }
 }

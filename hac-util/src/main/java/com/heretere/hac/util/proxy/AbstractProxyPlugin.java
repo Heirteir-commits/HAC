@@ -43,10 +43,12 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
      */
     private boolean success;
 
-    protected AbstractProxyPlugin(@NotNull final String baseDirectory,
-                                  @NotNull final String prefix,
-                                  @NotNull final String basePackage,
-                                  @NotNull final Class<T> versionProxyClass) {
+    protected AbstractProxyPlugin(
+            @NotNull final String baseDirectory,
+            @NotNull final String prefix,
+            @NotNull final String basePackage,
+            @NotNull final Class<T> versionProxyClass
+    ) {
         super(baseDirectory, prefix);
         this.basePackage = basePackage;
         this.versionProxyClass = versionProxyClass;
@@ -91,10 +93,9 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         String currentVersion = AbstractProxyPlugin.getServerVersionString();
         if (this.getPackagedVersions().contains(currentVersion)) {
             try {
-                Class<?> clazz = Class.forName(
-                        basePackage + "." + currentVersion + ".Proxy",
-                        true,
-                        this.getClass().getClassLoader()
+                Class<?> clazz = Class.forName(basePackage + "." + currentVersion + ".Proxy",
+                                               true,
+                                               this.getClass().getClassLoader()
                 );
 
                 Object instance = clazz.getConstructor(AbstractHACPlugin.class).newInstance(this);
@@ -115,17 +116,14 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     private Set<String> getPackagedVersions() {
         InputStream in = this.getResource(AbstractProxyPlugin.PACKAGED_VERSIONS_NAME);
 
-        Preconditions.checkNotNull(
-                in,
-                "'%s' not located in jar. Please rebuild.",
-                AbstractProxyPlugin.PACKAGED_VERSIONS_NAME
+        Preconditions.checkNotNull(in,
+                                   "'%s' not located in jar. Please rebuild.",
+                                   AbstractProxyPlugin.PACKAGED_VERSIONS_NAME
         );
 
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-            reader.lines()
-                    .filter(line -> !line.trim().isEmpty())
-                    .forEach(line -> builder.add(line.trim()));
+            reader.lines().filter(line -> !line.trim().isEmpty()).forEach(line -> builder.add(line.trim()));
         } catch (IOException e) {
             super.getLog().severe(e);
         }

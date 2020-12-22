@@ -21,20 +21,6 @@ public final class HACAPI {
      * The singleton instance.
      */
     private static HACAPI instance;
-
-    /**
-     * Gets the current instance of the API.
-     *
-     * @return The API instance.
-     */
-    public static HACAPI getInstance() {
-        if (HACAPI.instance == null) {
-            instance = new HACAPI();
-        }
-
-        return HACAPI.instance;
-    }
-
     /**
      * The Config Handler instance.
      */
@@ -59,7 +45,6 @@ public final class HACAPI {
      * The packet references instance.
      */
     private final PacketReferences packetReferences;
-
     /**
      * Whether or not the api has been loaded.
      */
@@ -76,6 +61,19 @@ public final class HACAPI {
         this.packetReferences = new PacketReferences();
 
         this.loaded = true;
+    }
+
+    /**
+     * Gets the current instance of the API.
+     *
+     * @return The API instance.
+     */
+    public static HACAPI getInstance() {
+        if (HACAPI.instance == null) {
+            instance = new HACAPI();
+        }
+
+        return HACAPI.instance;
     }
 
     /**

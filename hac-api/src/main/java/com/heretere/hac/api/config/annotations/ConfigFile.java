@@ -18,6 +18,5 @@ public @interface ConfigFile {
      *
      * @return the path
      */
-    @NotNull
-    String value();
+    @NotNull String value();
 }

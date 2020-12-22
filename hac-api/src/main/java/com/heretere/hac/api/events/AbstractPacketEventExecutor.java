@@ -20,9 +20,11 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      */
     private final Class<T> wrappedClass;
 
-    protected AbstractPacketEventExecutor(@NotNull final Priority priority,
-                                          @NotNull final String identifier,
-                                          @NotNull final PacketReferences.PacketReference<T> reference) {
+    protected AbstractPacketEventExecutor(
+            @NotNull final Priority priority,
+            @NotNull final String identifier,
+            @NotNull final PacketReferences.PacketReference<T> reference
+    ) {
         this.priority = priority;
         this.identifier = identifier + "_" + reference.getIdentifier();
         this.wrappedClass = reference.getWrappedPacketClass();
@@ -35,7 +37,10 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      * @param packet The Packet to be passed into the executor
      * @return true if execution was successful
      */
-    public final boolean execute(@NotNull final HACPlayer player, @NotNull final Object packet) {
+    public final boolean execute(
+            @NotNull final HACPlayer player,
+            @NotNull final Object packet
+    ) {
         return this.execute(player, this.wrappedClass.cast(packet));
     }
 
@@ -45,13 +50,22 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      * @param player The HACPlayer
      * @param packet The packet to be passed into the executor
      */
-    public final void onStop(@NotNull final HACPlayer player, @NotNull final Object packet) {
+    public final void onStop(
+            @NotNull final HACPlayer player,
+            @NotNull final Object packet
+    ) {
         this.onStop(player, this.wrappedClass.cast(packet));
     }
 
-    protected abstract boolean execute(@NotNull HACPlayer player, @NotNull T packet);
+    protected abstract boolean execute(
+            @NotNull HACPlayer player,
+            @NotNull T packet
+    );
 
-    protected abstract void onStop(@NotNull HACPlayer player, @NotNull T packet);
+    protected abstract void onStop(
+            @NotNull HACPlayer player,
+            @NotNull T packet
+    );
 
     /**
      * The execution priority for the event executor.

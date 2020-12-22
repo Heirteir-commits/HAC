@@ -8,24 +8,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The interface Section.
+ * The interface ConfigSection.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Section {
+public @interface ConfigSection {
     /**
      * The key of the section in a yaml file.
      *
      * @return the string
      */
-    @NotNull
-    String key();
+    @NotNull String key();
 
     /**
      * Comments attached to the section.
      *
      * @return the string [ ]
      */
-    @NotNull
-    String[] comments() default {};
+    @NotNull String[] comments() default {};
 }

@@ -112,15 +112,13 @@ public class DependencyLoader {
         }
 
         if (!success) {
-            this.parent.getLog().reportFatalError(
-                    () ->
-                            String.format("Failed to download dependency '%s'. "
-                                            + "Please download the dependency from: '%s' "
-                                            + "and place it into the folder '%s'.",
-                                    dependency.getName(),
-                                    dependency.getManualURL().orElse(null),
-                                    dependency.getDownloadLocation()),
-                    false);
+            this.parent.getLog().reportFatalError(() -> String.format(
+                    "Failed to download dependency '%s'. " + "Please download the dependency from: '%s' " + "and " +
+                            "place it into the folder '%s'.",
+                    dependency.getName(),
+                    dependency.getManualURL().orElse(null),
+                    dependency.getDownloadLocation()
+            ), false);
         }
 
         return success;
@@ -171,8 +169,10 @@ public class DependencyLoader {
                 Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                 method.setAccessible(true);
                 method.invoke(classLoader, dependency.getRelocatedLocation().toUri().toURL());
-            } catch (NoSuchMethodException | MalformedURLException
-                    | IllegalAccessException | InvocationTargetException e) {
+            } catch (NoSuchMethodException
+                    | MalformedURLException
+                    | IllegalAccessException
+                    | InvocationTargetException e) {
                 this.parent.getLog().reportFatalError(e, false);
                 success = false;
             }

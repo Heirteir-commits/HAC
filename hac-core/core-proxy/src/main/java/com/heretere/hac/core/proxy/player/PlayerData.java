@@ -45,10 +45,9 @@ public final class PlayerData {
         MutableVector3F currentLocation = this.current.getLocation();
         MutableVector3F previousLocation = this.previous.getLocation();
 
-        this.current.getVelocity().set(
-                currentLocation.getX() - previousLocation.getX(),
-                currentLocation.getY() - previousLocation.getY(),
-                currentLocation.getZ() - previousLocation.getZ()
+        this.current.getVelocity().set(currentLocation.getX() - previousLocation.getX(),
+                                       currentLocation.getY() - previousLocation.getY(),
+                                       currentLocation.getZ() - previousLocation.getZ()
         );
 
         this.current.getDirection().set(flyingPacket.getYaw(), flyingPacket.getPitch());
@@ -121,18 +120,14 @@ public final class PlayerData {
          * @param player the bukkit player
          */
         public Data(@NotNull final Player player) {
-            this.location = new MutableVector3F(
-                    player.getLocation().getX(),
-                    player.getLocation().getY(),
-                    player.getLocation().getZ()
+            this.location = new MutableVector3F(player.getLocation().getX(),
+                                                player.getLocation().getY(),
+                                                player.getLocation().getZ()
             );
 
             this.velocity = new MutableVector3F(0, 0, 0);
 
-            this.direction = new MutableVector2F(
-                    player.getLocation().getYaw(),
-                    player.getLocation().getPitch()
-            );
+            this.direction = new MutableVector2F(player.getLocation().getYaw(), player.getLocation().getPitch());
 
             this.onGround = true;
             this.sneaking = player.isSneaking();
@@ -174,7 +169,11 @@ public final class PlayerData {
          * @param y the y
          * @param z the z
          */
-        public void setLocation(final double x, final double y, final double z) {
+        public void setLocation(
+                final double x,
+                final double y,
+                final double z
+        ) {
             this.location.set(x, y, z);
         }
 
@@ -194,7 +193,11 @@ public final class PlayerData {
          * @param dy the dy
          * @param dz the dz
          */
-        public void setVelocity(final double dx, final double dy, final double dz) {
+        public void setVelocity(
+                final double dx,
+                final double dy,
+                final double dz
+        ) {
             this.velocity.set(dx, dy, dz);
         }
 
@@ -213,7 +216,10 @@ public final class PlayerData {
          * @param yaw   the yaw
          * @param pitch the pitch
          */
-        public void setDirection(final double yaw, final double pitch) {
+        public void setDirection(
+                final double yaw,
+                final double pitch
+        ) {
             this.direction.set(yaw, pitch);
         }
 

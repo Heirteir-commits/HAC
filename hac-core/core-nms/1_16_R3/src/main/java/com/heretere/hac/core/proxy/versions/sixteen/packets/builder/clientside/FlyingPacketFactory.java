@@ -26,7 +26,10 @@ public final class FlyingPacketFactory extends AbstractPacketFactory<FlyingPacke
     }
 
     @Override
-    public FlyingPacket create(@NotNull final HACPlayer player, @NotNull final Object packet) {
+    public FlyingPacket create(
+            @NotNull final HACPlayer player,
+            @NotNull final Object packet
+    ) {
         PacketPlayInFlying flying = (PacketPlayInFlying) packet;
         PlayerData playerData = player.getDataManager().getData(PlayerData.class);
 
@@ -39,14 +42,7 @@ public final class FlyingPacketFactory extends AbstractPacketFactory<FlyingPacke
         double yaw = flying.a(direction.getX());
         double pitch = flying.b(direction.getY());
 
-        return new FlyingPacket(
-                x,
-                y,
-                z,
-                yaw,
-                pitch,
-                flying.b() //onGround
-        );
+        return new FlyingPacket(x, y, z, yaw, pitch, flying.b() /* onGround */);
     }
 
     @Override

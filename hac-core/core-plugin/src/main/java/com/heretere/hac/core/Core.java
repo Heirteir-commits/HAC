@@ -19,17 +19,11 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 @ApiVersion(ApiVersion.Target.v1_13)
 
 /* Dependencies */
-@Maven(
-        groupId = "org.bstats",
-        artifactId = "bstats-bukkit",
-        version = "1.7",
-        repoUrl = "https://repo.codemc.org/repository/maven-public/"
-)
-@Maven(
-        groupId = "com.flowpowered",
-        artifactId = "flow-math",
-        version = "1.0.3"
-)
+@Maven(groupId = "org.bstats",
+       artifactId = "bstats-bukkit",
+       version = "1.7",
+       repoUrl = "https://repo.codemc.org/repository/maven-public/")
+@Maven(groupId = "com.flowpowered", artifactId = "flow-math", version = "1.0.3")
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
 public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
@@ -53,12 +47,7 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
      * Instantiates core.
      */
     public Core() {
-        super(
-                "HAC",
-                "Core",
-                "com.heretere.hac.core.proxy.versions",
-                CoreVersionProxy.class
-        );
+        super("HAC", "Core", "com.heretere.hac.core.proxy.versions", CoreVersionProxy.class);
     }
 
     @Override
@@ -69,8 +58,7 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
 
     @Override
     public void proxyEnable() {
-
-
+        HACAPI.getInstance().getConfigHandler().loadConfigClass(this);
         new Metrics(this, Core.BSTATS_ID);
 
         HACAPI.getInstance().getErrorHandler().setHandler(ex -> this.getLog().severe(ex));
@@ -93,5 +81,4 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
 
         HACAPI.getInstance().unload();
     }
-
 }

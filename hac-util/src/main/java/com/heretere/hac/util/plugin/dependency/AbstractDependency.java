@@ -23,14 +23,19 @@ public abstract class AbstractDependency {
      */
     private final Set<Relocation> relocations;
 
-    protected AbstractDependency(@NotNull final AbstractHACPlugin parent, @NotNull final Relocation... relocations) {
+    protected AbstractDependency(
+            @NotNull final AbstractHACPlugin parent,
+            @NotNull final Relocation... relocations
+    ) {
         this.parent = parent;
 
         this.relocations = ImmutableSet.copyOf(relocations);
     }
 
-    protected AbstractDependency(@NotNull final AbstractHACPlugin parent,
-                                 @NotNull final Collection<Relocation> relocations) {
+    protected AbstractDependency(
+            @NotNull final AbstractHACPlugin parent,
+            @NotNull final Collection<Relocation> relocations
+    ) {
         this.parent = parent;
 
         this.relocations = ImmutableSet.copyOf(relocations);

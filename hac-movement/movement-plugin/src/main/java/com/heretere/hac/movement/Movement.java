@@ -29,12 +29,7 @@ public final class Movement extends AbstractProxyPlugin<AbstractMovementVersionP
      * The entry point for the HAC movement module.
      */
     public Movement() {
-        super(
-                "HAC",
-                "Movement",
-                "com.heretere.hac.movement.proxy.versions",
-                AbstractMovementVersionProxy.class
-        );
+        super("HAC", "Movement", "com.heretere.hac.movement.proxy.versions", AbstractMovementVersionProxy.class);
         this.simulatorFactory = new SimulatorFactory(HACAPI.getInstance(), this);
 
     }
@@ -46,8 +41,10 @@ public final class Movement extends AbstractProxyPlugin<AbstractMovementVersionP
 
     @Override
     public void proxyEnable() {
-        HACAPI.getInstance().getHacPlayerList().getBuilder()
-                .registerDataBuilder(Simulator.class, this.simulatorFactory);
+        HACAPI.getInstance()
+              .getHacPlayerList()
+              .getBuilder()
+              .registerDataBuilder(Simulator.class, this.simulatorFactory);
 
         super.getProxy().baseLoad();
     }

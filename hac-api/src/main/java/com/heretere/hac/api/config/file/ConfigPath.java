@@ -41,10 +41,12 @@ public abstract class ConfigPath {
      * @param path     the path
      * @param comments the comments
      */
-    protected ConfigPath(@NotNull final HACAPI api,
-                         @NotNull final Type type,
-                         @NotNull final String path,
-                         @NotNull final String... comments) {
+    protected ConfigPath(
+            @NotNull final HACAPI api,
+            @NotNull final Type type,
+            @NotNull final String path,
+            @NotNull final String... comments
+    ) {
         this.api = api;
         this.type = type;
         this.path = path;
@@ -111,7 +113,7 @@ public abstract class ConfigPath {
      */
     public enum Type {
         /**
-         * Section type.
+         * ConfigSection type.
          */
         SECTION,
         /**

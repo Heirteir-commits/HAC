@@ -30,7 +30,10 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      */
     private boolean dependencySuccess;
 
-    protected AbstractHACPlugin(@NotNull final String baseDirectory, @NotNull final String prefix) {
+    protected AbstractHACPlugin(
+            @NotNull final String baseDirectory,
+            @NotNull final String prefix
+    ) {
         this.baseDirectory = this.getDataFolder().toPath().getParent().resolve(baseDirectory);
         this.prefix = "[" + prefix + "] ";
 
@@ -67,13 +70,12 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
         if (this.dependencySuccess) {
             this.enable();
         } else {
-            this.log.reportFatalError(() ->
-                            String.format("Could not download required dependencies. "
-                                            + "Please look at the latest.log in '%s' to determine the issue.",
-                                    this.baseDirectory.getParent()
-                                            .relativize(this.baseDirectory.resolve("logs").resolve(this.getName()))),
-                    false
-            );
+            this.log.reportFatalError(() -> String.format(
+                    "Could not download required dependencies. " + "Please look at the latest.log in '%s' to " +
+                            "determine the issue.",
+                    this.baseDirectory.getParent()
+                                      .relativize(this.baseDirectory.resolve("logs").resolve(this.getName()))
+            ), false);
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }

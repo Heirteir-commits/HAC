@@ -10,7 +10,10 @@ public class Simulator {
 //    private final SimulatorEntity entity;
 //    private final SimulatorEntity.Data data;
 
-    public Simulator(AbstractMovementVersionProxy proxy, HACPlayer player) {
+    public Simulator(
+            AbstractMovementVersionProxy proxy,
+            HACPlayer player
+    ) {
         this.proxy = proxy;
         this.player = player;
 

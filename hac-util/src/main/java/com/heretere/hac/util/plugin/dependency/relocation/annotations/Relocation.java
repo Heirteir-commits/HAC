@@ -22,8 +22,7 @@ public @interface Relocation {
      *
      * @return the string
      */
-    @NotNull
-    String from();
+    @NotNull String from();
 
     /**
      * Where the package should be relocated to.
@@ -32,8 +31,7 @@ public @interface Relocation {
      *
      * @return the string
      */
-    @NotNull
-    String to();
+    @NotNull String to();
 
     /**
      * The interface List.
@@ -46,7 +44,6 @@ public @interface Relocation {
          *
          * @return the relocation [ ]
          */
-        @NotNull
-        Relocation[] value() default {};
+        @NotNull Relocation[] value() default {};
     }
 }

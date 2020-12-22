@@ -18,7 +18,12 @@ public class HACEntityHuman extends EntityHuman {
         super(((CraftWorld) world).getHandle(), new BlockPosition(0, 0, 0), 0, new GameProfile(null, "HAC-Simulator"));
     }
 
-    public HACEntityHuman(World world, BlockPosition blockposition, float f, GameProfile gameprofile) {
+    public HACEntityHuman(
+            World world,
+            BlockPosition blockposition,
+            float f,
+            GameProfile gameprofile
+    ) {
         super(world, blockposition, f, gameprofile);
 
         this.enderChest = null;
@@ -39,10 +44,9 @@ public class HACEntityHuman extends EntityHuman {
 
     @Override
     public void movementTick() {
-        this.setMot(
-                Math.abs(this.getMot().getX()) < D_EPSILON ? 0.0D : this.getMot().getX(),
-                Math.abs(this.getMot().getY()) < D_EPSILON ? 0.0D : this.getMot().getY(),
-                Math.abs(this.getMot().getZ()) < D_EPSILON ? 0.0D : this.getMot().getZ()
+        this.setMot(Math.abs(this.getMot().getX()) < D_EPSILON ? 0.0D : this.getMot().getX(),
+                    Math.abs(this.getMot().getY()) < D_EPSILON ? 0.0D : this.getMot().getY(),
+                    Math.abs(this.getMot().getZ()) < D_EPSILON ? 0.0D : this.getMot().getZ()
         );
 
         if (this.jumping) {
@@ -90,7 +94,10 @@ public class HACEntityHuman extends EntityHuman {
         if (this.isSwimming()) {
             d3 = this.getLookDirection().y;
             double d4 = d3 < -0.2D ? 0.085D : 0.06D;
-            if (d3 <= 0.0D || this.jumping || !this.world.getType(new BlockPosition(this.locX(), this.locY() + 1.0D - 0.1D, this.locZ())).getFluid().isEmpty()) {
+            if (d3 <= 0.0D || this.jumping || !this.world.getType(new BlockPosition(this.locX(),
+                                                                                    this.locY() + 1.0D - 0.1D,
+                                                                                    this.locZ()
+            )).getFluid().isEmpty()) {
                 Vec3D tmpMot = this.getMot();
                 this.setMot(tmpMot.add(0.0D, (d3 - tmpMot.y) * d4, 0.0D));
             }
@@ -128,19 +135,35 @@ public class HACEntityHuman extends EntityHuman {
     }
 
     @Override
-    public void setFlag(int i, boolean flag) { }
+    public void setFlag(
+            int i,
+            boolean flag
+    ) { }
 
     @Override
     protected final void collideNearby() { }
 
     @Override
-    public void playSound(SoundEffect soundeffect, float f, float f1) { }
+    public void playSound(
+            SoundEffect soundeffect,
+            float f,
+            float f1
+    ) { }
 
     @Override
-    public void checkMovement(double d0, double d1, double d2) { }
+    public void checkMovement(
+            double d0,
+            double d1,
+            double d2
+    ) { }
 
     @Override
-    public void a(SoundEffect soundeffect, SoundCategory soundcategory, float f, float f1) { }
+    public void a(
+            SoundEffect soundeffect,
+            SoundCategory soundcategory,
+            float f,
+            float f1
+    ) { }
 
     @Override
     public void a(MinecraftKey key) { }

@@ -27,7 +27,11 @@ public final class MutableVector3F {
      * @param y the y
      * @param z the z
      */
-    public MutableVector3F(final double x, final double y, final double z) {
+    public MutableVector3F(
+            final double x,
+            final double y,
+            final double z
+    ) {
         this((float) x, (float) y, (float) z);
     }
 
@@ -38,7 +42,11 @@ public final class MutableVector3F {
      * @param y the y
      * @param z the z
      */
-    public MutableVector3F(final float x, final float y, final float z) {
+    public MutableVector3F(
+            final float x,
+            final float y,
+            final float z
+    ) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -62,7 +70,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F add(final double x, final double y, final double z) {
+    public MutableVector3F add(
+            final double x,
+            final double y,
+            final double z
+    ) {
         return this.add((float) x, (float) y, (float) z);
     }
 
@@ -74,7 +86,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F add(final float x, final float y, final float z) {
+    public MutableVector3F add(
+            final float x,
+            final float y,
+            final float z
+    ) {
         this.x += x;
         this.y += y;
         this.z += z;
@@ -100,7 +116,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F subtract(final double x, final double y, final double z) {
+    public MutableVector3F subtract(
+            final double x,
+            final double y,
+            final double z
+    ) {
         return this.subtract((float) x, (float) y, (float) z);
     }
 
@@ -112,7 +132,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F subtract(final float x, final float y, final float z) {
+    public MutableVector3F subtract(
+            final float x,
+            final float y,
+            final float z
+    ) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
@@ -138,7 +162,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F mul(final double x, final double y, final double z) {
+    public MutableVector3F mul(
+            final double x,
+            final double y,
+            final double z
+    ) {
         return this.mul((float) x, (float) y, (float) z);
     }
 
@@ -150,7 +178,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F mul(final float x, final float y, final float z) {
+    public MutableVector3F mul(
+            final float x,
+            final float y,
+            final float z
+    ) {
         this.x *= x;
         this.y *= y;
         this.z *= z;
@@ -176,7 +208,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F set(final double x, final double y, final double z) {
+    public MutableVector3F set(
+            final double x,
+            final double y,
+            final double z
+    ) {
         return this.set((float) x, (float) y, (float) z);
     }
 
@@ -188,7 +224,11 @@ public final class MutableVector3F {
      * @param z the z
      * @return the mutable vector 3 f
      */
-    public MutableVector3F set(final float x, final float y, final float z) {
+    public MutableVector3F set(
+            final float x,
+            final float y,
+            final float z
+    ) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -276,11 +316,7 @@ public final class MutableVector3F {
 
     @Override
     public String toString() {
-        return "MutableVector3F{"
-                + "x=" + x
-                + ", y=" + y
-                + ", z=" + z
-                + '}';
+        return "MutableVector3F{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
     }
 
 

@@ -14,9 +14,11 @@ public class ConfigSection extends ConfigPath {
      * @param path     the path
      * @param comments the comments
      */
-    public ConfigSection(@NotNull final HACAPI api,
-                         @NotNull final String path,
-                         @NotNull final String... comments) {
+    public ConfigSection(
+            @NotNull final HACAPI api,
+            @NotNull final String path,
+            @NotNull final String... comments
+    ) {
         super(api, Type.SECTION, path, comments);
     }
 }

@@ -18,30 +18,26 @@ public @interface ConfigKey {
      *
      * @return the string
      */
-    @NotNull
-    String path();
+    @NotNull String path();
 
     /**
      * The name of the getter method for this key.
      *
      * @return the getter
      */
-    @NotNull
-    String getter();
+    @NotNull String getter();
 
     /**
      * The name of the setter method for this key.
      *
      * @return the setter
      */
-    @NotNull
-    String setter();
+    @NotNull String setter();
 
     /**
      * Comments that should be added to the key.
      *
      * @return The comments
      */
-    @NotNull
-    String[] comments() default {};
+    @NotNull String[] comments() default {};
 }

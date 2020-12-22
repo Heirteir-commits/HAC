@@ -53,9 +53,9 @@ public final class Log {
     public Log(@NotNull final AbstractHACPlugin parent) {
         this.parent = parent;
         this.loggingFile = this.parent.getBaseDirectory()
-                .resolve("logs")
-                .resolve(parent.getName())
-                .resolve("latest.log.txt");
+                                      .resolve("logs")
+                                      .resolve(parent.getName())
+                                      .resolve("latest.log.txt");
 
         try {
             Files.createDirectories(this.loggingFile.getParent());
@@ -99,8 +99,10 @@ public final class Log {
     }
 
     private void checkState() {
-        Preconditions.checkState(this.open, "Log file hasn't been created. "
-                + "Please have your plugin extend DependencyPlugin or call Log.open() before logging messages.");
+        Preconditions.checkState(this.open,
+                                 "Log file hasn't been created. " + "Please have your plugin extend DependencyPlugin "
+                                         + "or call Log.open() before logging messages."
+        );
     }
 
     /**
@@ -142,20 +144,24 @@ public final class Log {
      * @param message  the message
      * @param shutdown the shutdown
      */
-    public void reportFatalError(@NotNull final Supplier<String> message, final boolean shutdown) {
-        Iterable<String> header = Splitter.fixedLength(ERROR_WRAP)
-                .split(String.format("'%s' ran into an error that has forced the plugin to stop."
-                        + " More information below:", this.parent.getName()));
+    public void reportFatalError(
+            @NotNull final Supplier<String> message,
+            final boolean shutdown
+    ) {
+        Iterable<String> header = Splitter.fixedLength(ERROR_WRAP).split(String.format(
+                "'%s' ran into an error that has forced the plugin to stop." + " More information below:",
+                this.parent.getName()
+        ));
         Iterable<String> body = Splitter.fixedLength(ERROR_WRAP).split(ChatColor.stripColor(message.get()));
         String headTail = "&c" + StringUtils.repeat("=", ERROR_WRAP + ERROR_PADDING + 2);
         String headerTail = "&c|" + StringUtils.repeat("=", ERROR_WRAP + ERROR_PADDING) + "|";
 
         this.severe(() -> headTail);
-        header.forEach(line -> this.severe(() -> "&c|&r"
-                + StringUtils.center(line, ERROR_WRAP + ERROR_PADDING) + "&c|"));
+        header.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line,
+                                                                              ERROR_WRAP + ERROR_PADDING
+        ) + "&c|"));
         this.severe(() -> headerTail);
-        body.forEach(line -> this.severe(() -> "&c|&r"
-                + StringUtils.center(line, ERROR_WRAP + ERROR_PADDING) + "&c|"));
+        body.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line, ERROR_WRAP + ERROR_PADDING) + "&c|"));
         this.severe(() -> headTail);
 
         if (shutdown && Bukkit.getPluginManager().isPluginEnabled(this.parent)) {
@@ -173,7 +179,10 @@ public final class Log {
      * @param exception the exception
      * @param shutdown  the shutdown
      */
-    public void reportFatalError(@NotNull final Throwable exception, final boolean shutdown) {
+    public void reportFatalError(
+            @NotNull final Throwable exception,
+            final boolean shutdown
+    ) {
         this.severe(exception);
         this.reportFatalError(exception::getMessage, shutdown);
     }
@@ -197,7 +206,10 @@ public final class Log {
          */
         private final String ansiCode;
 
-        ChatColorAnsi(@NotNull final String colorCode, @NotNull final String ansiCode) {
+        ChatColorAnsi(
+                @NotNull final String colorCode,
+                @NotNull final String ansiCode
+        ) {
             this.colorCode = colorCode;
             this.ansiCode = ansiCode;
         }

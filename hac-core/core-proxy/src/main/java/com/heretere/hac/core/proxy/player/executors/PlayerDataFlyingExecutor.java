@@ -19,21 +19,23 @@ public final class PlayerDataFlyingExecutor extends AbstractPacketEventExecutor<
      * @param identifier the identifier
      */
     public PlayerDataFlyingExecutor(@NotNull final String identifier) {
-        super(
-                Priority.PROCESS_1,
-                identifier,
-                HACAPI.getInstance().getPacketReferences().getClientSide().getFlying()
-        );
+        super(Priority.PROCESS_1, identifier, HACAPI.getInstance().getPacketReferences().getClientSide().getFlying());
     }
 
     @Override
-    public boolean execute(@NotNull final HACPlayer player, @NotNull final FlyingPacket packet) {
+    public boolean execute(
+            @NotNull final HACPlayer player,
+            @NotNull final FlyingPacket packet
+    ) {
         player.getDataManager().getData(PlayerData.class).update(packet);
         return true;
     }
 
     @Override
-    public void onStop(@NotNull final HACPlayer player, @NotNull final FlyingPacket packet) {
+    public void onStop(
+            @NotNull final HACPlayer player,
+            @NotNull final FlyingPacket packet
+    ) {
         throw new NotImplementedException("Updater Class.");
     }
 }

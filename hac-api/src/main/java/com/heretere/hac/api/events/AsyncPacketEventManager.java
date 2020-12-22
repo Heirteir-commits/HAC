@@ -29,7 +29,8 @@ public class AsyncPacketEventManager {
      * @param <T>      WrappedPacket type
      */
     public <T extends WrappedPacket> void registerPacketEventExecutor(
-            @NotNull final AbstractPacketEventExecutor<T> executor) {
+            @NotNull final AbstractPacketEventExecutor<T> executor
+    ) {
         this.getPacketEventHandler(executor.getWrappedClass()).addExecutor(executor);
     }
 
@@ -40,7 +41,8 @@ public class AsyncPacketEventManager {
      * @param <T>      WrappedPacket type
      */
     public <T extends WrappedPacket> void unregisterPacketEventExecutor(
-            @NotNull final AbstractPacketEventExecutor<T> executor) {
+            @NotNull final AbstractPacketEventExecutor<T> executor
+    ) {
         this.getPacketEventHandler(executor.getWrappedClass()).removeExecutor(executor);
     }
 
@@ -55,13 +57,12 @@ public class AsyncPacketEventManager {
      * @param packet       The WrappedPacket
      * @param errorHandler An optional error handler.
      */
-    public void callPacketEvent(@NotNull final HACPlayer player,
-                                @NotNull final WrappedPacket packet,
-                                @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler) {
-        player.runTaskASync(
-                () -> this.getPacketEventHandler(packet.getClass()).execute(player, packet),
-                errorHandler
-        );
+    public void callPacketEvent(
+            @NotNull final HACPlayer player,
+            @NotNull final WrappedPacket packet,
+            @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler
+    ) {
+        player.runTaskASync(() -> this.getPacketEventHandler(packet.getClass()).execute(player, packet), errorHandler);
     }
 
     /**
@@ -71,7 +72,10 @@ public class AsyncPacketEventManager {
      * @param player The HACPlayer
      * @param packet The wrapped packet
      */
-    public void callPacketEvent(@NotNull final HACPlayer player, @NotNull final WrappedPacket packet) {
+    public void callPacketEvent(
+            @NotNull final HACPlayer player,
+            @NotNull final WrappedPacket packet
+    ) {
         this.callPacketEvent(player, packet, null);
     }
 }

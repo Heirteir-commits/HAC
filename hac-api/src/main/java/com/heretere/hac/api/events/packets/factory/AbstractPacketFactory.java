@@ -13,7 +13,10 @@ public abstract class AbstractPacketFactory<T extends WrappedPacket> {
      */
     private final Set<Class<?>> nmsClasses;
 
-    protected AbstractPacketFactory(@NotNull final Class<?> base, @NotNull final Class<?>... nmsClasses) {
+    protected AbstractPacketFactory(
+            @NotNull final Class<?> base,
+            @NotNull final Class<?>... nmsClasses
+    ) {
         //since were only storing classes identityHashSet is beneficial here for speed
         this.nmsClasses = Sets.newIdentityHashSet();
         this.nmsClasses.add(base);
@@ -27,7 +30,10 @@ public abstract class AbstractPacketFactory<T extends WrappedPacket> {
      * @param packet The NMS packet
      * @return A T wrapped packet
      */
-    public abstract T create(HACPlayer player, Object packet);
+    public abstract T create(
+            HACPlayer player,
+            Object packet
+    );
 
     /**
      * The T wrapped class this factory creates.

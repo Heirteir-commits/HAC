@@ -50,7 +50,10 @@ public final class Relocator {
      * @param parent           the parent
      * @param dependencyLoader the dependency loader
      */
-    public Relocator(@NotNull final AbstractHACPlugin parent, @NotNull final DependencyLoader dependencyLoader) {
+    public Relocator(
+            @NotNull final AbstractHACPlugin parent,
+            @NotNull final DependencyLoader dependencyLoader
+    ) {
         this.isolatedClassLoader = new IsolatedClassLoader();
 
         Set<AbstractDependency> dependencies = dependencyLoader.getDependencies(Relocator.class);
@@ -61,9 +64,11 @@ public final class Relocator {
             for (AbstractDependency dependency : dependencies) {
                 if (!this.isolatedClassLoader.addPath(dependency.getDownloadLocation())) {
                     success = false;
-                    parent.getLog().reportFatalError(() -> "Failed to load dependency '"
-                            + dependency.getDownloadLocation() + "'."
-                            + "Please delete it and re-download it.", false);
+                    parent.getLog().reportFatalError(
+                            () -> "Failed to load dependency '" + dependency.getDownloadLocation() + "'." + "Please " +
+                                    "delete it and re-download it.",
+                            false
+                    );
                     break;
                 }
             }
@@ -75,18 +80,16 @@ public final class Relocator {
                 Class<?> jarRelocatorClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.JarRelocator");
                 Class<?> relocationClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.Relocation");
 
-                this.jarRelocatorConstructor = jarRelocatorClass.getConstructor(
-                        File.class,
-                        File.class,
-                        Collection.class
+                this.jarRelocatorConstructor = jarRelocatorClass.getConstructor(File.class,
+                                                                                File.class,
+                                                                                Collection.class
                 );
                 this.jarRelocatorRunMethod = jarRelocatorClass.getMethod("run");
 
-                relocationConstructor = relocationClass.getConstructor(
-                        String.class,
-                        String.class,
-                        Collection.class,
-                        Collection.class
+                relocationConstructor = relocationClass.getConstructor(String.class,
+                                                                       String.class,
+                                                                       Collection.class,
+                                                                       Collection.class
                 );
             } catch (ClassNotFoundException | NoSuchMethodException e) {
                 parent.getLog().reportFatalError(e, true);
@@ -106,18 +109,17 @@ public final class Relocator {
             Set<Object> rules = Sets.newLinkedHashSet();
 
             for (Relocation relocation : dependency.getRelocations()) {
-                rules.add(
-                        relocationConstructor.newInstance(
-                                StringUtils.replace(relocation.from(), "|", "."),
-                                StringUtils.replace(relocation.to(), "|", "."),
-                                Lists.newArrayList(),
-                                Lists.newArrayList()
-                        )
-                );
+                rules.add(relocationConstructor.newInstance(StringUtils.replace(relocation.from(), "|", "."),
+                                                            StringUtils.replace(relocation.to(), "|", "."),
+                                                            Lists.newArrayList(),
+                                                            Lists.newArrayList()
+                ));
             }
 
             jarRelocatorRunMethod.invoke(jarRelocatorConstructor.newInstance(dependency.getDownloadLocation().toFile(),
-                    dependency.getRelocatedLocation().toFile(), rules));
+                                                                             dependency.getRelocatedLocation().toFile(),
+                                                                             rules
+            ));
             output = Optional.empty();
         } catch (ReflectiveOperationException e) {
             output = Optional.of(e);

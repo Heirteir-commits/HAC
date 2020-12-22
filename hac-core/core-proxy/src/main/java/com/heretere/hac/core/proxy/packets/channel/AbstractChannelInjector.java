@@ -56,12 +56,11 @@ public abstract class AbstractChannelInjector {
      */
     public void inject(@NotNull final HACPlayer player) {
         this.remove(player);
-        this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer())
-                .addBefore(
-                        AbstractChannelInjector.AFTER_KEY,
-                        AbstractChannelInjector.HANDLER_KEY,
-                        new HACChannelHandler(this.parent, player)
-                ));
+        this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer()).addBefore(
+                AbstractChannelInjector.AFTER_KEY,
+                AbstractChannelInjector.HANDLER_KEY,
+                new HACChannelHandler(this.parent, player)
+        ));
     }
 
     /**
@@ -105,15 +104,21 @@ public abstract class AbstractChannelInjector {
          */
         private final HACPlayer player;
 
-        private HACChannelHandler(@NotNull final AbstractHACPlugin parent, @NotNull final HACPlayer player) {
+        private HACChannelHandler(
+                @NotNull final AbstractHACPlugin parent,
+                @NotNull final HACPlayer player
+        ) {
             super();
             this.parent = parent;
             this.player = player;
         }
 
         @Override
-        public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise)
-                throws Exception {
+        public void write(
+                final ChannelHandlerContext ctx,
+                final Object msg,
+                final ChannelPromise promise
+        ) throws Exception {
             super.write(ctx, msg, promise);
 
             try {
@@ -124,7 +129,10 @@ public abstract class AbstractChannelInjector {
         }
 
         @Override
-        public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+        public void channelRead(
+                final ChannelHandlerContext ctx,
+                final Object msg
+        ) throws Exception {
             super.channelRead(ctx, msg);
 
             try {
@@ -134,11 +142,16 @@ public abstract class AbstractChannelInjector {
             }
         }
 
-        private void handle(@NotNull final Object packet, final boolean clientSide) {
-            PacketReferences.PacketReference<?> reference =
-                    clientSide
-                            ? HACAPI.getInstance().getPacketReferences().getClientSide().get(packet.getClass())
-                            : HACAPI.getInstance().getPacketReferences().getServerSide().get(packet.getClass());
+        private void handle(
+                @NotNull final Object packet,
+                final boolean clientSide
+        ) {
+            PacketReferences.PacketReference<?> reference = clientSide
+                    ? HACAPI.getInstance()
+                            .getPacketReferences()
+                            .getClientSide()
+                            .get(packet.getClass())
+                    : HACAPI.getInstance().getPacketReferences().getServerSide().get(packet.getClass());
 
             if (reference == null) {
                 return;
@@ -146,15 +159,9 @@ public abstract class AbstractChannelInjector {
 
             WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
 
-            if (clientSide
-                    || ((AbstractWrappedPacketOut) wrappedPacket).getEntityId()
-                    == player.getBukkitPlayer().getEntityId()
-            ) {
-                HACAPI.getInstance().getEventManager().callPacketEvent(
-                        this.player,
-                        wrappedPacket,
-                        null
-                );
+            if (clientSide || ((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == player.getBukkitPlayer()
+                                                                                                .getEntityId()) {
+                HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket, null);
             }
         }
     }

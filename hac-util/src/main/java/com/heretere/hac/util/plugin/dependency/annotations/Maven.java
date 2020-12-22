@@ -20,32 +20,28 @@ public @interface Maven {
      *
      * @return the string
      */
-    @NotNull
-    String groupId();
+    @NotNull String groupId();
 
     /**
      * The Artifact id.
      *
      * @return the string
      */
-    @NotNull
-    String artifactId();
+    @NotNull String artifactId();
 
     /**
      * The Version.
      *
      * @return the string
      */
-    @NotNull
-    String version();
+    @NotNull String version();
 
     /**
      * Repo url.
      *
      * @return the string
      */
-    @NotNull
-    String repoUrl() default "https://repo1.maven.org/maven2/";
+    @NotNull String repoUrl() default "https://repo1.maven.org/maven2/";
 
     /**
      * The interface List.
@@ -58,8 +54,7 @@ public @interface Maven {
          *
          * @return the maven []
          */
-        @NotNull
-        Maven[] value() default {};
+        @NotNull Maven[] value() default {};
     }
 
 }
