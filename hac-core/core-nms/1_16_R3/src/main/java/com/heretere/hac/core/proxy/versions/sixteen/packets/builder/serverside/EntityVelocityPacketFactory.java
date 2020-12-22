@@ -54,8 +54,8 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
 
     @Override
     public EntityVelocityPacket create(
-            @NotNull final HACPlayer player,
-            @NotNull final Object packet
+        @NotNull final HACPlayer player,
+        @NotNull final Object packet
     ) {
         PacketPlayOutEntityVelocity velocity = (PacketPlayOutEntityVelocity) packet;
 
@@ -67,10 +67,10 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
             double zValue = (int) FieldUtils.readField(this.z, velocity);
 
             output = new EntityVelocityPacket(
-                    idValue,
-                    xValue / EntityVelocityPacket.CONVERSION,
-                    yValue / EntityVelocityPacket.CONVERSION,
-                    zValue / EntityVelocityPacket.CONVERSION
+                idValue,
+                xValue / EntityVelocityPacket.CONVERSION,
+                yValue / EntityVelocityPacket.CONVERSION,
+                zValue / EntityVelocityPacket.CONVERSION
             );
         } catch (IllegalAccessException e) {
             output = null;

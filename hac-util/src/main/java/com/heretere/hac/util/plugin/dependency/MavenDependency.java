@@ -45,12 +45,12 @@ public final class MavenDependency extends AbstractDependency {
      * @param relocations the relocations
      */
     public MavenDependency(
-            @NotNull final AbstractHACPlugin parent,
-            @NotNull final String groupId,
-            @NotNull final String artifactId,
-            @NotNull final String version,
-            @NotNull final String repoURL,
-            @NotNull final Set<Relocation> relocations
+        @NotNull final AbstractHACPlugin parent,
+        @NotNull final String groupId,
+        @NotNull final String artifactId,
+        @NotNull final String version,
+        @NotNull final String repoURL,
+        @NotNull final Set<Relocation> relocations
     ) {
         super(parent, relocations);
         this.groupId = groupId;
@@ -67,9 +67,9 @@ public final class MavenDependency extends AbstractDependency {
      * @param relocations the relocations
      */
     public MavenDependency(
-            @NotNull final AbstractHACPlugin parent,
-            @NotNull final Maven maven,
-            @NotNull final Set<Relocation> relocations
+        @NotNull final AbstractHACPlugin parent,
+        @NotNull final Maven maven,
+        @NotNull final Set<Relocation> relocations
     ) {
         this(parent, maven.groupId(), maven.artifactId(), maven.version(), maven.repoUrl(), relocations);
     }
@@ -105,13 +105,13 @@ public final class MavenDependency extends AbstractDependency {
 
         try {
             url = new URL(String.format(
-                    "%s%s/%s/%s/%s-%s.jar",
-                    this.repoURL,
-                    this.groupId.replace(".", "/"),
-                    this.artifactId,
-                    this.version,
-                    this.artifactId,
-                    this.version
+                "%s%s/%s/%s/%s-%s.jar",
+                this.repoURL,
+                this.groupId.replace(".", "/"),
+                this.artifactId,
+                this.version,
+                this.artifactId,
+                this.version
             ));
         } catch (MalformedURLException e) {
             url = null;

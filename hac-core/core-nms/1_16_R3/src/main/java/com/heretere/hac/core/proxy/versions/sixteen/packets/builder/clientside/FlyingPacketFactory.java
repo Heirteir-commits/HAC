@@ -18,17 +18,17 @@ public final class FlyingPacketFactory extends AbstractPacketFactory<FlyingPacke
      */
     public FlyingPacketFactory() {
         super(
-                PacketPlayInFlying.class,
-                PacketPlayInFlying.PacketPlayInPositionLook.class,
-                PacketPlayInFlying.PacketPlayInPosition.class,
-                PacketPlayInFlying.PacketPlayInLook.class
+            PacketPlayInFlying.class,
+            PacketPlayInFlying.PacketPlayInPositionLook.class,
+            PacketPlayInFlying.PacketPlayInPosition.class,
+            PacketPlayInFlying.PacketPlayInLook.class
         );
     }
 
     @Override
     public FlyingPacket create(
-            @NotNull final HACPlayer player,
-            @NotNull final Object packet
+        @NotNull final HACPlayer player,
+        @NotNull final Object packet
     ) {
         PacketPlayInFlying flying = (PacketPlayInFlying) packet;
         PlayerData playerData = player.getDataManager().getData(PlayerData.class);

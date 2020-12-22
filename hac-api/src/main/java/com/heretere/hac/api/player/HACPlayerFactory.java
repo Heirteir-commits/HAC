@@ -28,8 +28,8 @@ public final class HACPlayerFactory {
     private final Map<Class<?>, AbstractDataFactory<?>> builders;
 
     HACPlayerFactory(
-            @NotNull final HACAPI api,
-            @NotNull final HACPlayerList playerList
+        @NotNull final HACAPI api,
+        @NotNull final HACPlayerList playerList
     ) {
         this.api = api;
         this.playerList = playerList;
@@ -47,8 +47,8 @@ public final class HACPlayerFactory {
      * @param builder The {@link AbstractDataFactory} instance.
      */
     public <T> void registerDataBuilder(
-            @NotNull final Class<T> clazz,
-            final @NotNull AbstractDataFactory<T> builder
+        @NotNull final Class<T> clazz,
+        final @NotNull AbstractDataFactory<T> builder
     ) {
         this.builders.put(clazz, builder);
         this.playerList.getAll().forEach(player -> player.getDataManager().addDataRaw(clazz, builder.build(player)));

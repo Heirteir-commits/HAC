@@ -19,8 +19,8 @@ public final class EntityActionPacketFactory extends AbstractPacketFactory<Entit
 
     @Override
     public EntityActionPacket create(
-            @NotNull final HACPlayer player,
-            @NotNull final Object packet
+        @NotNull final HACPlayer player,
+        @NotNull final Object packet
     ) {
         PacketPlayInEntityAction entityAction = (PacketPlayInEntityAction) packet;
 

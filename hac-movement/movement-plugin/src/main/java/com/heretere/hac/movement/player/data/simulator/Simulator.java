@@ -11,8 +11,8 @@ public class Simulator {
 //    private final SimulatorEntity.Data data;
 
     public Simulator(
-            AbstractMovementVersionProxy proxy,
-            HACPlayer player
+        AbstractMovementVersionProxy proxy,
+        HACPlayer player
     ) {
         this.proxy = proxy;
         this.player = player;

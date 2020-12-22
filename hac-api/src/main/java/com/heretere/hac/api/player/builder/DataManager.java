@@ -31,15 +31,15 @@ public final class DataManager {
      * @param <T>   the type of the data class
      */
     public <T> void addDataRaw(
-            @NotNull final Class<T> clazz,
-            @NotNull final Object data
+        @NotNull final Class<T> clazz,
+        @NotNull final Object data
     ) {
         this.addData(clazz, clazz.cast(data));
     }
 
     private <T> void addData(
-            @NotNull final Class<T> clazz,
-            @NotNull final T data
+        @NotNull final Class<T> clazz,
+        @NotNull final T data
     ) {
         this.data.put(clazz, data);
     }

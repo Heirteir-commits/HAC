@@ -18,9 +18,9 @@ public final class SingleLineFormatter extends Formatter {
     @Override
     public String format(@NotNull final LogRecord record) {
         return STRIP_COLOR.matcher("[" + record.getLevel() + "] " +
-                                           formatMessage(record) + "\n" +
-                                           (record.getThrown() != null
-                                                   ? record.getThrown().getMessage() + "\n"
-                                                   : "")).replaceAll("");
+                                       formatMessage(record) + "\n" +
+                                       (record.getThrown() != null
+                                           ? record.getThrown().getMessage() + "\n"
+                                           : "")).replaceAll("");
     }
 }

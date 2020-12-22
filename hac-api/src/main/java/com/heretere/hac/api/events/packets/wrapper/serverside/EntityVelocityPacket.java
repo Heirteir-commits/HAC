@@ -33,10 +33,10 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
      * @param z        the z
      */
     public EntityVelocityPacket(
-            final int entityId,
-            final double x,
-            final double y,
-            final double z
+        final int entityId,
+        final double x,
+        final double y,
+        final double z
     ) {
         super(entityId);
         this.x = x;

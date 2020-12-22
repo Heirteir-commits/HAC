@@ -72,12 +72,12 @@ public class HACConfigHandler {
         if (clazz.isAnnotationPresent(Section.class)) {
             Section section = clazz.getAnnotation(Section.class);
             configValues.computeIfAbsent(
-                    section.key(),
-                    path -> new ConfigSection(
-                            this.api,
-                            path,
-                            section.comments()
-                    )
+                section.key(),
+                path -> new ConfigSection(
+                    this.api,
+                    path,
+                    section.comments()
+                )
             );
         }
 
@@ -86,14 +86,14 @@ public class HACConfigHandler {
                 ConfigKey configKey = field.getAnnotation(ConfigKey.class);
 
                 ConfigField<?> configField = (ConfigField<?>) configValues.computeIfAbsent(
-                        configKey.path(),
-                        path -> new ConfigField<>(
-                                this.api,
-                                field.getType(),
-                                instance,
-                                path,
-                                configKey.comments()
-                        )
+                    configKey.path(),
+                    path -> new ConfigField<>(
+                        this.api,
+                        field.getType(),
+                        instance,
+                        path,
+                        configKey.comments()
+                    )
                 );
 
                 Optional<Method> setter = Arrays.stream(clazz.getMethods())
@@ -104,9 +104,9 @@ public class HACConfigHandler {
                     configField.setSetter(setter.get());
                 } else {
                     this.api.getErrorHandler().getHandler().accept(new NoSuchMethodException(String.format(
-                            "Setter with name '%s' does not exist in class '%s'.",
-                            configKey.setter(),
-                            clazz.getName()
+                        "Setter with name '%s' does not exist in class '%s'.",
+                        configKey.setter(),
+                        clazz.getName()
                     )));
                 }
 
@@ -118,9 +118,9 @@ public class HACConfigHandler {
                     configField.setGetter(getter.get());
                 } else {
                     this.api.getErrorHandler().getHandler().accept(new NoSuchMethodException(String.format(
-                            "Getter with name '%s' does not exist in class '%s'.",
-                            configKey.getter(),
-                            clazz.getName()
+                        "Getter with name '%s' does not exist in class '%s'.",
+                        configKey.getter(),
+                        clazz.getName()
                     )));
                 }
             }

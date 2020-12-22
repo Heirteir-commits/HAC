@@ -20,8 +20,8 @@ public final class PacketEventHandler {
      * identifier instead of .equals.
      */
     private static final Comparator<AbstractPacketEventExecutor<?>> COMPARATOR =
-            Comparator.<AbstractPacketEventExecutor<?>, Priority>comparing(
-                    AbstractPacketEventExecutor::getPriority).thenComparing(AbstractPacketEventExecutor::getIdentifier);
+        Comparator.<AbstractPacketEventExecutor<?>, Priority>comparing(
+            AbstractPacketEventExecutor::getPriority).thenComparing(AbstractPacketEventExecutor::getIdentifier);
 
     /**
      * The executors attached to this handler.
@@ -42,8 +42,8 @@ public final class PacketEventHandler {
      * @param wrappedPacket the wrapped packet
      */
     public void execute(
-            @NotNull final HACPlayer player,
-            @NotNull final Object wrappedPacket
+        @NotNull final HACPlayer player,
+        @NotNull final Object wrappedPacket
     ) {
         for (AbstractPacketEventExecutor<?> executor : this.executors) {
             if (!executor.execute(player, wrappedPacket)) {

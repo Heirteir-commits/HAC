@@ -35,12 +35,12 @@ public final class MutableBox3F {
      * @param maxZ the max z
      */
     public MutableBox3F(
-            final double minX,
-            final double minY,
-            final double minZ,
-            final double maxX,
-            final double maxY,
-            final double maxZ
+        final double minX,
+        final double minY,
+        final double minZ,
+        final double maxX,
+        final double maxY,
+        final double maxZ
     ) {
         this.min = new MutableVector3F(minX, minY, minZ);
         this.max = new MutableVector3F(maxX, maxY, maxZ);
@@ -94,9 +94,9 @@ public final class MutableBox3F {
      * @return the float
      */
     public float calculateXOffset(
-            @NotNull final MutableBox3F other,
-            final float currentOffsetX,
-            final float dx
+        @NotNull final MutableBox3F other,
+        final float currentOffsetX,
+        final float dx
     ) {
         float output = 0;
 
@@ -120,9 +120,9 @@ public final class MutableBox3F {
      * @return the float
      */
     public float calculateYOffset(
-            @NotNull final MutableBox3F other,
-            final float currentOffsetY,
-            final float dy
+        @NotNull final MutableBox3F other,
+        final float currentOffsetY,
+        final float dy
     ) {
         float output = 0;
 
@@ -146,9 +146,9 @@ public final class MutableBox3F {
      * @return the float
      */
     public float calculateZOffset(
-            @NotNull final MutableBox3F other,
-            final float currentOffsetZ,
-            final float dz
+        @NotNull final MutableBox3F other,
+        final float currentOffsetZ,
+        final float dz
     ) {
         float output = 0;
 
@@ -172,9 +172,9 @@ public final class MutableBox3F {
      * @return the mutable box 3 f
      */
     public MutableBox3F addCoord(
-            final float x,
-            final float y,
-            final float z
+        final float x,
+        final float y,
+        final float z
     ) {
         this.min.add(Math.min(x, 0.0F), Math.min(y, 0.0F), Math.min(z, 0.0F));
         this.max.add(Math.max(x, 0.0F), Math.max(y, 0.0F), Math.max(z, 0.0F));
@@ -210,12 +210,13 @@ public final class MutableBox3F {
      * @return the mutable box 3 f
      */
     public MutableBox3F copy() {
-        return new MutableBox3F(this.min.getX(),
-                                this.min.getY(),
-                                this.min.getZ(),
-                                this.max.getX(),
-                                this.max.getY(),
-                                this.max.getZ()
+        return new MutableBox3F(
+            this.min.getX(),
+            this.min.getY(),
+            this.min.getZ(),
+            this.max.getX(),
+            this.max.getY(),
+            this.max.getZ()
         );
     }
 

@@ -44,10 +44,10 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     private boolean success;
 
     protected AbstractProxyPlugin(
-            @NotNull final String baseDirectory,
-            @NotNull final String prefix,
-            @NotNull final String basePackage,
-            @NotNull final Class<T> versionProxyClass
+        @NotNull final String baseDirectory,
+        @NotNull final String prefix,
+        @NotNull final String basePackage,
+        @NotNull final Class<T> versionProxyClass
     ) {
         super(baseDirectory, prefix);
         this.basePackage = basePackage;
@@ -73,9 +73,9 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
             this.proxyEnable();
         } else {
             super.getLog().reportFatalError(() -> String.format(
-                    "No version proxy found for server version '%s'. Jar only contains versions '%s'.",
-                    AbstractProxyPlugin.getServerVersionString(),
-                    Arrays.toString(this.getPackagedVersions().toArray(new String[0]))
+                "No version proxy found for server version '%s'. Jar only contains versions '%s'.",
+                AbstractProxyPlugin.getServerVersionString(),
+                Arrays.toString(this.getPackagedVersions().toArray(new String[0]))
             ), false);
             Bukkit.getPluginManager().disablePlugin(this);
         }
@@ -93,9 +93,10 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         String currentVersion = AbstractProxyPlugin.getServerVersionString();
         if (this.getPackagedVersions().contains(currentVersion)) {
             try {
-                Class<?> clazz = Class.forName(basePackage + "." + currentVersion + ".Proxy",
-                                               true,
-                                               this.getClass().getClassLoader()
+                Class<?> clazz = Class.forName(
+                    basePackage + "." + currentVersion + ".Proxy",
+                    true,
+                    this.getClass().getClassLoader()
                 );
 
                 Object instance = clazz.getConstructor(AbstractHACPlugin.class).newInstance(this);
@@ -116,9 +117,10 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     private Set<String> getPackagedVersions() {
         InputStream in = this.getResource(AbstractProxyPlugin.PACKAGED_VERSIONS_NAME);
 
-        Preconditions.checkNotNull(in,
-                                   "'%s' not located in jar. Please rebuild.",
-                                   AbstractProxyPlugin.PACKAGED_VERSIONS_NAME
+        Preconditions.checkNotNull(
+            in,
+            "'%s' not located in jar. Please rebuild.",
+            AbstractProxyPlugin.PACKAGED_VERSIONS_NAME
         );
 
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();

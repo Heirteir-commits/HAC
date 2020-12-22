@@ -24,10 +24,10 @@ public final class PlayerDataFactory extends AbstractDataFactory<PlayerData> {
      */
     public PlayerDataFactory(@NotNull final HACAPI api) {
         super(
-                api,
-                new PlayerDataAbilitiesExecutor(PlayerDataFactory.IDENTIFIER),
-                new PlayerDataEntityActionExecutor(PlayerDataFactory.IDENTIFIER),
-                new PlayerDataFlyingExecutor(PlayerDataFactory.IDENTIFIER)
+            api,
+            new PlayerDataAbilitiesExecutor(PlayerDataFactory.IDENTIFIER),
+            new PlayerDataEntityActionExecutor(PlayerDataFactory.IDENTIFIER),
+            new PlayerDataFlyingExecutor(PlayerDataFactory.IDENTIFIER)
         );
     }
 

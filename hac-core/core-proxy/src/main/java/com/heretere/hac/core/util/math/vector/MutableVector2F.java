@@ -22,8 +22,8 @@ public final class MutableVector2F {
      * @param y the y
      */
     public MutableVector2F(
-            final double x,
-            final double y
+        final double x,
+        final double y
     ) {
         this((float) x, (float) y);
     }
@@ -35,8 +35,8 @@ public final class MutableVector2F {
      * @param y the y
      */
     public MutableVector2F(
-            final float x,
-            final float y
+        final float x,
+        final float y
     ) {
         this.x = x;
         this.y = y;
@@ -60,8 +60,8 @@ public final class MutableVector2F {
      * @return the mutable vector 2 f
      */
     public MutableVector2F add(
-            final double x,
-            final double y
+        final double x,
+        final double y
     ) {
         return this.add((float) x, (float) y);
     }
@@ -74,8 +74,8 @@ public final class MutableVector2F {
      * @return the mutable vector 2 f
      */
     public MutableVector2F add(
-            final float x,
-            final float y
+        final float x,
+        final float y
     ) {
         this.x += x;
         this.y += y;
@@ -101,8 +101,8 @@ public final class MutableVector2F {
      * @return the mutable vector 2 f
      */
     public MutableVector2F subtract(
-            final double x,
-            final double y
+        final double x,
+        final double y
     ) {
         return this.subtract((float) x, (float) y);
     }
@@ -115,8 +115,8 @@ public final class MutableVector2F {
      * @return the mutable vector 2 f
      */
     public MutableVector2F subtract(
-            final float x,
-            final float y
+        final float x,
+        final float y
     ) {
         this.x -= x;
         this.y -= y;
@@ -142,8 +142,8 @@ public final class MutableVector2F {
      * @return the mutable vector 2 f
      */
     public MutableVector2F set(
-            final double x,
-            final double y
+        final double x,
+        final double y
     ) {
         return this.set((float) x, (float) y);
     }
@@ -156,8 +156,8 @@ public final class MutableVector2F {
      * @return the mutable vector 2 f
      */
     public MutableVector2F set(
-            final float x,
-            final float y
+        final float x,
+        final float y
     ) {
         this.x = x;
         this.y = y;

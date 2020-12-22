@@ -24,8 +24,8 @@ public final class PlayerDataFlyingExecutor extends AbstractPacketEventExecutor<
 
     @Override
     public boolean execute(
-            @NotNull final HACPlayer player,
-            @NotNull final FlyingPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final FlyingPacket packet
     ) {
         player.getDataManager().getData(PlayerData.class).update(packet);
         return true;
@@ -33,8 +33,8 @@ public final class PlayerDataFlyingExecutor extends AbstractPacketEventExecutor<
 
     @Override
     public void onStop(
-            @NotNull final HACPlayer player,
-            @NotNull final FlyingPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final FlyingPacket packet
     ) {
         throw new NotImplementedException("Updater Class.");
     }

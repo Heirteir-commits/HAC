@@ -41,8 +41,8 @@ public final class HACPlayer {
      * @param player the player
      */
     HACPlayer(
-            @NotNull final HACAPI api,
-            @NotNull final Player player
+        @NotNull final HACAPI api,
+        @NotNull final Player player
     ) {
         this.api = api;
 
@@ -61,8 +61,8 @@ public final class HACPlayer {
      * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
      */
     public void runTaskASync(
-            @NotNull final Runnable runnable,
-            @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler
+        @NotNull final Runnable runnable,
+        @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler
     ) {
         this.future = this.future.thenRunAsync(runnable, this.api.getThreadPool().getPool())
                                  .whenCompleteAsync(errorHandler == null ? (msg, ex) -> {

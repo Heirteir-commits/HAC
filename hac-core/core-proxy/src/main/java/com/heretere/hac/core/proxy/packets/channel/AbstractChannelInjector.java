@@ -57,9 +57,9 @@ public abstract class AbstractChannelInjector {
     public void inject(@NotNull final HACPlayer player) {
         this.remove(player);
         this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer()).addBefore(
-                AbstractChannelInjector.AFTER_KEY,
-                AbstractChannelInjector.HANDLER_KEY,
-                new HACChannelHandler(this.parent, player)
+            AbstractChannelInjector.AFTER_KEY,
+            AbstractChannelInjector.HANDLER_KEY,
+            new HACChannelHandler(this.parent, player)
         ));
     }
 
@@ -105,8 +105,8 @@ public abstract class AbstractChannelInjector {
         private final HACPlayer player;
 
         private HACChannelHandler(
-                @NotNull final AbstractHACPlugin parent,
-                @NotNull final HACPlayer player
+            @NotNull final AbstractHACPlugin parent,
+            @NotNull final HACPlayer player
         ) {
             super();
             this.parent = parent;
@@ -115,9 +115,9 @@ public abstract class AbstractChannelInjector {
 
         @Override
         public void write(
-                final ChannelHandlerContext ctx,
-                final Object msg,
-                final ChannelPromise promise
+            final ChannelHandlerContext ctx,
+            final Object msg,
+            final ChannelPromise promise
         ) throws Exception {
             super.write(ctx, msg, promise);
 
@@ -130,8 +130,8 @@ public abstract class AbstractChannelInjector {
 
         @Override
         public void channelRead(
-                final ChannelHandlerContext ctx,
-                final Object msg
+            final ChannelHandlerContext ctx,
+            final Object msg
         ) throws Exception {
             super.channelRead(ctx, msg);
 
@@ -143,15 +143,15 @@ public abstract class AbstractChannelInjector {
         }
 
         private void handle(
-                @NotNull final Object packet,
-                final boolean clientSide
+            @NotNull final Object packet,
+            final boolean clientSide
         ) {
             PacketReferences.PacketReference<?> reference = clientSide
-                    ? HACAPI.getInstance()
-                            .getPacketReferences()
-                            .getClientSide()
-                            .get(packet.getClass())
-                    : HACAPI.getInstance().getPacketReferences().getServerSide().get(packet.getClass());
+                ? HACAPI.getInstance()
+                        .getPacketReferences()
+                        .getClientSide()
+                        .get(packet.getClass())
+                : HACAPI.getInstance().getPacketReferences().getServerSide().get(packet.getClass());
 
             if (reference == null) {
                 return;

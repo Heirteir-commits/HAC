@@ -99,9 +99,10 @@ public final class Log {
     }
 
     private void checkState() {
-        Preconditions.checkState(this.open,
-                                 "Log file hasn't been created. " + "Please have your plugin extend DependencyPlugin "
-                                         + "or call Log.open() before logging messages."
+        Preconditions.checkState(
+            this.open,
+            "Log file hasn't been created. " + "Please have your plugin extend DependencyPlugin "
+                + "or call Log.open() before logging messages."
         );
     }
 
@@ -145,20 +146,21 @@ public final class Log {
      * @param shutdown the shutdown
      */
     public void reportFatalError(
-            @NotNull final Supplier<String> message,
-            final boolean shutdown
+        @NotNull final Supplier<String> message,
+        final boolean shutdown
     ) {
         Iterable<String> header = Splitter.fixedLength(ERROR_WRAP).split(String.format(
-                "'%s' ran into an error that has forced the plugin to stop." + " More information below:",
-                this.parent.getName()
+            "'%s' ran into an error that has forced the plugin to stop." + " More information below:",
+            this.parent.getName()
         ));
         Iterable<String> body = Splitter.fixedLength(ERROR_WRAP).split(ChatColor.stripColor(message.get()));
         String headTail = "&c" + StringUtils.repeat("=", ERROR_WRAP + ERROR_PADDING + 2);
         String headerTail = "&c|" + StringUtils.repeat("=", ERROR_WRAP + ERROR_PADDING) + "|";
 
         this.severe(() -> headTail);
-        header.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line,
-                                                                              ERROR_WRAP + ERROR_PADDING
+        header.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(
+            line,
+            ERROR_WRAP + ERROR_PADDING
         ) + "&c|"));
         this.severe(() -> headerTail);
         body.forEach(line -> this.severe(() -> "&c|&r" + StringUtils.center(line, ERROR_WRAP + ERROR_PADDING) + "&c|"));
@@ -180,8 +182,8 @@ public final class Log {
      * @param shutdown  the shutdown
      */
     public void reportFatalError(
-            @NotNull final Throwable exception,
-            final boolean shutdown
+        @NotNull final Throwable exception,
+        final boolean shutdown
     ) {
         this.severe(exception);
         this.reportFatalError(exception::getMessage, shutdown);
@@ -207,8 +209,8 @@ public final class Log {
         private final String ansiCode;
 
         ChatColorAnsi(
-                @NotNull final String colorCode,
-                @NotNull final String ansiCode
+            @NotNull final String colorCode,
+            @NotNull final String ansiCode
         ) {
             this.colorCode = colorCode;
             this.ansiCode = ansiCode;

@@ -17,16 +17,16 @@ public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecut
      */
     public PlayerDataAbilitiesExecutor(@NotNull final String identifier) {
         super(
-                Priority.PROCESS_1,
-                identifier,
-                HACAPI.getInstance().getPacketReferences().getClientSide().getAbilities()
+            Priority.PROCESS_1,
+            identifier,
+            HACAPI.getInstance().getPacketReferences().getClientSide().getAbilities()
         );
     }
 
     @Override
     public boolean execute(
-            @NotNull final HACPlayer player,
-            @NotNull final AbilitiesPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final AbilitiesPacket packet
     ) {
         player.getDataManager().getData(PlayerData.class).getCurrent().setFlying(packet.isFlying());
         return true;
@@ -34,8 +34,8 @@ public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecut
 
     @Override
     public void onStop(
-            @NotNull final HACPlayer player,
-            @NotNull final AbilitiesPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final AbilitiesPacket packet
     ) {
         throw new NotImplementedException("Updater Class");
     }

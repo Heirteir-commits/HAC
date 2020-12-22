@@ -17,8 +17,8 @@ public final class AbilitiesPacketFactory extends AbstractPacketFactory<Abilitie
 
     @Override
     public AbilitiesPacket create(
-            @NotNull final HACPlayer player,
-            @NotNull final Object packet
+        @NotNull final HACPlayer player,
+        @NotNull final Object packet
     ) {
         PacketPlayInAbilities abilities = (PacketPlayInAbilities) packet;
 

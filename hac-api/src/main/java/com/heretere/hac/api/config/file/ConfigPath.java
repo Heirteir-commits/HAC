@@ -42,10 +42,10 @@ public abstract class ConfigPath {
      * @param comments the comments
      */
     protected ConfigPath(
-            @NotNull final HACAPI api,
-            @NotNull final Type type,
-            @NotNull final String path,
-            @NotNull final String... comments
+        @NotNull final HACAPI api,
+        @NotNull final Type type,
+        @NotNull final String path,
+        @NotNull final String... comments
     ) {
         this.api = api;
         this.type = type;

@@ -47,8 +47,8 @@ public final class HACConfigFile {
      * @param path the path
      */
     public HACConfigFile(
-            @NotNull final HACAPI api,
-            @NotNull final Path path
+        @NotNull final HACAPI api,
+        @NotNull final Path path
     ) {
         this.api = api;
         this.path = path;
@@ -66,9 +66,9 @@ public final class HACConfigFile {
      * @param file          the file
      */
     public HACConfigFile(
-            @NotNull final HACAPI api,
-            @NotNull final HACConfigHandler configHandler,
-            @NotNull final ConfigFile file
+        @NotNull final HACAPI api,
+        @NotNull final HACConfigHandler configHandler,
+        @NotNull final ConfigFile file
     ) {
         this(api, configHandler.getBasePath().resolve(file.value()));
     }

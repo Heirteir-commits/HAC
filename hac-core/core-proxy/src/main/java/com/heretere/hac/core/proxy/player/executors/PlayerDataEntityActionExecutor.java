@@ -21,16 +21,16 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
      */
     public PlayerDataEntityActionExecutor(@NotNull final String identifier) {
         super(
-                Priority.PROCESS_1,
-                identifier,
-                HACAPI.getInstance().getPacketReferences().getClientSide().getEntityAction()
+            Priority.PROCESS_1,
+            identifier,
+            HACAPI.getInstance().getPacketReferences().getClientSide().getEntityAction()
         );
     }
 
     @Override
     public boolean execute(
-            @NotNull final HACPlayer player,
-            @NotNull final EntityActionPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final EntityActionPacket packet
     ) {
         PlayerData data = player.getDataManager().getData(PlayerData.class);
 
@@ -59,8 +59,8 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
 
     @Override
     public void onStop(
-            @NotNull final HACPlayer player,
-            @NotNull final EntityActionPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final EntityActionPacket packet
     ) {
         throw new NotImplementedException("Updater Class.");
     }

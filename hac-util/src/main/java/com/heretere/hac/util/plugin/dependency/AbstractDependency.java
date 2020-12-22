@@ -24,8 +24,8 @@ public abstract class AbstractDependency {
     private final Set<Relocation> relocations;
 
     protected AbstractDependency(
-            @NotNull final AbstractHACPlugin parent,
-            @NotNull final Relocation... relocations
+        @NotNull final AbstractHACPlugin parent,
+        @NotNull final Relocation... relocations
     ) {
         this.parent = parent;
 
@@ -33,8 +33,8 @@ public abstract class AbstractDependency {
     }
 
     protected AbstractDependency(
-            @NotNull final AbstractHACPlugin parent,
-            @NotNull final Collection<Relocation> relocations
+        @NotNull final AbstractHACPlugin parent,
+        @NotNull final Collection<Relocation> relocations
     ) {
         this.parent = parent;
 

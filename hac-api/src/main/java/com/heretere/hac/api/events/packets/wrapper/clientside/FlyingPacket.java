@@ -44,12 +44,12 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @param onGround the on ground
      */
     public FlyingPacket(
-            final double x,
-            final double y,
-            final double z,
-            final double yaw,
-            final double pitch,
-            final boolean onGround
+        final double x,
+        final double y,
+        final double z,
+        final double yaw,
+        final double pitch,
+        final boolean onGround
     ) {
         this.x = x;
         this.y = y;

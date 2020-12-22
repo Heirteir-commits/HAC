@@ -24,8 +24,8 @@ public final class SimulatorFlyingExecutor extends AbstractPacketEventExecutor<F
 
     @Override
     protected boolean execute(
-            @NotNull final HACPlayer player,
-            @NotNull final FlyingPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final FlyingPacket packet
     ) {
         player.getDataManager().getData(Simulator.class).update();
         return true;
@@ -33,8 +33,8 @@ public final class SimulatorFlyingExecutor extends AbstractPacketEventExecutor<F
 
     @Override
     protected void onStop(
-            @NotNull final HACPlayer player,
-            @NotNull final FlyingPacket packet
+        @NotNull final HACPlayer player,
+        @NotNull final FlyingPacket packet
     ) {
         throw new NotImplementedException();
     }

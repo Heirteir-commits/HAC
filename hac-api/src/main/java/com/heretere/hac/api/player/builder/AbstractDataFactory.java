@@ -33,8 +33,8 @@ public abstract class AbstractDataFactory<T> {
      * @param events The instances of {@link AbstractPacketEventExecutor}
      */
     protected AbstractDataFactory(
-            @NotNull final HACAPI api,
-            @NotNull final AbstractPacketEventExecutor<?>... events
+        @NotNull final HACAPI api,
+        @NotNull final AbstractPacketEventExecutor<?>... events
     ) {
         this.api = api;
         this.events = ImmutableSet.copyOf(events);

@@ -45,11 +45,11 @@ public class ConfigField<T> extends ConfigPath {
      * @param comments the comments
      */
     public ConfigField(
-            @NotNull final HACAPI api,
-            @NotNull final Class<T> type,
-            @Nullable final Object instance,
-            @NotNull final String path,
-            @NotNull final String... comments
+        @NotNull final HACAPI api,
+        @NotNull final Class<T> type,
+        @Nullable final Object instance,
+        @NotNull final String path,
+        @NotNull final String... comments
     ) {
         super(api, Type.VALUE, path, comments);
         this.type = type;

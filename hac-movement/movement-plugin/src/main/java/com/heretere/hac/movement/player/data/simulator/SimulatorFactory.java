@@ -23,8 +23,8 @@ public final class SimulatorFactory extends AbstractDataFactory<Simulator> {
      * @param movement the movement plugin
      */
     public SimulatorFactory(
-            @NotNull final HACAPI api,
-            @NotNull final Movement movement
+        @NotNull final HACAPI api,
+        @NotNull final Movement movement
     ) {
         super(api, new SimulatorFlyingExecutor("simulator"));
         this.movement = movement;

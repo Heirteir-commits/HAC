@@ -21,9 +21,9 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
     private final Class<T> wrappedClass;
 
     protected AbstractPacketEventExecutor(
-            @NotNull final Priority priority,
-            @NotNull final String identifier,
-            @NotNull final PacketReferences.PacketReference<T> reference
+        @NotNull final Priority priority,
+        @NotNull final String identifier,
+        @NotNull final PacketReferences.PacketReference<T> reference
     ) {
         this.priority = priority;
         this.identifier = identifier + "_" + reference.getIdentifier();
@@ -38,8 +38,8 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      * @return true if execution was successful
      */
     public final boolean execute(
-            @NotNull final HACPlayer player,
-            @NotNull final Object packet
+        @NotNull final HACPlayer player,
+        @NotNull final Object packet
     ) {
         return this.execute(player, this.wrappedClass.cast(packet));
     }
@@ -51,20 +51,20 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      * @param packet The packet to be passed into the executor
      */
     public final void onStop(
-            @NotNull final HACPlayer player,
-            @NotNull final Object packet
+        @NotNull final HACPlayer player,
+        @NotNull final Object packet
     ) {
         this.onStop(player, this.wrappedClass.cast(packet));
     }
 
     protected abstract boolean execute(
-            @NotNull HACPlayer player,
-            @NotNull T packet
+        @NotNull HACPlayer player,
+        @NotNull T packet
     );
 
     protected abstract void onStop(
-            @NotNull HACPlayer player,
-            @NotNull T packet
+        @NotNull HACPlayer player,
+        @NotNull T packet
     );
 
     /**
