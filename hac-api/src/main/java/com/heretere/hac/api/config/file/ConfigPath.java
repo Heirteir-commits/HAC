@@ -113,7 +113,7 @@ public abstract class ConfigPath {
      */
     public enum Type {
         /**
-         * ConfigSection type.
+         * Section type.
          */
         SECTION,
         /**

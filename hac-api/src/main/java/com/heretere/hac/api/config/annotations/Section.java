@@ -8,11 +8,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The interface ConfigSection.
+ * The interface Section.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConfigSection {
+public @interface Section {
     /**
      * The key of the section in a yaml file.
      *

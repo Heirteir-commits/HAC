@@ -4,9 +4,10 @@ import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.annotations.ConfigFile;
 import com.heretere.hac.api.config.annotations.ConfigKey;
-import com.heretere.hac.api.config.annotations.ConfigSection;
+import com.heretere.hac.api.config.annotations.Section;
 import com.heretere.hac.api.config.file.ConfigField;
 import com.heretere.hac.api.config.file.ConfigPath;
+import com.heretere.hac.api.config.file.ConfigSection;
 import com.heretere.hac.api.config.file.HACConfigFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -68,14 +69,14 @@ public class HACConfigHandler {
 
         Map<String, ConfigPath> configValues = Maps.newHashMap();
 
-        if (clazz.isAnnotationPresent(ConfigSection.class)) {
-            ConfigSection configSection = clazz.getAnnotation(ConfigSection.class);
+        if (clazz.isAnnotationPresent(Section.class)) {
+            Section section = clazz.getAnnotation(Section.class);
             configValues.computeIfAbsent(
-                    configSection.key(),
-                    path -> new com.heretere.hac.api.config.file.ConfigSection(
+                    section.key(),
+                    path -> new ConfigSection(
                             this.api,
                             path,
-                            configSection.comments()
+                            section.comments()
                     )
             );
         }
