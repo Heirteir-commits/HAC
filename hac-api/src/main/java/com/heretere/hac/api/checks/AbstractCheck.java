@@ -47,7 +47,7 @@ public abstract class AbstractCheck<T extends WrappedPacket> extends AbstractPac
      * @return The value of the base identifier.
      */
     public String getBaseIdentifier() {
-        return baseIdentifier;
+        return this.baseIdentifier;
     }
 
     /**

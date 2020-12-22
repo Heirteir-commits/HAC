@@ -2,7 +2,6 @@ package com.heretere.hac.api.config.file;
 
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -28,10 +27,6 @@ public abstract class ConfigPath {
      * All the comments attached to this path.
      */
     private final List<String> comments;
-    /**
-     * The indent levels of this path in a yaml file.
-     */
-    private final int indentLevel;
 
     /**
      * Instantiates a new Config path.
@@ -51,7 +46,6 @@ public abstract class ConfigPath {
         this.type = type;
         this.path = path;
         this.comments = Lists.newArrayList(comments);
-        indentLevel = StringUtils.countMatches(path, ".") * 2;
     }
 
     /**
@@ -60,7 +54,7 @@ public abstract class ConfigPath {
      * @return the path
      */
     public String getPath() {
-        return path;
+        return this.path;
     }
 
     /**
@@ -87,16 +81,7 @@ public abstract class ConfigPath {
      * @return the type
      */
     public Type getType() {
-        return type;
-    }
-
-    /**
-     * Gets indent level.
-     *
-     * @return the indent level
-     */
-    public int getIndentLevel() {
-        return indentLevel;
+        return this.type;
     }
 
     /**

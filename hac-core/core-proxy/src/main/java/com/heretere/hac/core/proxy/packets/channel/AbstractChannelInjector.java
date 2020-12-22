@@ -159,8 +159,8 @@ public abstract class AbstractChannelInjector {
 
             WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
 
-            if (clientSide || ((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == player.getBukkitPlayer()
-                                                                                                .getEntityId()) {
+            if (clientSide || ((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == this.player.getBukkitPlayer()
+                                                                                                     .getEntityId()) {
                 HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket, null);
             }
         }

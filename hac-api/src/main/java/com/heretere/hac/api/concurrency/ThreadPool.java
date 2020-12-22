@@ -28,7 +28,7 @@ public class ThreadPool {
      * @return the {@link ExecutorService}
      */
     public ExecutorService getPool() {
-        return pool;
+        return this.pool;
     }
 
     /**

@@ -177,7 +177,7 @@ public final class HACAPI {
          * @return Consumer currently used for error handling.
          */
         public Consumer<Throwable> getHandler() {
-            return handler;
+            return this.handler;
         }
 
         /**

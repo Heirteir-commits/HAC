@@ -52,7 +52,7 @@ public final class MutableBox3F {
      * @return the min
      */
     public MutableVector3F getMin() {
-        return min;
+        return this.min;
     }
 
     /**
@@ -61,7 +61,7 @@ public final class MutableBox3F {
      * @return the max
      */
     public MutableVector3F getMax() {
-        return max;
+        return this.max;
     }
 
     /**
@@ -221,7 +221,7 @@ public final class MutableBox3F {
     }
 
     /**
-     * Appends the world coords onto the bounding box.
+     * Appends the world coordinates onto the bounding box.
      *
      * @param position the position
      * @return the mutable box 3 f
@@ -234,6 +234,6 @@ public final class MutableBox3F {
 
     @Override
     public String toString() {
-        return "MutableBox3F{" + "min=" + min + ", max=" + max + '}';
+        return "MutableBox3F{" + "min=" + this.min + ", max=" + this.max + '}';
     }
 }

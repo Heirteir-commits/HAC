@@ -32,7 +32,7 @@ public final class Proxy extends CoreVersionProxy {
      */
     public Proxy(@NotNull final AbstractHACPlugin parent) {
         this.parent = parent;
-        channelInjectorProxy = new ChannelInjectorProxy(this.parent);
+        this.channelInjectorProxy = new ChannelInjectorProxy(this.parent);
     }
 
     @Override

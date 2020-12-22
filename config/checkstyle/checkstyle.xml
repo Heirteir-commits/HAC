@@ -165,7 +165,9 @@
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier"/>
-        <module name="RequireThis"/>
+        <module name="RequireThis">
+            <property name="validateOnlyOverlapping" value="false"/>
+        </module>
 
         <!-- Miscellaneous other checks.                   -->
         <!-- See https://checkstyle.org/config_misc.html -->
@@ -173,7 +175,6 @@
         <module name="FinalParameters"/>
         <module name="TodoComment"/>
         <module name="UpperEll"/>
-
     </module>
 
     <module name="SuppressionFilter">

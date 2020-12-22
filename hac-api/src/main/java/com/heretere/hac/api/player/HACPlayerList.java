@@ -96,6 +96,6 @@ public final class HACPlayerList {
      * @return An {@link HACPlayerFactory} instance.
      */
     public HACPlayerFactory getBuilder() {
-        return builder;
+        return this.builder;
     }
 }

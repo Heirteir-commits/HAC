@@ -85,18 +85,18 @@ public final class HACConfigFile {
 
     private void load() {
         try {
-            if (!Files.exists(path)) {
-                Files.createDirectories(path.getParent());
-                Files.createFile(path);
+            if (!Files.exists(this.path)) {
+                Files.createDirectories(this.path.getParent());
+                Files.createFile(this.path);
             }
 
             this.current = Toml.parse(this.path);
 
-            for (String string : current.dottedKeySet(true)) {
-                if (current.isTable(string)) {
+            for (String string : this.current.dottedKeySet(true)) {
+                if (this.current.isTable(string)) {
                     this.entries.put(string, new ConfigSection(this.api, string));
                 } else {
-                    Object value = current.get(string);
+                    Object value = this.current.get(string);
 
                     if (value != null) {
                         ConfigField<?> field = new ConfigField<>(this.api, value.getClass(), null, string);
@@ -137,9 +137,9 @@ public final class HACConfigFile {
     private void addParent(@NotNull final ConfigPath path) {
         String parentPath = StringUtils.substringBeforeLast(path.getPath(), ".");
 
-        if (!parentPath.isEmpty() && (!entries.containsKey(parentPath) || !entries.get(parentPath)
-                                                                                  .getComments()
-                                                                                  .isEmpty())) {
+        if (!parentPath.isEmpty() && (!this.entries.containsKey(parentPath) || !this.entries.get(parentPath)
+                                                                                            .getComments()
+                                                                                            .isEmpty())) {
             this.entries.put(parentPath, new ConfigSection(this.api, parentPath));
         }
     }

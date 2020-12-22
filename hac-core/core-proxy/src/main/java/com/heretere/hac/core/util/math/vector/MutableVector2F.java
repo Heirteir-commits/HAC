@@ -171,7 +171,7 @@ public final class MutableVector2F {
      * @return the x
      */
     public float getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -191,7 +191,7 @@ public final class MutableVector2F {
      * @return the y
      */
     public float getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -207,6 +207,6 @@ public final class MutableVector2F {
 
     @Override
     public String toString() {
-        return "MutableVector2F{" + "x=" + x + ", y=" + y + '}';
+        return "MutableVector2F{" + "x=" + this.x + ", y=" + this.y + '}';
     }
 }

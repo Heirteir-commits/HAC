@@ -130,6 +130,6 @@ public class ConfigField<T> extends ConfigPath {
      * @return the class type
      */
     public Class<T> getClassType() {
-        return type;
+        return this.type;
     }
 }

@@ -137,7 +137,7 @@ public class HACConfigHandler {
     }
 
     private HACConfigFile getConfigFile(@NotNull final ConfigFile path) {
-        return files.computeIfAbsent(path.value(), v -> new HACConfigFile(this.api, this, path));
+        return this.files.computeIfAbsent(path.value(), v -> new HACConfigFile(this.api, this, path));
     }
 
     /**
@@ -146,6 +146,6 @@ public class HACConfigHandler {
      * @return the base path
      */
     public Path getBasePath() {
-        return basePath;
+        return this.basePath;
     }
 }

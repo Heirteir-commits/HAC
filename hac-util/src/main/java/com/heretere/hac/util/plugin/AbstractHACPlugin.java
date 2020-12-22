@@ -101,7 +101,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      * @return The base directory
      */
     public Path getBaseDirectory() {
-        return baseDirectory;
+        return this.baseDirectory;
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      * @return The logger prefix of this plugin
      */
     public String getPrefix() {
-        return prefix;
+        return this.prefix;
     }
 
     /**
@@ -119,6 +119,6 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      * @return The logger delegator.
      */
     public Log getLog() {
-        return log;
+        return this.log;
     }
 }

@@ -28,6 +28,6 @@ public final class AbilitiesPacket implements WrappedPacketIn {
      * @return Whether they are flying or not.
      */
     public boolean isFlying() {
-        return flying;
+        return this.flying;
     }
 }

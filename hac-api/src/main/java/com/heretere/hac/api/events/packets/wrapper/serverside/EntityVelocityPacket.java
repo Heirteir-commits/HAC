@@ -50,7 +50,7 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
      * @return the x
      */
     public double getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -59,7 +59,7 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
      * @return the y
      */
     public double getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -68,6 +68,6 @@ public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
      * @return the z
      */
     public double getZ() {
-        return z;
+        return this.z;
     }
 }

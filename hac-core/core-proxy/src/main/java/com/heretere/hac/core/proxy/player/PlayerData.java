@@ -38,7 +38,7 @@ public final class PlayerData {
      * @param flyingPacket the flying packet
      */
     public void update(@NotNull final FlyingPacket flyingPacket) {
-        this.previous.apply(current);
+        this.previous.apply(this.current);
 
         this.current.getLocation().set(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
 

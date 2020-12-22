@@ -94,7 +94,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         if (this.getPackagedVersions().contains(currentVersion)) {
             try {
                 Class<?> clazz = Class.forName(
-                    basePackage + "." + currentVersion + ".Proxy",
+                    this.basePackage + "." + currentVersion + ".Proxy",
                     true,
                     this.getClass().getClassLoader()
                 );
@@ -154,7 +154,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
      * @return T version proxy instance.
      */
     public T getProxy() {
-        return proxy;
+        return this.proxy;
     }
 }
 

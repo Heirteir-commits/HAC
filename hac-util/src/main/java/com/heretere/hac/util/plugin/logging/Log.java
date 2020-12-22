@@ -95,7 +95,7 @@ public final class Log {
     }
 
     private Supplier<String> toLogMessage(@NotNull final Supplier<String> message) {
-        return () -> ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(parent.getPrefix() + message.get()));
+        return () -> ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(this.parent.getPrefix() + message.get()));
     }
 
     private void checkState() {

@@ -242,7 +242,7 @@ public final class MutableVector3F {
      * @return the x
      */
     public float getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -262,7 +262,7 @@ public final class MutableVector3F {
      * @return the y
      */
     public float getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -282,7 +282,7 @@ public final class MutableVector3F {
      * @return the z
      */
     public float getZ() {
-        return z;
+        return this.z;
     }
 
     /**
@@ -316,7 +316,7 @@ public final class MutableVector3F {
 
     @Override
     public String toString() {
-        return "MutableVector3F{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+        return "MutableVector3F{" + "x=" + this.x + ", y=" + this.y + ", z=" + this.z + '}';
     }
 
 

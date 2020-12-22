@@ -27,7 +27,7 @@ public final class EntityActionPacket implements WrappedPacketIn {
      * @return the action
      */
     public Action getAction() {
-        return action;
+        return this.action;
     }
 
     /**

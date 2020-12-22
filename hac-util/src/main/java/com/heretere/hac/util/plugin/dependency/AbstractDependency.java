@@ -110,6 +110,6 @@ public abstract class AbstractDependency {
      * @return A immutable set of the relocations.
      */
     public Set<Relocation> getRelocations() {
-        return relocations;
+        return this.relocations;
     }
 }

@@ -251,7 +251,7 @@ public final class PacketReferences {
          * @return the identifier
          */
         public String getIdentifier() {
-            return identifier;
+            return this.identifier;
         }
     }
 }

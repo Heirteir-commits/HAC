@@ -65,7 +65,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @return the x
      */
     public double getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -74,7 +74,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @return the y
      */
     public double getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -83,7 +83,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @return the z
      */
     public double getZ() {
-        return z;
+        return this.z;
     }
 
     /**
@@ -92,7 +92,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @return the yaw
      */
     public double getYaw() {
-        return yaw;
+        return this.yaw;
     }
 
     /**
@@ -101,7 +101,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @return the pitch
      */
     public double getPitch() {
-        return pitch;
+        return this.pitch;
     }
 
     /**
@@ -110,7 +110,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      * @return the boolean
      */
     public boolean isOnGround() {
-        return onGround;
+        return this.onGround;
     }
 }
 

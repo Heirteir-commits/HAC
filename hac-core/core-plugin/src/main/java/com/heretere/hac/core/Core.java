@@ -64,7 +64,10 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
         HACAPI.getInstance().getErrorHandler().setHandler(ex -> this.getLog().severe(ex));
 
         this.getLog().info(() -> "Registering player data builder.");
-        HACAPI.getInstance().getHacPlayerList().getBuilder().registerDataBuilder(PlayerData.class, playerDataFactory);
+        HACAPI.getInstance()
+              .getHacPlayerList()
+              .getBuilder()
+              .registerDataBuilder(PlayerData.class, this.playerDataFactory);
 
         this.hacPlayerListUpdater.load();
         super.getProxy().baseLoad();

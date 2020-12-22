@@ -97,6 +97,6 @@ public final class HACPlayer {
      * @return The Data Manager.
      */
     public DataManager getDataManager() {
-        return dataManager;
+        return this.dataManager;
     }
 }

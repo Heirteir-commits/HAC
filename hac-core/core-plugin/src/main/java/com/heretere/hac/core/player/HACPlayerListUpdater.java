@@ -34,7 +34,7 @@ public final class HACPlayerListUpdater implements Listener {
      * Load.
      */
     public void load() {
-        Bukkit.getPluginManager().registerEvents(this, core);
+        Bukkit.getPluginManager().registerEvents(this, this.core);
         Bukkit.getOnlinePlayers().forEach(this::addPlayer);
     }
 

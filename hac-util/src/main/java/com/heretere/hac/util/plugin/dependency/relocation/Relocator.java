@@ -77,8 +77,8 @@ public final class Relocator {
 
         if (success) {
             try {
-                Class<?> jarRelocatorClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.JarRelocator");
-                Class<?> relocationClass = isolatedClassLoader.loadClass("me.lucko.jarrelocator.Relocation");
+                Class<?> jarRelocatorClass = this.isolatedClassLoader.loadClass("me.lucko.jarrelocator.JarRelocator");
+                Class<?> relocationClass = this.isolatedClassLoader.loadClass("me.lucko.jarrelocator.Relocation");
 
                 this.jarRelocatorConstructor = jarRelocatorClass.getConstructor(
                     File.class,
@@ -87,7 +87,7 @@ public final class Relocator {
                 );
                 this.jarRelocatorRunMethod = jarRelocatorClass.getMethod("run");
 
-                relocationConstructor = relocationClass.getConstructor(
+                this.relocationConstructor = relocationClass.getConstructor(
                     String.class,
                     String.class,
                     Collection.class,
@@ -111,7 +111,7 @@ public final class Relocator {
             Set<Object> rules = Sets.newLinkedHashSet();
 
             for (Relocation relocation : dependency.getRelocations()) {
-                rules.add(relocationConstructor.newInstance(
+                rules.add(this.relocationConstructor.newInstance(
                     StringUtils.replace(relocation.from(), "|", "."),
                     StringUtils.replace(relocation.to(), "|", "."),
                     Lists.newArrayList(),
@@ -119,7 +119,7 @@ public final class Relocator {
                 ));
             }
 
-            jarRelocatorRunMethod.invoke(jarRelocatorConstructor.newInstance(
+            this.jarRelocatorRunMethod.invoke(this.jarRelocatorConstructor.newInstance(
                 dependency.getDownloadLocation().toFile(),
                 dependency.getRelocatedLocation().toFile(),
                 rules
