@@ -16,9 +16,9 @@ public final class SingleLineFormatter extends Formatter {
     private static final Pattern STRIP_COLOR = Pattern.compile("\u001b\\[[^m]*+");
 
     /**
-     * Format LogRecord to string
-     * @param record the LogRecord
-     * @return the string formatted
+     * Format LogRecord to string.
+     * @param record the LogRecord.
+     * @return the string formatted.
      */
     @Override
     public String format(@NotNull final LogRecord record) {
