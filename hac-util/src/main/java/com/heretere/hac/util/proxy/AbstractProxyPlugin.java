@@ -54,6 +54,10 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         this.versionProxyClass = versionProxyClass;
     }
 
+    /**
+     * Get server version as string.
+     * @return server version
+    */
     private static String getServerVersionString() {
         return Iterables.get(Splitter.on('v').split(Bukkit.getServer().getClass().getPackage().getName()), 1);
     }
