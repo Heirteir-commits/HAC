@@ -48,6 +48,11 @@ public final class Proxy extends CoreVersionProxy {
         packetReferences.getServerSide().getEntityVelocity().register(new EntityVelocityPacketFactory(this.parent));
     }
 
+    /**
+     * Get the channel injector.
+     *
+     * @return the channel injector
+     */
     @Override
     public AbstractChannelInjector getChannelInjector() {
         return this.channelInjectorProxy;
