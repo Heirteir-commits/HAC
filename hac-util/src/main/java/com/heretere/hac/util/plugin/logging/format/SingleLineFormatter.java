@@ -19,7 +19,7 @@ public final class SingleLineFormatter extends Formatter {
      * Format LogRecord to string.
      *
      * @param record the LogRecord
-     * @return the string formatted.
+     * @return the string formatted
      */
     @Override
     public String format(@NotNull final LogRecord record) {
