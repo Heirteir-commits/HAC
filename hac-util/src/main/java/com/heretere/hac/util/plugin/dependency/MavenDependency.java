@@ -53,7 +53,7 @@ public final class MavenDependency extends AbstractDependency {
         @NotNull final Set<Relocation> relocations
     ) {
         super(parent, relocations);
-        this.groupId = groupId;
+        this.groupId = StringUtils.replace(groupId, "|", ".");
         this.artifactId = artifactId;
         this.version = version;
         this.repoURL = repoURL + (StringUtils.endsWith(repoURL, "/") ? "" : "/");

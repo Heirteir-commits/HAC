@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * This class handles loading some dependencies that are needed for loading other dependencies, but not
@@ -22,7 +23,7 @@ public final class IsolatedClassLoader extends URLClassLoader {
      * @param urls the urls
      */
     public IsolatedClassLoader(@NotNull final URL... urls) {
-        super(urls, ClassLoader.getSystemClassLoader().getParent());
+        super(Objects.requireNonNull(urls), ClassLoader.getSystemClassLoader().getParent());
     }
 
     @Override

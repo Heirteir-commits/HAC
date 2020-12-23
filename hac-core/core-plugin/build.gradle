@@ -44,9 +44,11 @@ shadowJar {
         relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
         relocate 'org.bstats.bukkit', 'com.heretere.hac.core.libs.bstats.bukkit'
         relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
+        relocate 'org.antlr', 'com.heretere.hac.core.libs.antlr'
+        relocate 'org.tomlj', 'com.heretere.hac.core.libs.tomlj'
 
         archiveFileName = 'HAC.Core.jar'
-        destinationDirectory = SHADOW_JAR_OUTPUT_DIR;
+        destinationDirectory = SHADOW_JAR_OUTPUT_DIR
     }
     doLast {
         /* Delete packaged versions because we only need them at compile time */

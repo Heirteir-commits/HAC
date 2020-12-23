@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +30,7 @@ public final class Relocator {
     /**
      * Isolated class loader to stop from polluting the class path with unneeded packages.
      */
-    private final IsolatedClassLoader isolatedClassLoader;
+    private IsolatedClassLoader isolatedClassLoader;
 
     /**
      * The constructor of the jar relocator.
@@ -54,7 +56,7 @@ public final class Relocator {
         @NotNull final AbstractHACPlugin parent,
         @NotNull final DependencyLoader dependencyLoader
     ) {
-        this.isolatedClassLoader = new IsolatedClassLoader();
+        AccessController.doPrivileged((PrivilegedAction<?>) () -> this.isolatedClassLoader = new IsolatedClassLoader());
 
         Set<AbstractDependency> dependencies = dependencyLoader.getDependencies(Relocator.class);
 

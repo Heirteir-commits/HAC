@@ -111,7 +111,7 @@ public final class Log {
      *
      * @param message the message
      */
-    public void info(@NotNull final Supplier<String> message) {
+    public synchronized void info(@NotNull final Supplier<String> message) {
         this.checkState();
 
         this.parent.getLogger().info(this.toLogMessage(message));
@@ -122,7 +122,7 @@ public final class Log {
      *
      * @param message the message
      */
-    public void severe(@NotNull final Supplier<String> message) {
+    public synchronized void severe(@NotNull final Supplier<String> message) {
         this.checkState();
 
         this.parent.getLogger().severe(this.toLogMessage(message));
@@ -133,7 +133,7 @@ public final class Log {
      *
      * @param exception the exception
      */
-    public void severe(@NotNull final Throwable exception) {
+    public synchronized void severe(@NotNull final Throwable exception) {
         this.checkState();
 
         this.parent.getLogger().log(Level.SEVERE, exception, this.toLogMessage(exception::getMessage));
@@ -145,7 +145,7 @@ public final class Log {
      * @param message  the message
      * @param shutdown the shutdown
      */
-    public void reportFatalError(
+    public synchronized void reportFatalError(
         @NotNull final Supplier<String> message,
         final boolean shutdown
     ) {
@@ -181,7 +181,7 @@ public final class Log {
      * @param exception the exception
      * @param shutdown  the shutdown
      */
-    public void reportFatalError(
+    public synchronized void reportFatalError(
         @NotNull final Throwable exception,
         final boolean shutdown
     ) {

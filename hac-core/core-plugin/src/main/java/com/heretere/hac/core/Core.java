@@ -19,13 +19,19 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 @ApiVersion(ApiVersion.Target.v1_13)
 
 /* Dependencies */
-@Maven(groupId = "org.bstats",
+@Maven(groupId = "org|bstats",
        artifactId = "bstats-bukkit",
        version = "1.7",
        repoUrl = "https://repo.codemc.org/repository/maven-public/")
-@Maven(groupId = "com.flowpowered", artifactId = "flow-math", version = "1.0.3")
+@Maven(groupId = "com|flowpowered", artifactId = "flow-math", version = "1.0.3")
+@Maven(groupId = "org|tomlj", artifactId = "tomlj", version = "1.0.0")
+@Maven(groupId = "org|antlr", artifactId = "antlr4-runtime", version = "4.7.2")
+
+/* Relocations */
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
+@Relocation(from = "org|tomlj", to = "com|heretere|hac|core|libs|tomlj")
+@Relocation(from = "org|antlr", to = "com|heretere|hac|core|libs|antlr")
 public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.

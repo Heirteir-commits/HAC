@@ -13,7 +13,7 @@ public final class SingleLineFormatter extends Formatter {
     /**
      * This is used to remove ansi colors from the outputted text.
      */
-    private static final Pattern STRIP_COLOR = Pattern.compile("\u001b\\[[^m]*+");
+    private static final Pattern STRIP_COLOR = Pattern.compile("\\x1b\\[[0-9;]*m");
 
     @Override
     public String format(@NotNull final LogRecord record) {

@@ -56,8 +56,9 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
 
     /**
      * Get server version as string.
+     *
      * @return server version
-    */
+     */
     private static String getServerVersionString() {
         return Iterables.get(Splitter.on('v').split(Bukkit.getServer().getClass().getPackage().getName()), 1);
     }
@@ -130,6 +131,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             reader.lines().filter(line -> !line.trim().isEmpty()).forEach(line -> builder.add(line.trim()));
+            in.close();
         } catch (IOException e) {
             super.getLog().severe(e);
         }
