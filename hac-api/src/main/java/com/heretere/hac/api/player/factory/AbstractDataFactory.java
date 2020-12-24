@@ -1,4 +1,4 @@
-package com.heretere.hac.api.player.builder;
+package com.heretere.hac.api.player.factory;
 
 import com.google.common.collect.ImmutableSet;
 import com.heretere.hac.api.HACAPI;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * This class is used to build dynamic player data at runtime. After created an instance it needs to be registered
  * by using {@link com.heretere.hac.api.player.HACPlayerFactory#registerDataBuilder(Class, AbstractDataFactory)}.
  * You can get the {@link com.heretere.hac.api.player.HACPlayerFactory} from
- * {@link com.heretere.hac.api.player.HACPlayerList#getBuilder()}.
+ * {@link com.heretere.hac.api.player.HACPlayerList#getFactory()}.
  *
  * @param <T> The Data class that this builder creates.
  */
@@ -18,12 +18,12 @@ public abstract class AbstractDataFactory<T> {
     /**
      * The HACAPI reference.
      */
-    private final HACAPI api;
+    private final @NotNull HACAPI api;
 
     /**
      * These are automatically registered and unregistered by {@link com.heretere.hac.api.player.HACPlayerFactory}.
      */
-    private final ImmutableSet<AbstractPacketEventExecutor<?>> events;
+    private final @NotNull ImmutableSet<AbstractPacketEventExecutor<?>> events;
 
     /**
      * You can include a vararg set of {@link AbstractPacketEventExecutor} these will be
@@ -33,8 +33,8 @@ public abstract class AbstractDataFactory<T> {
      * @param events The instances of {@link AbstractPacketEventExecutor}
      */
     protected AbstractDataFactory(
-        @NotNull final HACAPI api,
-        @NotNull final AbstractPacketEventExecutor<?>... events
+        final @NotNull HACAPI api,
+        final @NotNull AbstractPacketEventExecutor<?>... events
     ) {
         this.api = api;
         this.events = ImmutableSet.copyOf(events);
@@ -47,7 +47,7 @@ public abstract class AbstractDataFactory<T> {
      * @param player The HACPlayer instance.
      * @return A built t data object.
      */
-    public abstract T build(@NotNull HACPlayer player);
+    public abstract @NotNull T build(@NotNull HACPlayer player);
 
 
     /**
@@ -71,7 +71,7 @@ public abstract class AbstractDataFactory<T> {
      *
      * @return An {@link ImmutableSet} of the events linked by this builder.
      */
-    public ImmutableSet<AbstractPacketEventExecutor<?>> getEvents() {
+    public @NotNull ImmutableSet<AbstractPacketEventExecutor<?>> getEvents() {
         return this.events;
     }
 }

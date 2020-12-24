@@ -12,6 +12,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 /* Plugin */
 @Plugin(name = "HAC-Core", version = "0.0.1")
@@ -43,11 +44,11 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
     /**
      * The class responsible for updating the HACPlayerList in the api.
      */
-    private HACPlayerListUpdater hacPlayerListUpdater;
+    private @Nullable HACPlayerListUpdater hacPlayerListUpdater;
     /**
      * The factory responsible for creating new PlayerData instances for each HACPlayer.
      */
-    private PlayerDataFactory playerDataFactory;
+    private @Nullable PlayerDataFactory playerDataFactory;
 
     /**
      * Instantiates core.
@@ -64,6 +65,13 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
 
     @Override
     public void proxyEnable() {
+        if (this.hacPlayerListUpdater == null || this.playerDataFactory == null) {
+            super.getLog()
+                 .reportFatalError(() -> "HAC failed to start correctly. Please look at the latest.log to determine " +
+                     "the issue.", true);
+            return;
+        }
+
         HACAPI.getInstance().getConfigHandler().loadConfigClass(this);
         new Metrics(this, Core.BSTATS_ID);
 
@@ -72,7 +80,7 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
         this.getLog().info(() -> "Registering player data builder.");
         HACAPI.getInstance()
               .getHacPlayerList()
-              .getBuilder()
+              .getFactory()
               .registerDataBuilder(PlayerData.class, this.playerDataFactory);
 
         this.hacPlayerListUpdater.load();
@@ -81,12 +89,16 @@ public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
 
     @Override
     public void proxyDisable() {
+        if (this.hacPlayerListUpdater == null || this.playerDataFactory == null) {
+            return;
+        }
+
         super.getProxy().baseUnload();
 
         this.hacPlayerListUpdater.unload();
 
         this.getLog().info(() -> "Unregistering player data builder.");
-        HACAPI.getInstance().getHacPlayerList().getBuilder().unregisterDataBuilder(PlayerData.class);
+        HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(PlayerData.class);
 
         HACAPI.getInstance().unload();
     }

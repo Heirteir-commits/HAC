@@ -58,7 +58,7 @@ public final class MutableVector3F {
      * @param other the other
      * @return the mutable vector 3 f
      */
-    public MutableVector3F add(@NotNull final MutableVector3F other) {
+    public MutableVector3F add(final @NotNull MutableVector3F other) {
         return this.add(other.x, other.y, other.z);
     }
 
@@ -104,7 +104,7 @@ public final class MutableVector3F {
      * @param other the other
      * @return the mutable vector 3 f
      */
-    public MutableVector3F subtract(@NotNull final MutableVector3F other) {
+    public MutableVector3F subtract(final @NotNull MutableVector3F other) {
         return this.subtract(other.x, other.y, other.z);
     }
 
@@ -150,7 +150,7 @@ public final class MutableVector3F {
      * @param other the other
      * @return the mutable vector 3 f
      */
-    public MutableVector3F mul(@NotNull final MutableVector3F other) {
+    public MutableVector3F mul(final @NotNull MutableVector3F other) {
         return this.mul(other.x, other.y, other.z);
     }
 
@@ -196,7 +196,7 @@ public final class MutableVector3F {
      * @param other the other
      * @return the mutable vector 3 f
      */
-    public MutableVector3F set(@NotNull final MutableVector3F other) {
+    public MutableVector3F set(final @NotNull MutableVector3F other) {
         return this.set(other.x, other.y, other.z);
     }
 

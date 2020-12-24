@@ -11,12 +11,12 @@ public abstract class AbstractCheck<T extends WrappedPacket> extends AbstractPac
     /**
      * Base identifier I used for sorting the execution order. This value is appended onto the parent identifier.
      */
-    private final String baseIdentifier;
+    private final @NotNull String baseIdentifier;
 
     protected AbstractCheck(
-        @NotNull final Priority priority,
-        @NotNull final String identifier,
-        @NotNull final PacketReferences.PacketReference<T> reference
+        final @NotNull Priority priority,
+        final @NotNull String identifier,
+        final @NotNull PacketReferences.PacketReference<T> reference
     ) {
         super(priority, identifier, reference);
         this.baseIdentifier = identifier;
@@ -24,8 +24,8 @@ public abstract class AbstractCheck<T extends WrappedPacket> extends AbstractPac
 
     @Override
     public final boolean execute(
-        @NotNull final HACPlayer player,
-        @NotNull final T packet
+        final @NotNull HACPlayer player,
+        final @NotNull T packet
     ) {
         return !this.isEnabled() || this.check(player, packet);
     }
@@ -46,7 +46,7 @@ public abstract class AbstractCheck<T extends WrappedPacket> extends AbstractPac
      *
      * @return The value of the base identifier.
      */
-    public String getBaseIdentifier() {
+    public @NotNull String getBaseIdentifier() {
         return this.baseIdentifier;
     }
 

@@ -20,19 +20,19 @@ public final class MavenDependency extends AbstractDependency {
     /**
      * The group id.
      */
-    private final String groupId;
+    private final @NotNull String groupId;
     /**
      * The artifact id.
      */
-    private final String artifactId;
+    private final @NotNull String artifactId;
     /**
      * The version.
      */
-    private final String version;
+    private final @NotNull String version;
     /**
      * The repo url.
      */
-    private final String repoURL;
+    private final @NotNull String repoURL;
 
     /**
      * Instantiates a new Maven dependency.
@@ -45,12 +45,12 @@ public final class MavenDependency extends AbstractDependency {
      * @param relocations the relocations
      */
     public MavenDependency(
-        @NotNull final AbstractHACPlugin parent,
-        @NotNull final String groupId,
-        @NotNull final String artifactId,
-        @NotNull final String version,
-        @NotNull final String repoURL,
-        @NotNull final Set<Relocation> relocations
+        final @NotNull AbstractHACPlugin parent,
+        final @NotNull String groupId,
+        final @NotNull String artifactId,
+        final @NotNull String version,
+        final @NotNull String repoURL,
+        final @NotNull Set<Relocation> relocations
     ) {
         super(parent, relocations);
         this.groupId = StringUtils.replace(groupId, "|", ".");
@@ -67,9 +67,9 @@ public final class MavenDependency extends AbstractDependency {
      * @param relocations the relocations
      */
     public MavenDependency(
-        @NotNull final AbstractHACPlugin parent,
-        @NotNull final Maven maven,
-        @NotNull final Set<Relocation> relocations
+        final @NotNull AbstractHACPlugin parent,
+        final @NotNull Maven maven,
+        final @NotNull Set<Relocation> relocations
     ) {
         this(parent, maven.groupId(), maven.artifactId(), maven.version(), maven.repoUrl(), relocations);
     }
@@ -85,22 +85,22 @@ public final class MavenDependency extends AbstractDependency {
     }
 
     @Override
-    public Path getDownloadLocation() {
+    public @NotNull Path getDownloadLocation() {
         return super.getParent().getBaseDirectory().resolve("dependencies").resolve(this.getName() + ".jar");
     }
 
     @Override
-    public Path getRelocatedLocation() {
+    public @NotNull Path getRelocatedLocation() {
         return super.getParent().getBaseDirectory().resolve("dependencies").resolve(this.getName() + "-relocated.jar");
     }
 
     @Override
-    public Optional<URL> getManualURL() {
+    public @NotNull Optional<URL> getManualURL() {
         return this.getDownloadURL();
     }
 
     @Override
-    public Optional<URL> getDownloadURL() {
+    public @NotNull Optional<URL> getDownloadURL() {
         URL url;
 
         try {
@@ -121,7 +121,7 @@ public final class MavenDependency extends AbstractDependency {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return this.artifactId + "-" + this.version;
     }
 }

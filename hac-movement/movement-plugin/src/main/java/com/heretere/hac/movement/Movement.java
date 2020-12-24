@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The type Movement.
@@ -23,27 +24,35 @@ public final class Movement extends AbstractProxyPlugin<AbstractMovementVersionP
     /**
      * The factory responsible for attaching a simulator to each HACPlayer.
      */
-    private final SimulatorFactory simulatorFactory;
+    private @Nullable SimulatorFactory simulatorFactory;
 
     /**
      * The entry point for the HAC movement module.
      */
     public Movement() {
         super("HAC", "Movement", "com.heretere.hac.movement.proxy.versions", AbstractMovementVersionProxy.class);
-        this.simulatorFactory = new SimulatorFactory(HACAPI.getInstance(), this);
 
     }
 
     @Override
     public void proxyLoad() {
-        //not used
+        this.simulatorFactory = new SimulatorFactory(HACAPI.getInstance(), this);
     }
 
     @Override
     public void proxyEnable() {
+        if (this.simulatorFactory == null) {
+            super.getLog()
+                 .reportFatalError(
+                     () -> "HAC didn't start correctly please check the latest.log for more info.",
+                     true
+                 );
+            return;
+        }
+
         HACAPI.getInstance()
               .getHacPlayerList()
-              .getBuilder()
+              .getFactory()
               .registerDataBuilder(Simulator.class, this.simulatorFactory);
 
         super.getProxy().baseLoad();
@@ -52,6 +61,6 @@ public final class Movement extends AbstractProxyPlugin<AbstractMovementVersionP
     @Override
     public void proxyDisable() {
         super.getProxy().baseUnload();
-        HACAPI.getInstance().getHacPlayerList().getBuilder().unregisterDataBuilder(Simulator.class);
+        HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(Simulator.class);
     }
 }

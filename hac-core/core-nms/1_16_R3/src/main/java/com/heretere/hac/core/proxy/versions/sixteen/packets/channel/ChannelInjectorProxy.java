@@ -13,12 +13,12 @@ public final class ChannelInjectorProxy extends AbstractChannelInjector {
      *
      * @param parent the parent plugin
      */
-    public ChannelInjectorProxy(@NotNull final AbstractHACPlugin parent) {
+    public ChannelInjectorProxy(final @NotNull AbstractHACPlugin parent) {
         super(parent);
     }
 
     @Override
-    protected ChannelPipeline getPipeline(@NotNull final Player player) {
+    protected @NotNull ChannelPipeline getPipeline(final @NotNull Player player) {
         return ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel.pipeline();
     }
 }

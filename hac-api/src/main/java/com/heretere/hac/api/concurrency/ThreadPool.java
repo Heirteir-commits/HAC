@@ -1,6 +1,7 @@
 package com.heretere.hac.api.concurrency;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,7 +14,7 @@ public class ThreadPool {
     /**
      * The executor service reference.
      */
-    private final ExecutorService pool;
+    private final @NotNull ExecutorService pool;
 
     /**
      * Instantiates a new Thread pool.
@@ -27,7 +28,7 @@ public class ThreadPool {
      *
      * @return the {@link ExecutorService}
      */
-    public ExecutorService getPool() {
+    public @NotNull ExecutorService getPool() {
         return this.pool;
     }
 

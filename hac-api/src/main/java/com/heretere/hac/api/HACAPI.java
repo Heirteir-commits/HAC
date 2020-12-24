@@ -9,6 +9,7 @@ import com.heretere.hac.api.player.HACPlayerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -20,31 +21,31 @@ public final class HACAPI {
     /**
      * The singleton instance.
      */
-    private static HACAPI instance;
+    private static @Nullable HACAPI instance;
     /**
      * The Config Handler instance.
      */
-    private final HACConfigHandler configHandler;
+    private final @NotNull HACConfigHandler configHandler;
     /**
      * The Event Manager instance.
      */
-    private final AsyncPacketEventManager eventManager;
+    private final @NotNull AsyncPacketEventManager eventManager;
     /**
      * The ThreadPool instance.
      */
-    private final ThreadPool threadPool;
+    private final @NotNull ThreadPool threadPool;
     /**
      * The player list instance.
      */
-    private final HACPlayerList hacPlayerList;
+    private final @NotNull HACPlayerList hacPlayerList;
     /**
      * The error handler instance.
      */
-    private final ErrorHandler errorHandler;
+    private final @NotNull ErrorHandler errorHandler;
     /**
      * The packet references instance.
      */
-    private final PacketReferences packetReferences;
+    private final @NotNull PacketReferences packetReferences;
     /**
      * Whether or not the api has been loaded.
      */
@@ -68,7 +69,7 @@ public final class HACAPI {
      *
      * @return The API instance.
      */
-    public static HACAPI getInstance() {
+    public static @NotNull HACAPI getInstance() {
         if (HACAPI.instance == null) {
             instance = new HACAPI();
         }
@@ -99,7 +100,7 @@ public final class HACAPI {
      *
      * @return the config handler
      */
-    public HACConfigHandler getConfigHandler() {
+    public @NotNull HACConfigHandler getConfigHandler() {
         this.checkLoaded();
         return this.configHandler;
     }
@@ -109,7 +110,7 @@ public final class HACAPI {
      *
      * @return Global async event manager for HAC.
      */
-    public AsyncPacketEventManager getEventManager() {
+    public @NotNull AsyncPacketEventManager getEventManager() {
         this.checkLoaded();
         return this.eventManager;
     }
@@ -120,7 +121,7 @@ public final class HACAPI {
      *
      * @return By Default a Cached Thread Pool.
      */
-    public ThreadPool getThreadPool() {
+    public @NotNull ThreadPool getThreadPool() {
         this.checkLoaded();
         return this.threadPool;
     }
@@ -131,7 +132,7 @@ public final class HACAPI {
      *
      * @return All HACPlayer instances registered by HAC.
      */
-    public HACPlayerList getHacPlayerList() {
+    public @NotNull HACPlayerList getHacPlayerList() {
         this.checkLoaded();
         return this.hacPlayerList;
     }
@@ -142,7 +143,7 @@ public final class HACAPI {
      *
      * @return The ErrorHandler for the API.
      */
-    public ErrorHandler getErrorHandler() {
+    public @NotNull ErrorHandler getErrorHandler() {
         return this.errorHandler;
     }
 
@@ -151,7 +152,7 @@ public final class HACAPI {
      *
      * @return the packet references
      */
-    public PacketReferences getPacketReferences() {
+    public @NotNull PacketReferences getPacketReferences() {
         this.checkLoaded();
         return this.packetReferences;
     }
@@ -164,7 +165,7 @@ public final class HACAPI {
         /**
          * The handler that errors are passed to.
          */
-        private Consumer<Throwable> handler;
+        private @NotNull Consumer<Throwable> handler;
 
         private ErrorHandler() {
             Plugin plugin = JavaPlugin.getProvidingPlugin(ErrorHandler.class);
@@ -176,7 +177,7 @@ public final class HACAPI {
          *
          * @return Consumer currently used for error handling.
          */
-        public Consumer<Throwable> getHandler() {
+        public @NotNull Consumer<Throwable> getHandler() {
             return this.handler;
         }
 
@@ -185,7 +186,7 @@ public final class HACAPI {
          *
          * @param handler The new error handling consumer.
          */
-        public void setHandler(@NotNull final Consumer<Throwable> handler) {
+        public void setHandler(final @NotNull Consumer<Throwable> handler) {
             this.handler = handler;
         }
     }

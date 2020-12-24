@@ -15,19 +15,22 @@ public final class PlayerData {
     /**
      * The current data object this player data represents.
      */
-    private final Data current;
+    private final @NotNull Data current;
     /**
      * The data from the previous tick.
      */
-    private final Data previous;
+    private final @NotNull Data previous;
 
     /**
      * Instantiates a new Player data.
      *
      * @param player the player
      */
-    protected PlayerData(@NotNull final HACPlayer player) {
-        Player bukkitPlayer = player.getBukkitPlayer();
+    public PlayerData(final @NotNull HACPlayer player) {
+        Player bukkitPlayer = player.getBukkitPlayer().orElse(null);
+
+        assert bukkitPlayer != null;
+
         this.current = new Data(bukkitPlayer);
         this.previous = new Data(bukkitPlayer);
     }
@@ -37,7 +40,7 @@ public final class PlayerData {
      *
      * @param flyingPacket the flying packet
      */
-    public void update(@NotNull final FlyingPacket flyingPacket) {
+    public void update(final @NotNull FlyingPacket flyingPacket) {
         this.previous.apply(this.current);
 
         this.current.getLocation().set(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
@@ -61,7 +64,7 @@ public final class PlayerData {
      *
      * @return the current
      */
-    public Data getCurrent() {
+    public @NotNull Data getCurrent() {
         return this.current;
     }
 
@@ -70,7 +73,7 @@ public final class PlayerData {
      *
      * @return the previous
      */
-    public Data getPrevious() {
+    public @NotNull Data getPrevious() {
         return this.previous;
     }
 
@@ -84,15 +87,15 @@ public final class PlayerData {
         /**
          * The player's location.
          */
-        private final MutableVector3F location;
+        private final @NotNull MutableVector3F location;
         /**
          * The player's velocity.
          */
-        private final MutableVector3F velocity;
+        private final @NotNull MutableVector3F velocity;
         /**
          * The player's direction yaw being x and pitch being y.
          */
-        private final MutableVector2F direction;
+        private final @NotNull MutableVector2F direction;
 
         /**
          * Whether or not the player say's they're on the ground.
@@ -120,7 +123,7 @@ public final class PlayerData {
          *
          * @param player the bukkit player
          */
-        public Data(@NotNull final Player player) {
+        public Data(final @NotNull Player player) {
             this.location = new MutableVector3F(
                 player.getLocation().getX(),
                 player.getLocation().getY(),
@@ -143,7 +146,7 @@ public final class PlayerData {
          *
          * @param other Data
          */
-        public void apply(@NotNull final Data other) {
+        public void apply(final @NotNull Data other) {
             this.location.set(other.location);
             this.velocity.set(other.velocity);
             this.direction.set(other.direction);
@@ -160,7 +163,7 @@ public final class PlayerData {
          *
          * @return the location
          */
-        public MutableVector3F getLocation() {
+        public @NotNull MutableVector3F getLocation() {
             return this.location;
         }
 
@@ -184,7 +187,7 @@ public final class PlayerData {
          *
          * @return the velocity
          */
-        public MutableVector3F getVelocity() {
+        public @NotNull MutableVector3F getVelocity() {
             return this.velocity;
         }
 
@@ -208,7 +211,7 @@ public final class PlayerData {
          *
          * @return the direction
          */
-        public MutableVector2F getDirection() {
+        public @NotNull MutableVector2F getDirection() {
             return this.direction;
         }
 

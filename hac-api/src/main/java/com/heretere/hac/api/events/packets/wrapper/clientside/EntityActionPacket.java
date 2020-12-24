@@ -10,14 +10,14 @@ public final class EntityActionPacket implements WrappedPacketIn {
     /**
      * The action of this packet.
      */
-    private final Action action;
+    private final @NotNull Action action;
 
     /**
      * Instantiates a new Entity action packet.
      *
      * @param action The action
      */
-    public EntityActionPacket(@NotNull final Action action) {
+    public EntityActionPacket(final @NotNull Action action) {
         this.action = action;
     }
 
@@ -26,7 +26,7 @@ public final class EntityActionPacket implements WrappedPacketIn {
      *
      * @return the action
      */
-    public Action getAction() {
+    public @NotNull Action getAction() {
         return this.action;
     }
 

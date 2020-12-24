@@ -13,20 +13,20 @@ public abstract class ConfigPath {
     /**
      * The HACAPI reference.
      */
-    private final HACAPI api;
+    private final @NotNull HACAPI api;
 
     /**
      * The {@link Type} of this Config Path.
      */
-    private final Type type;
+    private final @NotNull Type type;
     /**
      * The path (or key) to this path in a yaml file.
      */
-    private final String path;
+    private final @NotNull String path;
     /**
      * All the comments attached to this path.
      */
-    private final List<String> comments;
+    private final @NotNull List<String> comments;
 
     /**
      * Instantiates a new Config path.
@@ -37,10 +37,10 @@ public abstract class ConfigPath {
      * @param comments the comments
      */
     protected ConfigPath(
-        @NotNull final HACAPI api,
-        @NotNull final Type type,
-        @NotNull final String path,
-        @NotNull final String... comments
+        final @NotNull HACAPI api,
+        final @NotNull Type type,
+        final @NotNull String path,
+        final @NotNull String... comments
     ) {
         this.api = api;
         this.type = type;
@@ -53,7 +53,7 @@ public abstract class ConfigPath {
      *
      * @return the path
      */
-    public String getPath() {
+    public @NotNull String getPath() {
         return this.path;
     }
 
@@ -62,7 +62,7 @@ public abstract class ConfigPath {
      *
      * @param comment the comment
      */
-    public void addComment(@NotNull final String comment) {
+    public void addComment(final @NotNull String comment) {
         this.comments.add(comment);
     }
 
@@ -71,7 +71,7 @@ public abstract class ConfigPath {
      *
      * @return the comments
      */
-    public List<String> getComments() {
+    public @NotNull List<String> getComments() {
         return this.comments;
     }
 
@@ -80,7 +80,7 @@ public abstract class ConfigPath {
      *
      * @return the type
      */
-    public Type getType() {
+    public @NotNull Type getType() {
         return this.type;
     }
 
@@ -89,7 +89,7 @@ public abstract class ConfigPath {
      *
      * @return the api
      */
-    protected HACAPI getAPI() {
+    protected @NotNull HACAPI getAPI() {
         return this.api;
     }
 

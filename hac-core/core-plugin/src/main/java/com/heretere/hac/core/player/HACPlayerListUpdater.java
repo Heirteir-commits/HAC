@@ -1,7 +1,6 @@
 package com.heretere.hac.core.player;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.Core;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,14 +18,14 @@ public final class HACPlayerListUpdater implements Listener {
     /**
      * The parent plugin reference.
      */
-    private final Core core;
+    private final @NotNull Core core;
 
     /**
      * Instantiates a new Hac player list updater.
      *
      * @param core the parent
      */
-    public HACPlayerListUpdater(@NotNull final Core core) {
+    public HACPlayerListUpdater(final @NotNull Core core) {
         this.core = core;
     }
 
@@ -46,14 +45,15 @@ public final class HACPlayerListUpdater implements Listener {
         Bukkit.getOnlinePlayers().forEach(this::removePlayer);
     }
 
-    private void addPlayer(@NotNull final Player player) {
+    private void addPlayer(final @NotNull Player player) {
         this.core.getProxy().getChannelInjector().inject(HACAPI.getInstance().getHacPlayerList().getPlayer(player));
     }
 
-    private void removePlayer(@NotNull final Player player) {
-        HACPlayer hacPlayer = HACAPI.getInstance().getHacPlayerList().removePlayer(player);
-
-        this.core.getProxy().getChannelInjector().remove(hacPlayer);
+    private void removePlayer(final @NotNull Player player) {
+        HACAPI.getInstance()
+              .getHacPlayerList()
+              .removePlayer(player)
+              .ifPresent(hacPlayer -> this.core.getProxy().getChannelInjector().remove(hacPlayer));
     }
 
     /**
@@ -62,7 +62,7 @@ public final class HACPlayerListUpdater implements Listener {
      * @param e the e
      */
     @EventHandler
-    public void onPlayerJoin(@NotNull final PlayerJoinEvent e) {
+    public void onPlayerJoin(final @NotNull PlayerJoinEvent e) {
         this.addPlayer(e.getPlayer());
     }
 
@@ -72,7 +72,7 @@ public final class HACPlayerListUpdater implements Listener {
      * @param e the e
      */
     @EventHandler
-    public void onPlayerQuit(@NotNull final PlayerQuitEvent e) {
+    public void onPlayerQuit(final @NotNull PlayerQuitEvent e) {
         this.removePlayer(e.getPlayer());
     }
 

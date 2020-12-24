@@ -19,14 +19,14 @@ public final class PacketEventHandler {
      * This comparator is used for sorting and equality. Classes are determined equal by their priority, and
      * identifier instead of .equals.
      */
-    private static final Comparator<AbstractPacketEventExecutor<?>> COMPARATOR =
+    private static final @NotNull Comparator<AbstractPacketEventExecutor<?>> COMPARATOR =
         Comparator.<AbstractPacketEventExecutor<?>, Priority>comparing(
             AbstractPacketEventExecutor::getPriority).thenComparing(AbstractPacketEventExecutor::getIdentifier);
 
     /**
      * The executors attached to this handler.
      */
-    private Set<AbstractPacketEventExecutor<?>> executors;
+    private @NotNull Set<AbstractPacketEventExecutor<?>> executors;
 
     /**
      * Instantiates a new Packet event handler.
@@ -42,8 +42,8 @@ public final class PacketEventHandler {
      * @param wrappedPacket the wrapped packet
      */
     public void execute(
-        @NotNull final HACPlayer player,
-        @NotNull final Object wrappedPacket
+        final @NotNull HACPlayer player,
+        final @NotNull Object wrappedPacket
     ) {
         for (AbstractPacketEventExecutor<?> executor : this.executors) {
             if (!executor.execute(player, wrappedPacket)) {
@@ -58,7 +58,7 @@ public final class PacketEventHandler {
      *
      * @param executor the executor
      */
-    public void addExecutor(@NotNull final AbstractPacketEventExecutor<?> executor) {
+    public void addExecutor(final @NotNull AbstractPacketEventExecutor<?> executor) {
         Set<AbstractPacketEventExecutor<?>> set = this.tempTreeSet();
         set.add(executor);
 
@@ -70,14 +70,14 @@ public final class PacketEventHandler {
      *
      * @param executor the executor
      */
-    public void removeExecutor(@NotNull final AbstractPacketEventExecutor<?> executor) {
+    public void removeExecutor(final @NotNull AbstractPacketEventExecutor<?> executor) {
         Set<AbstractPacketEventExecutor<?>> set = this.tempTreeSet();
         set.remove(executor);
 
         this.executors = ImmutableSortedSet.copyOf(PacketEventHandler.COMPARATOR, set);
     }
 
-    private Set<AbstractPacketEventExecutor<?>> tempTreeSet() {
+    private @NotNull Set<AbstractPacketEventExecutor<?>> tempTreeSet() {
         Set<AbstractPacketEventExecutor<?>> set = Sets.newTreeSet(PacketEventHandler.COMPARATOR);
         set.addAll(this.executors);
         return set;

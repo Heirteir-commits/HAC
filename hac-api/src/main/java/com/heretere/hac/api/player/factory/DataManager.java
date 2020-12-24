@@ -1,9 +1,10 @@
-package com.heretere.hac.api.player.builder;
+package com.heretere.hac.api.player.factory;
 
 import com.google.common.collect.Maps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class is used by {@link com.heretere.hac.api.player.HACPlayer} to handle all dynamic data that may be created
@@ -13,7 +14,7 @@ public final class DataManager {
     /**
      * A map of the data objects attached ot his data manager.
      */
-    private final Map<Class<?>, Object> data;
+    private final @NotNull Map<Class<?>, Object> data;
 
     /**
      * Instantiates a new Data manager.
@@ -31,15 +32,15 @@ public final class DataManager {
      * @param <T>   the type of the data class
      */
     public <T> void addDataRaw(
-        @NotNull final Class<T> clazz,
-        @NotNull final Object data
+        final @NotNull Class<T> clazz,
+        final @NotNull Object data
     ) {
         this.addData(clazz, clazz.cast(data));
     }
 
     private <T> void addData(
-        @NotNull final Class<T> clazz,
-        @NotNull final T data
+        final @NotNull Class<T> clazz,
+        final @NotNull T data
     ) {
         this.data.put(clazz, data);
     }
@@ -49,7 +50,7 @@ public final class DataManager {
      *
      * @param clazz the class
      */
-    public void removeData(@NotNull final Class<?> clazz) {
+    public void removeData(final @NotNull Class<?> clazz) {
         this.data.remove(clazz);
     }
 
@@ -60,7 +61,7 @@ public final class DataManager {
      * @param clazz the class
      * @return the data
      */
-    public <T> T getData(@NotNull final Class<T> clazz) {
-        return clazz.cast(this.data.get(clazz));
+    public @NotNull <T> Optional<T> getData(final @NotNull Class<T> clazz) {
+        return Optional.ofNullable(clazz.cast(this.data.get(clazz)));
     }
 }

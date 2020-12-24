@@ -94,7 +94,7 @@ public final class MutableBox3F {
      * @return the float
      */
     public float calculateXOffset(
-        @NotNull final MutableBox3F other,
+        final @NotNull MutableBox3F other,
         final float currentOffsetX,
         final float dx
     ) {
@@ -120,7 +120,7 @@ public final class MutableBox3F {
      * @return the float
      */
     public float calculateYOffset(
-        @NotNull final MutableBox3F other,
+        final @NotNull MutableBox3F other,
         final float currentOffsetY,
         final float dy
     ) {
@@ -146,7 +146,7 @@ public final class MutableBox3F {
      * @return the float
      */
     public float calculateZOffset(
-        @NotNull final MutableBox3F other,
+        final @NotNull MutableBox3F other,
         final float currentOffsetZ,
         final float dz
     ) {
@@ -182,15 +182,15 @@ public final class MutableBox3F {
         return this;
     }
 
-    private boolean intersectsX(@NotNull final MutableBox3F other) {
+    private boolean intersectsX(final @NotNull MutableBox3F other) {
         return this.max.getX() >= other.min.getX() && other.max.getX() >= this.min.getX();
     }
 
-    private boolean intersectsY(@NotNull final MutableBox3F other) {
+    private boolean intersectsY(final @NotNull MutableBox3F other) {
         return this.max.getY() >= other.min.getY() && other.max.getY() >= this.min.getY();
     }
 
-    private boolean intersectsZ(@NotNull final MutableBox3F other) {
+    private boolean intersectsZ(final @NotNull MutableBox3F other) {
         return this.max.getZ() >= other.min.getZ() && other.max.getZ() >= this.min.getZ();
     }
 
@@ -200,7 +200,7 @@ public final class MutableBox3F {
      * @param other the other
      * @return the boolean
      */
-    public boolean intersects(@NotNull final MutableBox3F other) {
+    public boolean intersects(final @NotNull MutableBox3F other) {
         return this.intersectsX(other) && this.intersectsY(other) && this.intersectsZ(other);
     }
 
@@ -226,7 +226,7 @@ public final class MutableBox3F {
      * @param position the position
      * @return the mutable box 3 f
      */
-    public MutableBox3F toAbsolute(@NotNull final MutableVector3F position) {
+    public MutableBox3F toAbsolute(final @NotNull MutableVector3F position) {
         this.min.add(position);
         this.max.add(position);
         return this;

@@ -17,32 +17,32 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
     /**
      * The HACPlugin reference.
      */
-    private final AbstractHACPlugin parent;
+    private final @NotNull AbstractHACPlugin parent;
     /* Have to use reflections since fields are private and they're no getters :( */
 
     /**
      * The field that represents the id of the entity.
      */
-    private final Field id;
+    private final @NotNull Field id;
     /**
      * The field that represents the dx of the packet.
      */
-    private final Field x;
+    private final @NotNull Field x;
     /**
      * The field that represents the dy of the packet.
      */
-    private final Field y;
+    private final @NotNull Field y;
     /**
      * The field that represents the dz of the packet.
      */
-    private final Field z;
+    private final @NotNull Field z;
 
     /**
      * Instantiates a new Entity velocity packet factory.
      *
      * @param parent the parent
      */
-    public EntityVelocityPacketFactory(@NotNull final AbstractHACPlugin parent) {
+    public EntityVelocityPacketFactory(final @NotNull AbstractHACPlugin parent) {
         super(PacketPlayOutEntityVelocity.class);
         this.parent = parent;
 
@@ -53,9 +53,9 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
     }
 
     @Override
-    public EntityVelocityPacket create(
-        @NotNull final HACPlayer player,
-        @NotNull final Object packet
+    public @NotNull EntityVelocityPacket create(
+        final @NotNull HACPlayer player,
+        final @NotNull Object packet
     ) {
         PacketPlayOutEntityVelocity velocity = (PacketPlayOutEntityVelocity) packet;
 
@@ -73,7 +73,7 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
                 zValue / EntityVelocityPacket.CONVERSION
             );
         } catch (IllegalAccessException e) {
-            output = null;
+            output = new EntityVelocityPacket(0, 0, 0, 0);
 
             this.parent.getLog().severe(e);
         }
@@ -82,7 +82,7 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
     }
 
     @Override
-    public Class<EntityVelocityPacket> getWrappedClass() {
+    public @NotNull Class<EntityVelocityPacket> getWrappedClass() {
         return EntityVelocityPacket.class;
     }
 }

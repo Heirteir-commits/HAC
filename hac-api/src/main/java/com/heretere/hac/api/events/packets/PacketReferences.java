@@ -9,8 +9,10 @@ import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Packet References are used to attach the version proxy wrapped packet factories to a type at runtime.
@@ -19,11 +21,11 @@ public final class PacketReferences {
     /**
      * All the packets that are sent from the client to the server.
      */
-    private final ClientSide clientSide;
+    private final @NotNull ClientSide clientSide;
     /**
      * All the packets that are sent to the client from the server.
      */
-    private final ServerSide serverSide;
+    private final @NotNull ServerSide serverSide;
 
     /**
      * Instantiates a new Packet references.
@@ -38,7 +40,7 @@ public final class PacketReferences {
      *
      * @return the client side
      */
-    public ClientSide getClientSide() {
+    public @NotNull ClientSide getClientSide() {
         return this.clientSide;
     }
 
@@ -47,7 +49,7 @@ public final class PacketReferences {
      *
      * @return the server side
      */
-    public ServerSide getServerSide() {
+    public @NotNull ServerSide getServerSide() {
         return this.serverSide;
     }
 
@@ -58,7 +60,7 @@ public final class PacketReferences {
         /**
          * A map of the packet types stored by this reference holder.
          */
-        private final Map<Class<?>, PacketReference<?>> packetReferences;
+        private final @NotNull Map<Class<?>, PacketReference<?>> packetReferences;
 
         /**
          * Instantiates a new Abstract packet reference holder.
@@ -73,8 +75,8 @@ public final class PacketReferences {
          * @param nmsClass the nms class
          * @return the packet reference
          */
-        public final PacketReference<?> get(@NotNull final Class<?> nmsClass) {
-            return this.packetReferences.get(nmsClass);
+        public final @NotNull Optional<PacketReference<?>> get(final @NotNull Class<?> nmsClass) {
+            return Optional.ofNullable(this.packetReferences.get(nmsClass));
         }
 
         /**
@@ -84,8 +86,8 @@ public final class PacketReferences {
          * @param builder         the builder
          */
         protected void register(
-            @NotNull final PacketReference<?> packetReference,
-            @NotNull final AbstractPacketFactory<?> builder
+            final @NotNull PacketReference<?> packetReference,
+            final @NotNull AbstractPacketFactory<?> builder
         ) {
             for (Class<?> nmsClass : builder.getPacketClasses()) {
                 this.packetReferences.put(nmsClass, packetReference);
@@ -100,15 +102,15 @@ public final class PacketReferences {
         /**
          * Abilities Packet reference holder.
          */
-        private final PacketReference<AbilitiesPacket> abilities;
+        private final @NotNull PacketReference<AbilitiesPacket> abilities;
         /**
          * Entity Action Packet reference holder.
          */
-        private final PacketReference<EntityActionPacket> entityAction;
+        private final @NotNull PacketReference<EntityActionPacket> entityAction;
         /**
          * Flying Packet reference holder.
          */
-        private final PacketReference<FlyingPacket> flying;
+        private final @NotNull PacketReference<FlyingPacket> flying;
 
         private ClientSide() {
             super();
@@ -122,7 +124,7 @@ public final class PacketReferences {
          *
          * @return the abilities
          */
-        public PacketReference<AbilitiesPacket> getAbilities() {
+        public @NotNull PacketReference<AbilitiesPacket> getAbilities() {
             return this.abilities;
         }
 
@@ -131,7 +133,7 @@ public final class PacketReferences {
          *
          * @return the entity action
          */
-        public PacketReference<EntityActionPacket> getEntityAction() {
+        public @NotNull PacketReference<EntityActionPacket> getEntityAction() {
             return this.entityAction;
         }
 
@@ -140,7 +142,7 @@ public final class PacketReferences {
          *
          * @return the flying
          */
-        public PacketReference<FlyingPacket> getFlying() {
+        public @NotNull PacketReference<FlyingPacket> getFlying() {
             return this.flying;
         }
     }
@@ -152,7 +154,7 @@ public final class PacketReferences {
         /**
          * Entity velocity packet reference holder.
          */
-        private final PacketReference<EntityVelocityPacket> entityVelocity;
+        private final @NotNull PacketReference<EntityVelocityPacket> entityVelocity;
 
         private ServerSide() {
             super();
@@ -164,7 +166,7 @@ public final class PacketReferences {
          *
          * @return the entity velocity
          */
-        public PacketReference<EntityVelocityPacket> getEntityVelocity() {
+        public @NotNull PacketReference<EntityVelocityPacket> getEntityVelocity() {
             return this.entityVelocity;
         }
     }
@@ -180,19 +182,19 @@ public final class PacketReferences {
          * This identifier is attached to all Event Executors. in the format of
          * base_identifier + identifier.
          */
-        private final String identifier;
+        private final @NotNull String identifier;
         /**
          * The parent reference holder class.
          */
-        private final AbstractPacketReferenceHolder parent;
+        private final @NotNull AbstractPacketReferenceHolder parent;
         /**
          * The wrapped packet class this reference pertains to.
          */
-        private final Class<T> wrappedPacketClass;
+        private final @NotNull Class<T> wrappedPacketClass;
         /**
          * The factory that creates wrapped packets of this type.
          */
-        private AbstractPacketFactory<T> builder;
+        private @Nullable AbstractPacketFactory<T> builder;
 
         /**
          * Ensures that only one factory is registered.
@@ -200,9 +202,9 @@ public final class PacketReferences {
         private boolean registered = false;
 
         private PacketReference(
-            @NotNull final String identifier,
-            @NotNull final AbstractPacketReferenceHolder parent,
-            @NotNull final Class<T> wrappedPacketClass
+            final @NotNull String identifier,
+            final @NotNull AbstractPacketReferenceHolder parent,
+            final @NotNull Class<T> wrappedPacketClass
         ) {
             this.identifier = identifier;
             this.parent = parent;
@@ -214,7 +216,7 @@ public final class PacketReferences {
          *
          * @param builder the builder
          */
-        public void register(@NotNull final AbstractPacketFactory<T> builder) {
+        public void register(final @NotNull AbstractPacketFactory<T> builder) {
             Preconditions.checkState(!this.registered, "Already registered.");
             Preconditions.checkArgument(
                 builder.getWrappedClass().equals(this.wrappedPacketClass),
@@ -231,7 +233,7 @@ public final class PacketReferences {
          *
          * @return the wrapped packet class
          */
-        public Class<T> getWrappedPacketClass() {
+        public @NotNull Class<T> getWrappedPacketClass() {
             return this.wrappedPacketClass;
         }
 
@@ -240,8 +242,9 @@ public final class PacketReferences {
          *
          * @return the builder
          */
-        public AbstractPacketFactory<T> getBuilder() {
+        public @NotNull AbstractPacketFactory<T> getBuilder() {
             Preconditions.checkState(this.registered, "Not registered.");
+            assert this.builder != null;
             return this.builder;
         }
 
@@ -250,7 +253,7 @@ public final class PacketReferences {
          *
          * @return the identifier
          */
-        public String getIdentifier() {
+        public @NotNull String getIdentifier() {
             return this.identifier;
         }
     }

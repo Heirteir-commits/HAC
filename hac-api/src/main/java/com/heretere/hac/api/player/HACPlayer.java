@@ -1,12 +1,14 @@
 package com.heretere.hac.api.player;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.player.builder.DataManager;
+import com.heretere.hac.api.player.factory.DataManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -19,20 +21,24 @@ public final class HACPlayer {
     /**
      * The HAC API reference.
      */
-    private final HACAPI api;
+    private final @NotNull HACAPI api;
+    /**
+     * The UUID of the player.
+     */
+    private final @NotNull UUID uuid;
     /**
      * A WeakReference to the player to make sure this class doesn't stop the player from being garbage collected.
      */
-    private final WeakReference<Player> player;
+    private final @NotNull Reference<Player> player;
     /**
      * The data manager instance for this HACPlayer.
      */
-    private final DataManager dataManager;
+    private final @NotNull DataManager dataManager;
     /**
      * The chained CompletableFutures. The goal of this is to allow for a thread per player design approach.
      * Without created a bunch of new threads on the server.
      */
-    private CompletableFuture<Void> future;
+    private @NotNull CompletableFuture<Void> future;
 
     /**
      * Instantiates a new Hac player.
@@ -41,15 +47,13 @@ public final class HACPlayer {
      * @param player the player
      */
     HACPlayer(
-        @NotNull final HACAPI api,
-        @NotNull final Player player
+        final @NotNull HACAPI api,
+        final @NotNull Player player
     ) {
         this.api = api;
-
         this.future = CompletableFuture.allOf();
-
+        this.uuid = player.getUniqueId();
         this.player = new WeakReference<>(player);
-
         this.dataManager = new DataManager();
     }
 
@@ -60,9 +64,9 @@ public final class HACPlayer {
      * @param runnable     The runnable to run in the {@link com.heretere.hac.api.concurrency.ThreadPool}.
      * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
      */
-    public void runTaskASync(
-        @NotNull final Runnable runnable,
-        @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler
+    public void runTaskAsync(
+        final @NotNull Runnable runnable,
+        final @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler
     ) {
         this.future = this.future.thenRunAsync(runnable, this.api.getThreadPool().getPool())
                                  .whenCompleteAsync(errorHandler == null ? (msg, ex) -> {
@@ -77,8 +81,8 @@ public final class HACPlayer {
      *
      * @return The UUID of the player.
      */
-    public UUID getUUID() {
-        return this.getBukkitPlayer().getUniqueId();
+    public @NotNull UUID getUUID() {
+        return this.uuid;
     }
 
     /**
@@ -87,8 +91,8 @@ public final class HACPlayer {
      *
      * @return The Bukkit Player
      */
-    public Player getBukkitPlayer() {
-        return this.player.get();
+    public @NotNull Optional<Player> getBukkitPlayer() {
+        return Optional.ofNullable(this.player.get());
     }
 
     /**
@@ -96,7 +100,7 @@ public final class HACPlayer {
      *
      * @return The Data Manager.
      */
-    public DataManager getDataManager() {
+    public @NotNull DataManager getDataManager() {
         return this.dataManager;
     }
 }

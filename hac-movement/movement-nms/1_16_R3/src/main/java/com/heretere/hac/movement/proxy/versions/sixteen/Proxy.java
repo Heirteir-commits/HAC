@@ -13,7 +13,7 @@ public final class Proxy extends AbstractMovementVersionProxy {
      *
      * @param parent the parent
      */
-    public Proxy(@NotNull final AbstractHACPlugin parent) {
+    public Proxy(final @NotNull AbstractHACPlugin parent) {
 
     }
 

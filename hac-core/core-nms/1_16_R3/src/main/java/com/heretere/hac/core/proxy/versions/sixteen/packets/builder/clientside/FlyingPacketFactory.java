@@ -26,19 +26,28 @@ public final class FlyingPacketFactory extends AbstractPacketFactory<FlyingPacke
     }
 
     @Override
-    public FlyingPacket create(
-        @NotNull final HACPlayer player,
-        @NotNull final Object packet
+    public @NotNull FlyingPacket create(
+        final @NotNull HACPlayer player,
+        final @NotNull Object packet
     ) {
         PacketPlayInFlying flying = (PacketPlayInFlying) packet;
-        PlayerData playerData = player.getDataManager().getData(PlayerData.class);
+        PlayerData playerData = player.getDataManager().getData(PlayerData.class).orElse(null);
 
-        MutableVector3F location = playerData.getCurrent().getLocation();
+        MutableVector3F location;
+        MutableVector2F direction;
+
+        if (playerData == null) {
+            location = new MutableVector3F(0, 0, 0);
+            direction = new MutableVector2F(0, 0);
+        } else {
+            location = playerData.getCurrent().getLocation();
+            direction = playerData.getCurrent().getDirection();
+        }
+
         double x = flying.a((double) location.getX()); //Must cast to double due to obfuscation
         double y = flying.b((double) location.getY()); //Must cast to double due to obfuscation
         double z = flying.c(location.getZ()); //Don't need to cast to double
 
-        MutableVector2F direction = playerData.getCurrent().getDirection();
         double yaw = flying.a(direction.getX());
         double pitch = flying.b(direction.getY());
 
@@ -46,7 +55,7 @@ public final class FlyingPacketFactory extends AbstractPacketFactory<FlyingPacke
     }
 
     @Override
-    public Class<FlyingPacket> getWrappedClass() {
+    public @NotNull Class<FlyingPacket> getWrappedClass() {
         return FlyingPacket.class;
     }
 }

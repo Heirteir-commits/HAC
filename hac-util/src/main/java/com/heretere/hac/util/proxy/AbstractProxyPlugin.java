@@ -7,6 +7,7 @@ import com.google.common.collect.Iterables;
 import com.heretere.hac.util.plugin.AbstractHACPlugin;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,22 +22,22 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
      * This .txt is created by the build.gradle it helps in figuring out what NMS versions this
      * plugin supports at runtime.
      */
-    private static final String PACKAGED_VERSIONS_NAME = "packaged_versions.txt";
+    private static final @NotNull String PACKAGED_VERSIONS_NAME = "packaged_versions.txt";
 
     /**
      * The base package location of the version proxies located in this plugin.
      */
-    private final String basePackage;
+    private final @NotNull String basePackage;
 
     /**
      * The T AbstractVersionProxy class type that should be found.
      */
-    private final Class<T> versionProxyClass;
+    private final @NotNull Class<T> versionProxyClass;
 
     /**
      * The T version proxy instance.
      */
-    private T proxy;
+    private @Nullable T proxy;
 
     /**
      * Whether or not a version proxy was successfully found.
@@ -44,10 +45,10 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     private boolean success;
 
     protected AbstractProxyPlugin(
-        @NotNull final String baseDirectory,
-        @NotNull final String prefix,
-        @NotNull final String basePackage,
-        @NotNull final Class<T> versionProxyClass
+        final @NotNull String baseDirectory,
+        final @NotNull String prefix,
+        final @NotNull String basePackage,
+        final @NotNull Class<T> versionProxyClass
     ) {
         super(baseDirectory, prefix);
         this.basePackage = basePackage;
@@ -119,7 +120,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         return output;
     }
 
-    private Set<String> getPackagedVersions() {
+    private @NotNull Set<String> getPackagedVersions() {
         InputStream in = this.getResource(AbstractProxyPlugin.PACKAGED_VERSIONS_NAME);
 
         Preconditions.checkNotNull(
@@ -159,7 +160,8 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
      *
      * @return T version proxy instance.
      */
-    public T getProxy() {
+    public @NotNull T getProxy() {
+        assert this.proxy != null;
         return this.proxy;
     }
 }

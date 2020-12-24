@@ -19,18 +19,18 @@ public final class Proxy extends CoreVersionProxy {
     /**
      * The parent plugin reference.
      */
-    private final AbstractHACPlugin parent;
+    private final @NotNull AbstractHACPlugin parent;
     /**
      * The injector used to attach channel handlers to all players.
      */
-    private final ChannelInjectorProxy channelInjectorProxy;
+    private final @NotNull ChannelInjectorProxy channelInjectorProxy;
 
     /**
      * Instantiates a new Proxy.
      *
      * @param parent the parent
      */
-    public Proxy(@NotNull final AbstractHACPlugin parent) {
+    public Proxy(final @NotNull AbstractHACPlugin parent) {
         this.parent = parent;
         this.channelInjectorProxy = new ChannelInjectorProxy(this.parent);
     }
@@ -49,7 +49,7 @@ public final class Proxy extends CoreVersionProxy {
     }
 
     @Override
-    public AbstractChannelInjector getChannelInjector() {
+    public @NotNull AbstractChannelInjector getChannelInjector() {
         return this.channelInjectorProxy;
     }
 

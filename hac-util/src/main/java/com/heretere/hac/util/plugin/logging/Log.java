@@ -33,12 +33,12 @@ public final class Log {
     /**
      * The parent plugin reference.
      */
-    private final AbstractHACPlugin parent;
+    private final @NotNull AbstractHACPlugin parent;
 
     /**
      * The logging file location.
      */
-    private final Path loggingFile;
+    private final @NotNull Path loggingFile;
 
     /**
      * The state handler.
@@ -50,7 +50,7 @@ public final class Log {
      *
      * @param parent the parent
      */
-    public Log(@NotNull final AbstractHACPlugin parent) {
+    public Log(final @NotNull AbstractHACPlugin parent) {
         this.parent = parent;
         this.loggingFile = this.parent.getBaseDirectory()
                                       .resolve("logs")
@@ -94,7 +94,7 @@ public final class Log {
         this.open = false;
     }
 
-    private Supplier<String> toLogMessage(@NotNull final Supplier<String> message) {
+    private Supplier<String> toLogMessage(final @NotNull Supplier<String> message) {
         return () -> ChatColor.stripColor(ChatColorAnsi.colorCodeToAnsi(this.parent.getPrefix() + message.get()));
     }
 
@@ -111,7 +111,7 @@ public final class Log {
      *
      * @param message the message
      */
-    public synchronized void info(@NotNull final Supplier<String> message) {
+    public synchronized void info(final @NotNull Supplier<String> message) {
         this.checkState();
 
         this.parent.getLogger().info(this.toLogMessage(message));
@@ -122,7 +122,7 @@ public final class Log {
      *
      * @param message the message
      */
-    public synchronized void severe(@NotNull final Supplier<String> message) {
+    public synchronized void severe(final @NotNull Supplier<String> message) {
         this.checkState();
 
         this.parent.getLogger().severe(this.toLogMessage(message));
@@ -133,7 +133,7 @@ public final class Log {
      *
      * @param exception the exception
      */
-    public synchronized void severe(@NotNull final Throwable exception) {
+    public synchronized void severe(final @NotNull Throwable exception) {
         this.checkState();
 
         this.parent.getLogger().log(Level.SEVERE, exception, this.toLogMessage(exception::getMessage));
@@ -146,7 +146,7 @@ public final class Log {
      * @param shutdown the shutdown
      */
     public synchronized void reportFatalError(
-        @NotNull final Supplier<String> message,
+        final @NotNull Supplier<String> message,
         final boolean shutdown
     ) {
         Iterable<String> header = Splitter.fixedLength(ERROR_WRAP).split(String.format(
@@ -182,7 +182,7 @@ public final class Log {
      * @param shutdown  the shutdown
      */
     public synchronized void reportFatalError(
-        @NotNull final Throwable exception,
+        final @NotNull Throwable exception,
         final boolean shutdown
     ) {
         this.severe(exception);
@@ -209,14 +209,14 @@ public final class Log {
         private final String ansiCode;
 
         ChatColorAnsi(
-            @NotNull final String colorCode,
-            @NotNull final String ansiCode
+            final @NotNull String colorCode,
+            final @NotNull String ansiCode
         ) {
             this.colorCode = colorCode;
             this.ansiCode = ansiCode;
         }
 
-        private static String colorCodeToAnsi(@NotNull final String input) {
+        private static @NotNull String colorCodeToAnsi(final @NotNull String input) {
             String output = input;
 
             for (ChatColorAnsi ansi : ChatColorAnsi.values()) {

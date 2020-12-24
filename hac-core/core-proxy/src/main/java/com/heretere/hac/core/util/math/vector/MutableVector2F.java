@@ -48,7 +48,7 @@ public final class MutableVector2F {
      * @param other the other
      * @return the mutable vector 2 f
      */
-    public MutableVector2F add(@NotNull final MutableVector2F other) {
+    public MutableVector2F add(final @NotNull MutableVector2F other) {
         return this.add(other.x, other.y);
     }
 
@@ -89,7 +89,7 @@ public final class MutableVector2F {
      * @param other the other
      * @return the mutable vector 2 f
      */
-    public MutableVector2F subtract(@NotNull final MutableVector2F other) {
+    public MutableVector2F subtract(final @NotNull MutableVector2F other) {
         return this.subtract(other.x, other.y);
     }
 
@@ -130,7 +130,7 @@ public final class MutableVector2F {
      * @param other the other
      * @return the mutable vector 2 f
      */
-    public MutableVector2F set(@NotNull final MutableVector2F other) {
+    public MutableVector2F set(final @NotNull MutableVector2F other) {
         return this.set(other.x, other.y);
     }
 

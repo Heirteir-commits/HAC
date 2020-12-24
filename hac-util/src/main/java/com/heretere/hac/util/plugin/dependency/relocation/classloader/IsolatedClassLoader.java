@@ -22,12 +22,12 @@ public final class IsolatedClassLoader extends URLClassLoader {
      *
      * @param urls the urls
      */
-    public IsolatedClassLoader(@NotNull final URL... urls) {
+    public IsolatedClassLoader(final @NotNull URL... urls) {
         super(Objects.requireNonNull(urls), ClassLoader.getSystemClassLoader().getParent());
     }
 
     @Override
-    public void addURL(@NotNull final URL url) {
+    public void addURL(final @NotNull URL url) {
         super.addURL(url);
     }
 
@@ -37,7 +37,7 @@ public final class IsolatedClassLoader extends URLClassLoader {
      * @param path the path
      * @return the boolean
      */
-    public boolean addPath(@NotNull final Path path) {
+    public boolean addPath(final @NotNull Path path) {
         try {
             this.addURL(path.toUri().toURL());
             return true;

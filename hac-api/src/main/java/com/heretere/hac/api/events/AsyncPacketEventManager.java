@@ -13,7 +13,7 @@ public class AsyncPacketEventManager {
     /**
      * The packet executors that this event manager handles.
      */
-    private final Map<Class<? extends WrappedPacket>, PacketEventHandler> packetExecutors;
+    private final @NotNull Map<Class<? extends WrappedPacket>, PacketEventHandler> packetExecutors;
 
     /**
      * Creates a new AsyncPacketEventManager.
@@ -29,7 +29,7 @@ public class AsyncPacketEventManager {
      * @param <T>      WrappedPacket type
      */
     public <T extends WrappedPacket> void registerPacketEventExecutor(
-        @NotNull final AbstractPacketEventExecutor<T> executor
+        final @NotNull AbstractPacketEventExecutor<T> executor
     ) {
         this.getPacketEventHandler(executor.getWrappedClass()).addExecutor(executor);
     }
@@ -41,12 +41,14 @@ public class AsyncPacketEventManager {
      * @param <T>      WrappedPacket type
      */
     public <T extends WrappedPacket> void unregisterPacketEventExecutor(
-        @NotNull final AbstractPacketEventExecutor<T> executor
+        final @NotNull AbstractPacketEventExecutor<T> executor
     ) {
         this.getPacketEventHandler(executor.getWrappedClass()).removeExecutor(executor);
     }
 
-    private PacketEventHandler getPacketEventHandler(@NotNull final Class<? extends WrappedPacket> packetClass) {
+    private @NotNull PacketEventHandler getPacketEventHandler(
+        final @NotNull Class<? extends WrappedPacket> packetClass
+    ) {
         return this.packetExecutors.computeIfAbsent(packetClass, pc -> new PacketEventHandler());
     }
 
@@ -58,11 +60,11 @@ public class AsyncPacketEventManager {
      * @param errorHandler An optional error handler.
      */
     public void callPacketEvent(
-        @NotNull final HACPlayer player,
-        @NotNull final WrappedPacket packet,
-        @Nullable final BiConsumer<? super Void, ? super Throwable> errorHandler
+        final @NotNull HACPlayer player,
+        final @NotNull WrappedPacket packet,
+        final @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler
     ) {
-        player.runTaskASync(() -> this.getPacketEventHandler(packet.getClass()).execute(player, packet), errorHandler);
+        player.runTaskAsync(() -> this.getPacketEventHandler(packet.getClass()).execute(player, packet), errorHandler);
     }
 
     /**
@@ -73,8 +75,8 @@ public class AsyncPacketEventManager {
      * @param packet The wrapped packet
      */
     public void callPacketEvent(
-        @NotNull final HACPlayer player,
-        @NotNull final WrappedPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull WrappedPacket packet
     ) {
         this.callPacketEvent(player, packet, null);
     }

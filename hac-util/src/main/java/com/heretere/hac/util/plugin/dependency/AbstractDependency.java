@@ -15,17 +15,17 @@ public abstract class AbstractDependency {
     /**
      * The HACAPI reference.
      */
-    private final AbstractHACPlugin parent;
+    private final @NotNull AbstractHACPlugin parent;
 
     /**
      * These relocations are processed {@link com.heretere.hac.util.plugin.dependency.relocation.Relocator}
      * to move packages from downloaded dependencies to a class path safe package.
      */
-    private final Set<Relocation> relocations;
+    private final @NotNull Set<Relocation> relocations;
 
     protected AbstractDependency(
-        @NotNull final AbstractHACPlugin parent,
-        @NotNull final Relocation... relocations
+        final @NotNull AbstractHACPlugin parent,
+        final @NotNull Relocation... relocations
     ) {
         this.parent = parent;
 
@@ -33,8 +33,8 @@ public abstract class AbstractDependency {
     }
 
     protected AbstractDependency(
-        @NotNull final AbstractHACPlugin parent,
-        @NotNull final Collection<Relocation> relocations
+        final @NotNull AbstractHACPlugin parent,
+        final @NotNull Collection<Relocation> relocations
     ) {
         this.parent = parent;
 
@@ -61,7 +61,7 @@ public abstract class AbstractDependency {
      *
      * @return The download location of the dependency.
      */
-    public abstract Path getDownloadLocation();
+    public abstract @NotNull Path getDownloadLocation();
 
     /**
      * Where the file containing the relocated packages should be placed. This should not be equal to the output
@@ -69,7 +69,7 @@ public abstract class AbstractDependency {
      *
      * @return The packaged relocated file location.
      */
-    public abstract Path getRelocatedLocation();
+    public abstract @NotNull Path getRelocatedLocation();
 
     /**
      * If the download fails somehow this url is provided for the user to manually download the dependency and place it
@@ -78,7 +78,7 @@ public abstract class AbstractDependency {
      * @return An optional of the manual download location. The optional should be empty when there was an error parsing
      * the url.
      */
-    public abstract Optional<URL> getManualURL();
+    public abstract @NotNull Optional<URL> getManualURL();
 
     /**
      * The download location of the dependency.
@@ -86,21 +86,21 @@ public abstract class AbstractDependency {
      * @return The download location of the dependency. The optional should be empty if there is an error parsing the
      * url.
      */
-    public abstract Optional<URL> getDownloadURL();
+    public abstract @NotNull Optional<URL> getDownloadURL();
 
     /**
      * The name of the dependency ideally it contains name & version. This value is sent to the logger.
      *
      * @return The name of the dependency.
      */
-    public abstract String getName();
+    public abstract @NotNull String getName();
 
     /**
      * The HACAPI reference to be used by child classes.
      *
      * @return The HACAPI reference.
      */
-    protected final AbstractHACPlugin getParent() {
+    protected final @NotNull AbstractHACPlugin getParent() {
         return this.parent;
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractDependency {
      *
      * @return A immutable set of the relocations.
      */
-    public Set<Relocation> getRelocations() {
+    public @NotNull Set<Relocation> getRelocations() {
         return this.relocations;
     }
 }

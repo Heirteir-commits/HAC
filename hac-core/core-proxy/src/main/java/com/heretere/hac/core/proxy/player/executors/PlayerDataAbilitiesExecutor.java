@@ -15,7 +15,7 @@ public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecut
      *
      * @param identifier the identifier
      */
-    public PlayerDataAbilitiesExecutor(@NotNull final String identifier) {
+    public PlayerDataAbilitiesExecutor(final @NotNull String identifier) {
         super(
             Priority.PROCESS_1,
             identifier,
@@ -25,17 +25,20 @@ public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecut
 
     @Override
     public boolean execute(
-        @NotNull final HACPlayer player,
-        @NotNull final AbilitiesPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull AbilitiesPacket packet
     ) {
-        player.getDataManager().getData(PlayerData.class).getCurrent().setFlying(packet.isFlying());
+        player.getDataManager()
+              .getData(PlayerData.class)
+              .ifPresent(playerData -> playerData.getCurrent().setFlying(true));
+
         return true;
     }
 
     @Override
     public void onStop(
-        @NotNull final HACPlayer player,
-        @NotNull final AbilitiesPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull AbilitiesPacket packet
     ) {
         throw new NotImplementedException("Updater Class");
     }

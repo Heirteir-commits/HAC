@@ -13,14 +13,14 @@ public final class SingleLineFormatter extends Formatter {
     /**
      * This is used to remove ansi colors from the outputted text.
      */
-    private static final Pattern STRIP_COLOR = Pattern.compile("\\x1b\\[[0-9;]*m");
+    private static final @NotNull Pattern STRIP_COLOR = Pattern.compile("\\x1b\\[[0-9;]*m");
 
     @Override
-    public String format(@NotNull final LogRecord record) {
-        return STRIP_COLOR.matcher("[" + record.getLevel() + "] " +
-                                       formatMessage(record) + "\n" +
-                                       (record.getThrown() != null
-                                           ? record.getThrown().getMessage() + "\n"
-                                           : "")).replaceAll("");
+    public @NotNull String format(final @NotNull LogRecord record) {
+        String prefix = "[" + record.getLevel() + "] ";
+        String message = STRIP_COLOR.matcher(formatMessage(record)).replaceAll("") + System.lineSeparator();
+        String error = record.getThrown() == null ? "" : record.getThrown().getMessage() + System.lineSeparator();
+
+        return prefix + message + error;
     }
 }

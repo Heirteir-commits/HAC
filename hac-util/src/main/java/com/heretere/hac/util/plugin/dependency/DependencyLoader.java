@@ -27,18 +27,18 @@ public class DependencyLoader {
     /**
      * The HACPlugin reference.
      */
-    private final AbstractHACPlugin parent;
+    private final @NotNull AbstractHACPlugin parent;
     /**
      * The relocator instance.
      */
-    private final Relocator relocator;
+    private final @NotNull Relocator relocator;
 
     /**
      * Instantiates a new Dependency loader.
      *
      * @param parent the parent
      */
-    public DependencyLoader(@NotNull final AbstractHACPlugin parent) {
+    public DependencyLoader(final @NotNull AbstractHACPlugin parent) {
         this.parent = parent;
         this.relocator = new Relocator(parent, this);
     }
@@ -49,7 +49,7 @@ public class DependencyLoader {
      * @param clazz the clazz
      * @return the dependencies
      */
-    public Set<AbstractDependency> getDependencies(@NotNull final Class<?> clazz) {
+    public @NotNull Set<AbstractDependency> getDependencies(final @NotNull Class<?> clazz) {
         Set<AbstractDependency> dependencies = Sets.newLinkedHashSet();
         Set<Relocation> relocations = Sets.newLinkedHashSet();
 
@@ -89,7 +89,7 @@ public class DependencyLoader {
      * @param dependency the dependency
      * @return the boolean
      */
-    public boolean downloadDependency(@NotNull final AbstractDependency dependency) {
+    public boolean downloadDependency(final @NotNull AbstractDependency dependency) {
         boolean success = true;
 
         if (dependency.needsUpdate()) {
@@ -130,7 +130,7 @@ public class DependencyLoader {
      * @param dependency the dependency
      * @return true if dependency was successfully relocated.
      */
-    public boolean relocateDependency(@NotNull final AbstractDependency dependency) {
+    public boolean relocateDependency(final @NotNull AbstractDependency dependency) {
         boolean success = true;
 
         if (dependency.needsRelocation()) {
@@ -153,7 +153,7 @@ public class DependencyLoader {
      * @param dependency the dependency
      * @return the boolean
      */
-    public boolean loadDependency(@NotNull final AbstractDependency dependency) {
+    public boolean loadDependency(final @NotNull AbstractDependency dependency) {
         boolean success = this.downloadDependency(dependency);
 
         if (success) {

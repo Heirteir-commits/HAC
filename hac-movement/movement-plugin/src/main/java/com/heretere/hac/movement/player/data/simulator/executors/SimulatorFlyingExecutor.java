@@ -18,23 +18,23 @@ public final class SimulatorFlyingExecutor extends AbstractPacketEventExecutor<F
      *
      * @param identifier the identifier
      */
-    public SimulatorFlyingExecutor(@NotNull final String identifier) {
+    public SimulatorFlyingExecutor(final @NotNull String identifier) {
         super(Priority.PROCESS_2, identifier, HACAPI.getInstance().getPacketReferences().getClientSide().getFlying());
     }
 
     @Override
     protected boolean execute(
-        @NotNull final HACPlayer player,
-        @NotNull final FlyingPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull FlyingPacket packet
     ) {
-        player.getDataManager().getData(Simulator.class).update();
+        player.getDataManager().getData(Simulator.class).ifPresent(Simulator::update);
         return true;
     }
 
     @Override
     protected void onStop(
-        @NotNull final HACPlayer player,
-        @NotNull final FlyingPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull FlyingPacket packet
     ) {
         throw new NotImplementedException();
     }

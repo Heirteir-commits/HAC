@@ -13,6 +13,7 @@ import io.netty.channel.ChannelPromise;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,27 +25,27 @@ public abstract class AbstractChannelInjector {
      * This is the name of the channel handler we want to place our custom channel handler before in the netty channel
      * pipeline.
      */
-    private static final String AFTER_KEY = "packet_handler";
+    private static final @NotNull String AFTER_KEY = "packet_handler";
     /**
      * The name of HAC's channel handler identifier.
      */
-    private static final String HANDLER_KEY = "hac_packet_handler";
+    private static final @NotNull String HANDLER_KEY = "hac_packet_handler";
     /**
      * The HACAPI reference.
      */
-    private final AbstractHACPlugin parent;
+    private final @NotNull AbstractHACPlugin parent;
     /**
      * This executor service is responsible for attaching our channel handler in a way that doesn't
      * hinder the player's login speed.
      */
-    private final ExecutorService channelChangeExecutor;
+    private final @NotNull ExecutorService channelChangeExecutor;
 
     /**
      * Instantiates a new Channel injector base.
      *
      * @param parent The parent HACPlugin instance.
      */
-    protected AbstractChannelInjector(@NotNull final AbstractHACPlugin parent) {
+    protected AbstractChannelInjector(final @NotNull AbstractHACPlugin parent) {
         this.parent = parent;
         this.channelChangeExecutor = Executors.newSingleThreadExecutor();
     }
@@ -54,13 +55,15 @@ public abstract class AbstractChannelInjector {
      *
      * @param player the player
      */
-    public void inject(@NotNull final HACPlayer player) {
-        this.remove(player);
-        this.channelChangeExecutor.execute(() -> this.getPipeline(player.getBukkitPlayer()).addBefore(
-            AbstractChannelInjector.AFTER_KEY,
-            AbstractChannelInjector.HANDLER_KEY,
-            new HACChannelHandler(this.parent, player)
-        ));
+    public void inject(final @NotNull HACPlayer player) {
+        player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
+            this.remove(player);
+            this.channelChangeExecutor.execute(() -> this.getPipeline(bukkitPlayer).addBefore(
+                AbstractChannelInjector.AFTER_KEY,
+                AbstractChannelInjector.HANDLER_KEY,
+                new HACChannelHandler(this.parent, player)
+            ));
+        });
     }
 
     /**
@@ -68,13 +71,15 @@ public abstract class AbstractChannelInjector {
      *
      * @param player the player
      */
-    public void remove(@NotNull final HACPlayer player) {
-        ChannelPipeline pipeline = this.getPipeline(player.getBukkitPlayer());
+    public void remove(final @NotNull HACPlayer player) {
+        player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
+            ChannelPipeline pipeline = this.getPipeline(bukkitPlayer);
 
-        this.channelChangeExecutor.execute(() -> {
-            if (pipeline.get(AbstractChannelInjector.HANDLER_KEY) != null) {
-                pipeline.remove(AbstractChannelInjector.HANDLER_KEY);
-            }
+            this.channelChangeExecutor.execute(() -> {
+                if (pipeline.get(AbstractChannelInjector.HANDLER_KEY) != null) {
+                    pipeline.remove(AbstractChannelInjector.HANDLER_KEY);
+                }
+            });
         });
     }
 
@@ -91,22 +96,22 @@ public abstract class AbstractChannelInjector {
      * @param player the player
      * @return the pipeline
      */
-    protected abstract ChannelPipeline getPipeline(Player player);
+    protected abstract @NotNull ChannelPipeline getPipeline(Player player);
 
     private static final class HACChannelHandler extends ChannelDuplexHandler {
         /**
          * The plugin instance that is hosting HACChannelHandler.
          */
-        private final AbstractHACPlugin parent;
+        private final @NotNull AbstractHACPlugin parent;
 
         /**
          * The HACPlayer this ChannelHandler is attached to.
          */
-        private final HACPlayer player;
+        private final @NotNull HACPlayer player;
 
         private HACChannelHandler(
-            @NotNull final AbstractHACPlugin parent,
-            @NotNull final HACPlayer player
+            final @NotNull AbstractHACPlugin parent,
+            final @NotNull HACPlayer player
         ) {
             super();
             this.parent = parent;
@@ -143,26 +148,31 @@ public abstract class AbstractChannelInjector {
         }
 
         private void handle(
-            @NotNull final Object packet,
+            final @NotNull Object packet,
             final boolean clientSide
         ) {
-            PacketReferences.PacketReference<?> reference = clientSide
+            Optional<PacketReferences.PacketReference<?>> optionalReference = clientSide
                 ? HACAPI.getInstance()
                         .getPacketReferences()
                         .getClientSide()
                         .get(packet.getClass())
                 : HACAPI.getInstance().getPacketReferences().getServerSide().get(packet.getClass());
 
-            if (reference == null) {
-                return;
-            }
 
-            WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
+            optionalReference.ifPresent(reference -> {
+                WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
 
-            if (clientSide || ((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == this.player.getBukkitPlayer()
-                                                                                                     .getEntityId()) {
-                HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket, null);
-            }
+                if (clientSide) {
+                    HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket);
+                } else {
+                    this.player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
+                        if (((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == bukkitPlayer.getEntityId()) {
+                            HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket);
+                        }
+                    });
+                }
+            });
+
         }
     }
 }

@@ -13,17 +13,17 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      * The base directory all files should be passed to. This is similar to {@link JavaPlugin#getDataFolder()}
      * except it points to a directory that could be used by multiple plugins.
      */
-    private final Path baseDirectory;
+    private final @NotNull Path baseDirectory;
 
     /**
      * The prefix that the logger uses for console.
      */
-    private final String prefix;
+    private final @NotNull String prefix;
 
     /**
      * This is a logger delegator that just adds some custom functionality to the Bukkit logger.
      */
-    private final Log log;
+    private final @NotNull Log log;
 
     /**
      * Whether or not the dependencies were successfully loaded.
@@ -31,8 +31,8 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
     private boolean dependencySuccess;
 
     protected AbstractHACPlugin(
-        @NotNull final String baseDirectory,
-        @NotNull final String prefix
+        final @NotNull String baseDirectory,
+        final @NotNull String prefix
     ) {
         this.baseDirectory = this.getDataFolder().toPath().getParent().resolve(baseDirectory);
         this.prefix = "[" + prefix + "] ";
@@ -100,7 +100,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      *
      * @return The base directory
      */
-    public Path getBaseDirectory() {
+    public @NotNull Path getBaseDirectory() {
         return this.baseDirectory;
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      *
      * @return The logger prefix of this plugin
      */
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return this.prefix;
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      *
      * @return The logger delegator.
      */
-    public Log getLog() {
+    public @NotNull Log getLog() {
         return this.log;
     }
 }

@@ -10,6 +10,7 @@ import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation
 import com.heretere.hac.util.plugin.dependency.relocation.classloader.IsolatedClassLoader;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -30,20 +31,20 @@ public final class Relocator {
     /**
      * Isolated class loader to stop from polluting the class path with unneeded packages.
      */
-    private IsolatedClassLoader isolatedClassLoader;
+    private @Nullable IsolatedClassLoader isolatedClassLoader;
 
     /**
      * The constructor of the jar relocator.
      */
-    private Constructor<?> jarRelocatorConstructor;
+    private @Nullable Constructor<?> jarRelocatorConstructor;
     /**
      * The method to run the jar relocator.
      */
-    private Method jarRelocatorRunMethod;
+    private @Nullable Method jarRelocatorRunMethod;
     /**
      * The relocation constructor.
      */
-    private Constructor<?> relocationConstructor;
+    private @Nullable Constructor<?> relocationConstructor;
 
 
     /**
@@ -53,8 +54,8 @@ public final class Relocator {
      * @param dependencyLoader the dependency loader
      */
     public Relocator(
-        @NotNull final AbstractHACPlugin parent,
-        @NotNull final DependencyLoader dependencyLoader
+        final @NotNull AbstractHACPlugin parent,
+        final @NotNull DependencyLoader dependencyLoader
     ) {
         AccessController.doPrivileged((PrivilegedAction<?>) () -> this.isolatedClassLoader = new IsolatedClassLoader());
 
@@ -107,29 +108,38 @@ public final class Relocator {
      * @param dependency the dependency
      * @return the optional
      */
-    public Optional<Throwable> relocate(@NotNull final AbstractDependency dependency) {
+    public @NotNull Optional<Throwable> relocate(final @NotNull AbstractDependency dependency) {
         Optional<Throwable> output;
-        try {
-            Set<Object> rules = Sets.newLinkedHashSet();
 
-            for (Relocation relocation : dependency.getRelocations()) {
-                rules.add(this.relocationConstructor.newInstance(
-                    StringUtils.replace(relocation.from(), "|", "."),
-                    StringUtils.replace(relocation.to(), "|", "."),
-                    Lists.newArrayList(),
-                    Lists.newArrayList()
+        if (!(this.isolatedClassLoader == null
+            || this.jarRelocatorConstructor == null
+            || this.jarRelocatorRunMethod == null
+            || this.relocationConstructor == null)) {
+            try {
+                Set<Object> rules = Sets.newLinkedHashSet();
+
+                for (Relocation relocation : dependency.getRelocations()) {
+                    rules.add(this.relocationConstructor.newInstance(
+                        StringUtils.replace(relocation.from(), "|", "."),
+                        StringUtils.replace(relocation.to(), "|", "."),
+                        Lists.newArrayList(),
+                        Lists.newArrayList()
+                    ));
+                }
+
+                this.jarRelocatorRunMethod.invoke(this.jarRelocatorConstructor.newInstance(
+                    dependency.getDownloadLocation().toFile(),
+                    dependency.getRelocatedLocation().toFile(),
+                    rules
                 ));
+                output = Optional.empty();
+            } catch (ReflectiveOperationException e) {
+                output = Optional.of(e);
             }
-
-            this.jarRelocatorRunMethod.invoke(this.jarRelocatorConstructor.newInstance(
-                dependency.getDownloadLocation().toFile(),
-                dependency.getRelocatedLocation().toFile(),
-                rules
-            ));
+        } else {
             output = Optional.empty();
-        } catch (ReflectiveOperationException e) {
-            output = Optional.of(e);
         }
+
         return output;
     }
 }

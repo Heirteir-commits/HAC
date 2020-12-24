@@ -26,23 +26,23 @@ public class HACConfigHandler {
     /**
      * The HAC API reference.
      */
-    private final HACAPI api;
+    private final @NotNull HACAPI api;
     /**
      * The base path of the config files.
      */
-    private final Path basePath;
+    private final @NotNull Path basePath;
 
     /**
      * Only currently loaded files.
      */
-    private final Map<String, HACConfigFile> files;
+    private final @NotNull Map<String, HACConfigFile> files;
 
     /**
      * Instantiates a new Hac config handler.
      *
      * @param api the api
      */
-    public HACConfigHandler(@NotNull final HACAPI api) {
+    public HACConfigHandler(final @NotNull HACAPI api) {
         this.api = api;
         this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class)
                                   .getDataFolder()
@@ -58,7 +58,7 @@ public class HACConfigHandler {
      *
      * @param instance the instance
      */
-    public void loadConfigClass(@NotNull final Object instance) {
+    public void loadConfigClass(final @NotNull Object instance) {
         Class<?> clazz = instance.getClass();
 
         if (!clazz.isAnnotationPresent(ConfigFile.class)) {
@@ -136,7 +136,7 @@ public class HACConfigHandler {
         this.files.values().forEach(HACConfigFile::save);
     }
 
-    private HACConfigFile getConfigFile(@NotNull final ConfigFile path) {
+    private @NotNull HACConfigFile getConfigFile(final @NotNull ConfigFile path) {
         return this.files.computeIfAbsent(path.value(), v -> new HACConfigFile(this.api, this, path));
     }
 
@@ -145,7 +145,7 @@ public class HACConfigHandler {
      *
      * @return the base path
      */
-    public Path getBasePath() {
+    public @NotNull Path getBasePath() {
         return this.basePath;
     }
 }

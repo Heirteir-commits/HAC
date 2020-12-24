@@ -7,6 +7,7 @@ import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.config.annotations.ConfigFile;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
@@ -25,20 +26,20 @@ public final class HACConfigFile {
     /**
      * The HAC API reference.
      */
-    private final HACAPI api;
+    private final @NotNull HACAPI api;
     /**
      * The map that handles organizing all the path locations.
      */
-    private final Map<String, ConfigPath> entries;
+    private final @NotNull Map<String, ConfigPath> entries;
     /**
      * The path to the config file.
      */
-    private final Path path;
+    private final @NotNull Path path;
 
     /**
      * The parse result of the TOML config.
      */
-    private TomlParseResult current;
+    private @Nullable TomlParseResult current;
 
     /**
      * Instantiates a new Hac config file.
@@ -47,8 +48,8 @@ public final class HACConfigFile {
      * @param path the path
      */
     public HACConfigFile(
-        @NotNull final HACAPI api,
-        @NotNull final Path path
+        final @NotNull HACAPI api,
+        final @NotNull Path path
     ) {
         this.api = api;
         this.path = path;
@@ -66,14 +67,14 @@ public final class HACConfigFile {
      * @param file          the file
      */
     public HACConfigFile(
-        @NotNull final HACAPI api,
-        @NotNull final HACConfigHandler configHandler,
-        @NotNull final ConfigFile file
+        final @NotNull HACAPI api,
+        final @NotNull HACConfigHandler configHandler,
+        final @NotNull ConfigFile file
     ) {
         this(api, configHandler.getBasePath().resolve(file.value()));
     }
 
-    private static String getPathString(@NotNull final String path) {
+    private static @NotNull String getPathString(final @NotNull String path) {
         String output = StringUtils.substringAfterLast(path, ".");
 
         if (output.isEmpty()) {
@@ -115,14 +116,14 @@ public final class HACConfigFile {
      *
      * @param configPath the config path
      */
-    public void loadConfigPath(@NotNull final ConfigPath configPath) {
+    public void loadConfigPath(final @NotNull ConfigPath configPath) {
         if (configPath.getType().equals(ConfigPath.Type.VALUE)) {
             this.addParent(configPath);
             this.entries.put(configPath.getPath(), configPath);
 
             ConfigField<?> field = (ConfigField<?>) configPath;
 
-            if (this.current.contains(field.getPath())) {
+            if (this.current != null && this.current.contains(field.getPath())) {
                 Object value = this.current.get(field.getPath());
 
                 if (value != null) {
@@ -134,7 +135,7 @@ public final class HACConfigFile {
         }
     }
 
-    private void addParent(@NotNull final ConfigPath path) {
+    private void addParent(final @NotNull ConfigPath path) {
         String parentPath = StringUtils.substringBeforeLast(path.getPath(), ".");
 
         if (!parentPath.isEmpty() && (!this.entries.containsKey(parentPath) || !this.entries.get(parentPath)

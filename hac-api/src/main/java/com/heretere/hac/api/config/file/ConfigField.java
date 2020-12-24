@@ -4,36 +4,38 @@ import com.heretere.hac.api.HACAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * The type Config field.
  *
  * @param <T> the type parameter
  */
-public class ConfigField<T> extends ConfigPath {
+public final class ConfigField<T> extends ConfigPath {
     /**
      * The class type of the config field.
      */
-    private final Class<T> type;
+    private final @NotNull Class<T> type;
     /**
      * A WeakReference to the instance that holds this value.
      */
-    private final WeakReference<?> instance;
+    private final @NotNull Reference<?> instance;
     /**
      * The getter to retrieve the value.
      */
-    private Method getter;
+    private @Nullable Method getter;
     /**
      * The setter to set the value.
      */
-    private Method setter;
+    private @Nullable Method setter;
     /**
      * If the WeakReference is null, this is the last known value that was retrieved.
      */
-    private T lastKnownValue;
+    private @Nullable T lastKnownValue;
 
     /**
      * Instantiates a new Config field.
@@ -45,11 +47,11 @@ public class ConfigField<T> extends ConfigPath {
      * @param comments the comments
      */
     public ConfigField(
-        @NotNull final HACAPI api,
-        @NotNull final Class<T> type,
-        @Nullable final Object instance,
-        @NotNull final String path,
-        @NotNull final String... comments
+        final @NotNull HACAPI api,
+        final @NotNull Class<T> type,
+        final @Nullable Object instance,
+        final @NotNull String path,
+        final @NotNull String... comments
     ) {
         super(api, Type.VALUE, path, comments);
         this.type = type;
@@ -61,9 +63,9 @@ public class ConfigField<T> extends ConfigPath {
      *
      * @param getter the getter
      */
-    public void setGetter(@NotNull final Method getter) {
+    public void setGetter(final @NotNull Method getter) {
         this.getter = getter;
-        this.lastKnownValue = this.getValue();
+        this.lastKnownValue = this.getValue().orElse(null);
     }
 
     /**
@@ -71,7 +73,7 @@ public class ConfigField<T> extends ConfigPath {
      *
      * @param setter the setter
      */
-    public void setSetter(@NotNull final Method setter) {
+    public void setSetter(final @NotNull Method setter) {
         this.setter = setter;
     }
 
@@ -80,10 +82,10 @@ public class ConfigField<T> extends ConfigPath {
      *
      * @return the value
      */
-    public T getValue() {
+    public @NotNull Optional<T> getValue() {
         T output;
         Object tmpInstance = this.instance.get();
-        if (tmpInstance == null) {
+        if (tmpInstance == null || this.getter == null) {
             output = this.lastKnownValue;
         } else {
             try {
@@ -95,7 +97,7 @@ public class ConfigField<T> extends ConfigPath {
             }
         }
 
-        return output;
+        return Optional.ofNullable(output);
     }
 
     /**
@@ -103,10 +105,10 @@ public class ConfigField<T> extends ConfigPath {
      *
      * @param value the value
      */
-    public void setValue(@NotNull final T value) {
+    public void setValue(final @NotNull T value) {
         this.lastKnownValue = value;
         Object tmpInstance = this.instance.get();
-        if (tmpInstance != null) {
+        if (tmpInstance != null && this.setter != null) {
             try {
                 this.setter.invoke(tmpInstance, value);
             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -120,7 +122,7 @@ public class ConfigField<T> extends ConfigPath {
      *
      * @param value the value
      */
-    public void setValueRaw(@NotNull final Object value) {
+    public void setValueRaw(final @NotNull Object value) {
         this.setValue(this.type.cast(value));
     }
 
@@ -129,7 +131,7 @@ public class ConfigField<T> extends ConfigPath {
      *
      * @return the class type
      */
-    public Class<T> getClassType() {
+    public @NotNull Class<T> getClassType() {
         return this.type;
     }
 }

@@ -9,21 +9,21 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
     /**
      * The run priority of the event executor.
      */
-    private final Priority priority;
+    private final @NotNull Priority priority;
     /**
      * The unique identifier for this event executor.
      */
-    private final String identifier;
+    private final @NotNull String identifier;
 
     /**
      * The WrappedPacket class this executor handles.
      */
-    private final Class<T> wrappedClass;
+    private final @NotNull Class<T> wrappedClass;
 
     protected AbstractPacketEventExecutor(
-        @NotNull final Priority priority,
-        @NotNull final String identifier,
-        @NotNull final PacketReferences.PacketReference<T> reference
+        final @NotNull Priority priority,
+        final @NotNull String identifier,
+        final @NotNull PacketReferences.PacketReference<T> reference
     ) {
         this.priority = priority;
         this.identifier = identifier + "_" + reference.getIdentifier();
@@ -38,8 +38,8 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      * @return true if execution was successful
      */
     public final boolean execute(
-        @NotNull final HACPlayer player,
-        @NotNull final Object packet
+        final @NotNull HACPlayer player,
+        final @NotNull Object packet
     ) {
         return this.execute(player, this.wrappedClass.cast(packet));
     }
@@ -51,8 +51,8 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      * @param packet The packet to be passed into the executor
      */
     public final void onStop(
-        @NotNull final HACPlayer player,
-        @NotNull final Object packet
+        final @NotNull HACPlayer player,
+        final @NotNull Object packet
     ) {
         this.onStop(player, this.wrappedClass.cast(packet));
     }
@@ -72,7 +72,7 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      *
      * @return The priority
      */
-    public Priority getPriority() {
+    public @NotNull Priority getPriority() {
         return this.priority;
     }
 
@@ -81,7 +81,7 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      *
      * @return The unique identifier
      */
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return this.identifier;
     }
 
@@ -90,7 +90,7 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      *
      * @return Wrapped packet class
      */
-    public Class<T> getWrappedClass() {
+    public @NotNull Class<T> getWrappedClass() {
         return this.wrappedClass;
     }
 }

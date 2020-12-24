@@ -2,7 +2,7 @@ package com.heretere.hac.movement.player.data.simulator;
 
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.api.player.builder.AbstractDataFactory;
+import com.heretere.hac.api.player.factory.AbstractDataFactory;
 import com.heretere.hac.movement.Movement;
 import com.heretere.hac.movement.player.data.simulator.executors.SimulatorFlyingExecutor;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public final class SimulatorFactory extends AbstractDataFactory<Simulator> {
     /**
      * The movement proxy reference.
      */
-    private final Movement movement;
+    private final @NotNull Movement movement;
 
     /**
      * Instantiates a new Simulator factory.
@@ -23,15 +23,15 @@ public final class SimulatorFactory extends AbstractDataFactory<Simulator> {
      * @param movement the movement plugin
      */
     public SimulatorFactory(
-        @NotNull final HACAPI api,
-        @NotNull final Movement movement
+        final @NotNull HACAPI api,
+        final @NotNull Movement movement
     ) {
         super(api, new SimulatorFlyingExecutor("simulator"));
         this.movement = movement;
     }
 
     @Override
-    public Simulator build(@NotNull final HACPlayer player) {
+    public @NotNull Simulator build(final @NotNull HACPlayer player) {
         return new Simulator(this.movement.getProxy(), player);
     }
 }

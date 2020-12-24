@@ -19,7 +19,7 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
      *
      * @param identifier the identifier
      */
-    public PlayerDataEntityActionExecutor(@NotNull final String identifier) {
+    public PlayerDataEntityActionExecutor(final @NotNull String identifier) {
         super(
             Priority.PROCESS_1,
             identifier,
@@ -29,38 +29,38 @@ public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExe
 
     @Override
     public boolean execute(
-        @NotNull final HACPlayer player,
-        @NotNull final EntityActionPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull EntityActionPacket packet
     ) {
-        PlayerData data = player.getDataManager().getData(PlayerData.class);
-
-        switch (packet.getAction()) {
-            case START_SNEAKING:
-                data.getCurrent().setSneaking(true);
-                break;
-            case STOP_SNEAKING:
-                data.getCurrent().setSneaking(false);
-                break;
-            case START_SPRINTING:
-                data.getCurrent().setSprinting(true);
-                break;
-            case STOP_SPRINTING:
-                data.getCurrent().setSprinting(false);
-                break;
-            case START_FALL_FLYING:
-                data.getCurrent().setElytraFlying(true);
-                break;
-            default:
-                break;
-        }
+        player.getDataManager().getData(PlayerData.class).ifPresent(playerData -> {
+            switch (packet.getAction()) {
+                case START_SNEAKING:
+                    playerData.getCurrent().setSneaking(true);
+                    break;
+                case STOP_SNEAKING:
+                    playerData.getCurrent().setSneaking(false);
+                    break;
+                case START_SPRINTING:
+                    playerData.getCurrent().setSprinting(true);
+                    break;
+                case STOP_SPRINTING:
+                    playerData.getCurrent().setSprinting(false);
+                    break;
+                case START_FALL_FLYING:
+                    playerData.getCurrent().setElytraFlying(true);
+                    break;
+                default:
+                    break;
+            }
+        });
 
         return true;
     }
 
     @Override
     public void onStop(
-        @NotNull final HACPlayer player,
-        @NotNull final EntityActionPacket packet
+        final @NotNull HACPlayer player,
+        final @NotNull EntityActionPacket packet
     ) {
         throw new NotImplementedException("Updater Class.");
     }

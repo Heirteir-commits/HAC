@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,19 +21,19 @@ public final class HACPlayerList {
     /**
      * The HACPlayer factory instance.
      */
-    private final HACPlayerFactory builder;
+    private final @NotNull HACPlayerFactory factory;
     /**
      * A map of all the registered players.
      */
-    private final Map<UUID, HACPlayer> players;
+    private final @NotNull Map<UUID, HACPlayer> players;
 
     /**
      * This constructor should only ever be called by {@link HACAPI}.
      *
      * @param api the api
      */
-    public HACPlayerList(@NotNull final HACAPI api) {
-        this.builder = new HACPlayerFactory(api, this);
+    public HACPlayerList(final @NotNull HACAPI api) {
+        this.factory = new HACPlayerFactory(api, this);
         this.players = Maps.newHashMap();
     }
 
@@ -42,7 +43,7 @@ public final class HACPlayerList {
      * @param uuid The UUID of the Bukkit {@link org.bukkit.entity.Player}.
      * @return An instance of {@link HACPlayer} from the player list.
      */
-    public HACPlayer getPlayer(@NotNull final UUID uuid) {
+    public @NotNull HACPlayer getPlayer(final @NotNull UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
 
         Preconditions.checkNotNull(player, String.format("No player online with uuid '%s'", uuid));
@@ -56,8 +57,8 @@ public final class HACPlayerList {
      * @param player The {@link org.bukkit.entity.Player} object.
      * @return An instance of {@link HACPlayer} from the player list.
      */
-    public HACPlayer getPlayer(@NotNull final Player player) {
-        return this.players.computeIfAbsent(player.getUniqueId(), id -> this.builder.build(player));
+    public @NotNull HACPlayer getPlayer(final @NotNull Player player) {
+        return this.players.computeIfAbsent(player.getUniqueId(), id -> this.factory.build(player));
     }
 
     /**
@@ -66,8 +67,8 @@ public final class HACPlayerList {
      * @param uuid The UUID of the Bukkit {@link org.bukkit.entity.Player}.
      * @return The removed {@link HACPlayer} instance.
      */
-    public HACPlayer removePlayer(@NotNull final UUID uuid) {
-        return this.players.remove(uuid);
+    public @NotNull Optional<HACPlayer> removePlayer(final @NotNull UUID uuid) {
+        return Optional.ofNullable(this.players.remove(uuid));
     }
 
     /**
@@ -76,7 +77,7 @@ public final class HACPlayerList {
      * @param player The {@link org.bukkit.entity.Player} object.
      * @return The removed {@link HACPlayer} instance.
      */
-    public HACPlayer removePlayer(@NotNull final Player player) {
+    public @NotNull Optional<HACPlayer> removePlayer(final @NotNull Player player) {
         return this.removePlayer(player.getUniqueId());
     }
 
@@ -86,7 +87,7 @@ public final class HACPlayerList {
      *
      * @return An {@link com.google.common.collect.ImmutableSet}
      */
-    public Set<HACPlayer> getAll() {
+    public @NotNull Set<HACPlayer> getAll() {
         return ImmutableSet.copyOf(this.players.values());
     }
 
@@ -95,7 +96,7 @@ public final class HACPlayerList {
      *
      * @return An {@link HACPlayerFactory} instance.
      */
-    public HACPlayerFactory getBuilder() {
-        return this.builder;
+    public @NotNull HACPlayerFactory getFactory() {
+        return this.factory;
     }
 }
