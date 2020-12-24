@@ -10,6 +10,9 @@ public class Simulator {
 //    private final SimulatorEntity entity;
 //    private final SimulatorEntity.Data data;
 
+    /**
+     * Instantiates a new simulator.
+     */
     public Simulator(
         MovementVersionProxy proxy,
         HACPlayer player
