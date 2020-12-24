@@ -1,7 +1,7 @@
 package com.heretere.hac.util.plugin.dependency;
 
 import com.google.common.collect.Sets;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.Relocator;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
@@ -27,7 +27,7 @@ public class DependencyLoader {
     /**
      * The HACPlugin reference.
      */
-    private final @NotNull AbstractHACPlugin parent;
+    private final @NotNull HACPlugin parent;
     /**
      * The relocator instance.
      */
@@ -38,19 +38,19 @@ public class DependencyLoader {
      *
      * @param parent the parent
      */
-    public DependencyLoader(final @NotNull AbstractHACPlugin parent) {
+    public DependencyLoader(final @NotNull HACPlugin parent) {
         this.parent = parent;
         this.relocator = new Relocator(parent, this);
     }
 
     /**
-     * Gets all the dependency annotations or a class and processes them into AbstractDependency objects.
+     * Gets all the dependency annotations or a class and processes them into Dependency objects.
      *
      * @param clazz the clazz
      * @return the dependencies
      */
-    public @NotNull Set<AbstractDependency> getDependencies(final @NotNull Class<?> clazz) {
-        Set<AbstractDependency> dependencies = Sets.newLinkedHashSet();
+    public @NotNull Set<Dependency> getDependencies(final @NotNull Class<?> clazz) {
+        Set<Dependency> dependencies = Sets.newLinkedHashSet();
         Set<Relocation> relocations = Sets.newLinkedHashSet();
 
         if (clazz.isAnnotationPresent(Relocation.List.class)) {
@@ -89,7 +89,7 @@ public class DependencyLoader {
      * @param dependency the dependency
      * @return the boolean
      */
-    public boolean downloadDependency(final @NotNull AbstractDependency dependency) {
+    public boolean downloadDependency(final @NotNull Dependency dependency) {
         boolean success = true;
 
         if (dependency.needsUpdate()) {
@@ -130,7 +130,7 @@ public class DependencyLoader {
      * @param dependency the dependency
      * @return true if dependency was successfully relocated.
      */
-    public boolean relocateDependency(final @NotNull AbstractDependency dependency) {
+    public boolean relocateDependency(final @NotNull Dependency dependency) {
         boolean success = true;
 
         if (dependency.needsRelocation()) {
@@ -153,7 +153,7 @@ public class DependencyLoader {
      * @param dependency the dependency
      * @return the boolean
      */
-    public boolean loadDependency(final @NotNull AbstractDependency dependency) {
+    public boolean loadDependency(final @NotNull Dependency dependency) {
         boolean success = this.downloadDependency(dependency);
 
         if (success) {

@@ -2,9 +2,9 @@ package com.heretere.hac.api.events.packets.wrapper;
 
 
 /**
- * The type Abstract wrapped packet out.
+ * The type wrapped packet out.
  */
-public abstract class AbstractWrappedPacketOut implements WrappedPacket {
+public abstract class WrappedPacketOut implements WrappedPacket {
     /**
      * The entity id attached to this Out packet.
      */
@@ -12,11 +12,11 @@ public abstract class AbstractWrappedPacketOut implements WrappedPacket {
 
 
     /**
-     * Instantiates a new Abstract wrapped packet out.
+     * Instantiates a new wrapped packet out.
      *
      * @param entityId the entity id
      */
-    protected AbstractWrappedPacketOut(final int entityId) {
+    protected WrappedPacketOut(final int entityId) {
         this.entityId = entityId;
     }
 

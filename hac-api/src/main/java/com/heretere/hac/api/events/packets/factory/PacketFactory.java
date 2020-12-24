@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public abstract class AbstractPacketFactory<T extends WrappedPacket> {
+public abstract class PacketFactory<T extends WrappedPacket> {
     /**
      * The nms packet class that this factory handles.
      */
     private final @NotNull Set<Class<?>> nmsClasses;
 
-    protected AbstractPacketFactory(
+    protected PacketFactory(
         final @NotNull Class<?> base,
         final @NotNull Class<?>... nmsClasses
     ) {

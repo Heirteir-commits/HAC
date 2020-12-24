@@ -1,11 +1,11 @@
 package com.heretere.hac.api.events.packets.wrapper.serverside;
 
-import com.heretere.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
+import com.heretere.hac.api.events.packets.wrapper.WrappedPacketOut;
 
 /**
  * A Wrapped version of the PacketPlayOutEntityVelocityPacket.
  */
-public final class EntityVelocityPacket extends AbstractWrappedPacketOut {
+public final class EntityVelocityPacket extends WrappedPacketOut {
     /**
      * The constant CONVERSION. Used to convert the incoming values usually it will be (input / CONVERSION).
      */

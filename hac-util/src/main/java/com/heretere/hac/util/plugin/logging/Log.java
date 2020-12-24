@@ -2,7 +2,7 @@ package com.heretere.hac.util.plugin.logging;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import com.heretere.hac.util.plugin.logging.format.SingleLineFormatter;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -33,7 +33,7 @@ public final class Log {
     /**
      * The parent plugin reference.
      */
-    private final @NotNull AbstractHACPlugin parent;
+    private final @NotNull HACPlugin parent;
 
     /**
      * The logging file location.
@@ -50,7 +50,7 @@ public final class Log {
      *
      * @param parent the parent
      */
-    public Log(final @NotNull AbstractHACPlugin parent) {
+    public Log(final @NotNull HACPlugin parent) {
         this.parent = parent;
         this.loggingFile = this.parent.getBaseDirectory()
                                       .resolve("logs")

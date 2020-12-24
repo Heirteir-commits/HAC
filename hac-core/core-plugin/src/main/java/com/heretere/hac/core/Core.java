@@ -7,7 +7,7 @@ import com.heretere.hac.core.proxy.player.PlayerData;
 import com.heretere.hac.core.proxy.player.PlayerDataFactory;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
-import com.heretere.hac.util.proxy.AbstractProxyPlugin;
+import com.heretere.hac.util.proxy.ProxyPlugin;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
 @Relocation(from = "org|tomlj", to = "com|heretere|hac|core|libs|tomlj")
 @Relocation(from = "org|antlr", to = "com|heretere|hac|core|libs|antlr")
-public final class Core extends AbstractProxyPlugin<CoreVersionProxy> {
+public final class Core extends ProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.
      *

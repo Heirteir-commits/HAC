@@ -1,7 +1,7 @@
 package com.heretere.hac.core.proxy.player.executors;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.AbstractPacketEventExecutor;
+import com.heretere.hac.api.events.PacketEventExecutor;
 import com.heretere.hac.api.events.Priority;
 import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
 import com.heretere.hac.api.player.HACPlayer;
@@ -9,7 +9,7 @@ import com.heretere.hac.core.proxy.player.PlayerData;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-public final class PlayerDataAbilitiesExecutor extends AbstractPacketEventExecutor<AbilitiesPacket> {
+public final class PlayerDataAbilitiesExecutor extends PacketEventExecutor<AbilitiesPacket> {
     /**
      * Instantiates a new Player data abilities executor.
      *

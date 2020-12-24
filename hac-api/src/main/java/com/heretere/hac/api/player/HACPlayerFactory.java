@@ -2,7 +2,7 @@ package com.heretere.hac.api.player;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.player.factory.AbstractDataFactory;
+import com.heretere.hac.api.player.factory.DataFactory;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public final class HACPlayerFactory {
     /**
      * A Map of the currently registered builders.
      */
-    private final @NotNull Map<Class<?>, AbstractDataFactory<?>> builders;
+    private final @NotNull Map<Class<?>, DataFactory<?>> builders;
 
     HACPlayerFactory(
         final @NotNull HACAPI api,
@@ -38,17 +38,17 @@ public final class HACPlayerFactory {
 
 
     /**
-     * Registers a {@link AbstractDataFactory} to be added to the
+     * Registers a {@link DataFactory} to be added to the
      * {@link com.heretere.hac.api.player.factory.DataManager} instance. This will also add the data to all active
      * {@link com.heretere.hac.api.player.factory.DataManager} instances as well.
      *
-     * @param <T>     The {@link java.lang.Class} the {@link AbstractDataFactory} outputs.
-     * @param clazz   The {@link java.lang.Class} the {@link AbstractDataFactory} outputs.
-     * @param builder The {@link AbstractDataFactory} instance.
+     * @param <T>     The {@link java.lang.Class} the {@link DataFactory} outputs.
+     * @param clazz   The {@link java.lang.Class} the {@link DataFactory} outputs.
+     * @param builder The {@link DataFactory} instance.
      */
     public <T> void registerDataBuilder(
         final @NotNull Class<T> clazz,
-        final @NotNull AbstractDataFactory<T> builder
+        final @NotNull DataFactory<T> builder
     ) {
         this.builders.put(clazz, builder);
         this.playerList.getAll().forEach(player -> player.getDataManager().addDataRaw(clazz, builder.build(player)));
@@ -57,13 +57,13 @@ public final class HACPlayerFactory {
 
 
     /**
-     * Unregisters a {@link AbstractDataFactory} from all {@link com.heretere.hac.api.player.factory.DataManager}
+     * Unregisters a {@link DataFactory} from all {@link com.heretere.hac.api.player.factory.DataManager}
      * instances.
      *
-     * @param clazz The {@link java.lang.Class} used to register the {@link AbstractDataFactory} initially.
+     * @param clazz The {@link java.lang.Class} used to register the {@link DataFactory} initially.
      */
     public void unregisterDataBuilder(final @NotNull Class<?> clazz) {
-        AbstractDataFactory<?> builder = this.builders.remove(clazz);
+        DataFactory<?> builder = this.builders.remove(clazz);
 
         if (builder != null) {
             builder.unregisterUpdaters();

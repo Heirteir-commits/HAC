@@ -2,7 +2,7 @@ package com.heretere.hac.api.events.packets;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.events.packets.factory.AbstractPacketFactory;
+import com.heretere.hac.api.events.packets.factory.PacketFactory;
 import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
 import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
@@ -54,18 +54,18 @@ public final class PacketReferences {
     }
 
     /**
-     * The type Abstract packet reference holder.
+     * The type packet reference holder.
      */
-    public abstract static class AbstractPacketReferenceHolder {
+    public abstract static class PacketReferenceHolder {
         /**
          * A map of the packet types stored by this reference holder.
          */
         private final @NotNull Map<Class<?>, PacketReference<?>> packetReferences;
 
         /**
-         * Instantiates a new Abstract packet reference holder.
+         * Instantiates a new packet reference holder.
          */
-        protected AbstractPacketReferenceHolder() {
+        protected PacketReferenceHolder() {
             this.packetReferences = Maps.newIdentityHashMap();
         }
 
@@ -87,7 +87,7 @@ public final class PacketReferences {
          */
         protected void register(
             final @NotNull PacketReference<?> packetReference,
-            final @NotNull AbstractPacketFactory<?> builder
+            final @NotNull PacketFactory<?> builder
         ) {
             for (Class<?> nmsClass : builder.getPacketClasses()) {
                 this.packetReferences.put(nmsClass, packetReference);
@@ -98,7 +98,7 @@ public final class PacketReferences {
     /**
      * The type Client side.
      */
-    public static final class ClientSide extends AbstractPacketReferenceHolder {
+    public static final class ClientSide extends PacketReferenceHolder {
         /**
          * Abilities Packet reference holder.
          */
@@ -150,7 +150,7 @@ public final class PacketReferences {
     /**
      * The type Server side.
      */
-    public static final class ServerSide extends AbstractPacketReferenceHolder {
+    public static final class ServerSide extends PacketReferenceHolder {
         /**
          * Entity velocity packet reference holder.
          */
@@ -186,7 +186,7 @@ public final class PacketReferences {
         /**
          * The parent reference holder class.
          */
-        private final @NotNull AbstractPacketReferenceHolder parent;
+        private final @NotNull PacketReferenceHolder parent;
         /**
          * The wrapped packet class this reference pertains to.
          */
@@ -194,7 +194,7 @@ public final class PacketReferences {
         /**
          * The factory that creates wrapped packets of this type.
          */
-        private @Nullable AbstractPacketFactory<T> builder;
+        private @Nullable PacketFactory<T> builder;
 
         /**
          * Ensures that only one factory is registered.
@@ -203,7 +203,7 @@ public final class PacketReferences {
 
         private PacketReference(
             final @NotNull String identifier,
-            final @NotNull AbstractPacketReferenceHolder parent,
+            final @NotNull PacketReferenceHolder parent,
             final @NotNull Class<T> wrappedPacketClass
         ) {
             this.identifier = identifier;
@@ -216,7 +216,7 @@ public final class PacketReferences {
          *
          * @param builder the builder
          */
-        public void register(final @NotNull AbstractPacketFactory<T> builder) {
+        public void register(final @NotNull PacketFactory<T> builder) {
             Preconditions.checkState(!this.registered, "Already registered.");
             Preconditions.checkArgument(
                 builder.getWrappedClass().equals(this.wrappedPacketClass),
@@ -242,7 +242,7 @@ public final class PacketReferences {
          *
          * @return the builder
          */
-        public @NotNull AbstractPacketFactory<T> getBuilder() {
+        public @NotNull PacketFactory<T> getBuilder() {
             Preconditions.checkState(this.registered, "Not registered.");
             assert this.builder != null;
             return this.builder;

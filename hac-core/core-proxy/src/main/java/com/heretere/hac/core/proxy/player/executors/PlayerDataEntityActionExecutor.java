@@ -1,7 +1,7 @@
 package com.heretere.hac.core.proxy.player.executors;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.AbstractPacketEventExecutor;
+import com.heretere.hac.api.events.PacketEventExecutor;
 import com.heretere.hac.api.events.Priority;
 import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.player.HACPlayer;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The type Player data entity action executor.
  */
-public final class PlayerDataEntityActionExecutor extends AbstractPacketEventExecutor<EntityActionPacket> {
+public final class PlayerDataEntityActionExecutor extends PacketEventExecutor<EntityActionPacket> {
 
     /**
      * Instantiates a new Player data entity action executor.

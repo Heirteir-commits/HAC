@@ -2,10 +2,10 @@ package com.heretere.hac.core.proxy.packets.channel;
 
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.events.packets.PacketReferences;
-import com.heretere.hac.api.events.packets.wrapper.AbstractWrappedPacketOut;
 import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
+import com.heretere.hac.api.events.packets.wrapper.WrappedPacketOut;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 /**
  * The type Channel injector base.
  */
-public abstract class AbstractChannelInjector {
+public abstract class ChannelInjector {
     /**
      * This is the name of the channel handler we want to place our custom channel handler before in the netty channel
      * pipeline.
@@ -33,7 +33,7 @@ public abstract class AbstractChannelInjector {
     /**
      * The HACAPI reference.
      */
-    private final @NotNull AbstractHACPlugin parent;
+    private final @NotNull HACPlugin parent;
     /**
      * This executor service is responsible for attaching our channel handler in a way that doesn't
      * hinder the player's login speed.
@@ -45,7 +45,7 @@ public abstract class AbstractChannelInjector {
      *
      * @param parent The parent HACPlugin instance.
      */
-    protected AbstractChannelInjector(final @NotNull AbstractHACPlugin parent) {
+    protected ChannelInjector(final @NotNull HACPlugin parent) {
         this.parent = parent;
         this.channelChangeExecutor = Executors.newSingleThreadExecutor();
     }
@@ -59,8 +59,8 @@ public abstract class AbstractChannelInjector {
         player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
             this.remove(player);
             this.channelChangeExecutor.execute(() -> this.getPipeline(bukkitPlayer).addBefore(
-                AbstractChannelInjector.AFTER_KEY,
-                AbstractChannelInjector.HANDLER_KEY,
+                ChannelInjector.AFTER_KEY,
+                ChannelInjector.HANDLER_KEY,
                 new HACChannelHandler(this.parent, player)
             ));
         });
@@ -76,8 +76,8 @@ public abstract class AbstractChannelInjector {
             ChannelPipeline pipeline = this.getPipeline(bukkitPlayer);
 
             this.channelChangeExecutor.execute(() -> {
-                if (pipeline.get(AbstractChannelInjector.HANDLER_KEY) != null) {
-                    pipeline.remove(AbstractChannelInjector.HANDLER_KEY);
+                if (pipeline.get(ChannelInjector.HANDLER_KEY) != null) {
+                    pipeline.remove(ChannelInjector.HANDLER_KEY);
                 }
             });
         });
@@ -102,7 +102,7 @@ public abstract class AbstractChannelInjector {
         /**
          * The plugin instance that is hosting HACChannelHandler.
          */
-        private final @NotNull AbstractHACPlugin parent;
+        private final @NotNull HACPlugin parent;
 
         /**
          * The HACPlayer this ChannelHandler is attached to.
@@ -110,7 +110,7 @@ public abstract class AbstractChannelInjector {
         private final @NotNull HACPlayer player;
 
         private HACChannelHandler(
-            final @NotNull AbstractHACPlugin parent,
+            final @NotNull HACPlugin parent,
             final @NotNull HACPlayer player
         ) {
             super();
@@ -166,7 +166,7 @@ public abstract class AbstractChannelInjector {
                     HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket);
                 } else {
                     this.player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
-                        if (((AbstractWrappedPacketOut) wrappedPacket).getEntityId() == bukkitPlayer.getEntityId()) {
+                        if (((WrappedPacketOut) wrappedPacket).getEntityId() == bukkitPlayer.getEntityId()) {
                             HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket);
                         }
                     });

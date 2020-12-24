@@ -1,17 +1,17 @@
 package com.heretere.hac.movement.player.data.simulator;
 
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.movement.proxy.AbstractMovementVersionProxy;
+import com.heretere.hac.movement.proxy.MovementVersionProxy;
 
 public class Simulator {
-    private final AbstractMovementVersionProxy proxy;
+    private final MovementVersionProxy proxy;
     private final HACPlayer player;
 
 //    private final SimulatorEntity entity;
 //    private final SimulatorEntity.Data data;
 
     public Simulator(
-        AbstractMovementVersionProxy proxy,
+        MovementVersionProxy proxy,
         HACPlayer player
     ) {
         this.proxy = proxy;

@@ -58,22 +58,22 @@ public final class HACPlayer {
     }
 
     /**
-     * This passes a runnable to the {@link com.heretere.hac.api.concurrency.ThreadPool}.
+     * This passes a runnable to the HAC thread pool.
      * Anything passed to this method is ran in guaranteed serial order.
      *
-     * @param runnable     The runnable to run in the {@link com.heretere.hac.api.concurrency.ThreadPool}.
-     * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler.
+     * @param runnable     The runnable to run in the HAC thread pool
+     * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler
      */
     public void runTaskAsync(
         final @NotNull Runnable runnable,
         final @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler
     ) {
-        this.future = this.future.thenRunAsync(runnable, this.api.getThreadPool().getPool())
+        this.future = this.future.thenRunAsync(runnable, this.api.getThreadPool())
                                  .whenCompleteAsync(errorHandler == null ? (msg, ex) -> {
                                      if (ex != null) {
                                          this.api.getErrorHandler().getHandler().accept(ex);
                                      }
-                                 } : errorHandler, this.api.getThreadPool().getPool());
+                                 } : errorHandler, this.api.getThreadPool());
     }
 
     /**

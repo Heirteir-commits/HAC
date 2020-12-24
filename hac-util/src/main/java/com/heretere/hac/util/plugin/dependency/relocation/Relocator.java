@@ -2,8 +2,8 @@ package com.heretere.hac.util.plugin.dependency.relocation;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
-import com.heretere.hac.util.plugin.dependency.AbstractDependency;
+import com.heretere.hac.util.plugin.HACPlugin;
+import com.heretere.hac.util.plugin.dependency.Dependency;
 import com.heretere.hac.util.plugin.dependency.DependencyLoader;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
@@ -54,17 +54,17 @@ public final class Relocator {
      * @param dependencyLoader the dependency loader
      */
     public Relocator(
-        final @NotNull AbstractHACPlugin parent,
+        final @NotNull HACPlugin parent,
         final @NotNull DependencyLoader dependencyLoader
     ) {
         AccessController.doPrivileged((PrivilegedAction<?>) () -> this.isolatedClassLoader = new IsolatedClassLoader());
 
-        Set<AbstractDependency> dependencies = dependencyLoader.getDependencies(Relocator.class);
+        Set<Dependency> dependencies = dependencyLoader.getDependencies(Relocator.class);
 
         boolean success = dependencies.stream().allMatch(dependencyLoader::downloadDependency);
 
         if (success) {
-            for (AbstractDependency dependency : dependencies) {
+            for (Dependency dependency : dependencies) {
                 if (!this.isolatedClassLoader.addPath(dependency.getDownloadLocation())) {
                     success = false;
                     parent.getLog().reportFatalError(
@@ -108,7 +108,7 @@ public final class Relocator {
      * @param dependency the dependency
      * @return the optional
      */
-    public @NotNull Optional<Throwable> relocate(final @NotNull AbstractDependency dependency) {
+    public @NotNull Optional<Throwable> relocate(final @NotNull Dependency dependency) {
         Optional<Throwable> output;
 
         if (!(this.isolatedClassLoader == null

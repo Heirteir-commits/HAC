@@ -1,7 +1,7 @@
 package com.heretere.hac.api;
 
 import com.google.common.base.Preconditions;
-import com.heretere.hac.api.concurrency.ThreadPool;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.events.AsyncPacketEventManager;
 import com.heretere.hac.api.events.packets.PacketReferences;
@@ -11,6 +11,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -33,7 +35,7 @@ public final class HACAPI {
     /**
      * The ThreadPool instance.
      */
-    private final @NotNull ThreadPool threadPool;
+    private final @NotNull ExecutorService threadPool;
     /**
      * The player list instance.
      */
@@ -56,7 +58,8 @@ public final class HACAPI {
 
         this.configHandler = new HACConfigHandler(this);
         this.eventManager = new AsyncPacketEventManager();
-        this.threadPool = new ThreadPool();
+        this.threadPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d")
+                                                                                  .build());
         this.hacPlayerList = new HACPlayerList(this);
         this.errorHandler = new ErrorHandler();
         this.packetReferences = new PacketReferences();
@@ -91,7 +94,7 @@ public final class HACAPI {
     public void unload() {
         this.checkLoaded();
         this.configHandler.unload();
-        this.threadPool.unload();
+        this.threadPool.shutdownNow();
         this.loaded = false;
     }
 
@@ -121,7 +124,7 @@ public final class HACAPI {
      *
      * @return By Default a Cached Thread Pool.
      */
-    public @NotNull ThreadPool getThreadPool() {
+    public @NotNull ExecutorService getThreadPool() {
         this.checkLoaded();
         return this.threadPool;
     }

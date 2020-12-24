@@ -1,7 +1,7 @@
 package com.heretere.hac.movement.player.data.simulator.executors;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.AbstractPacketEventExecutor;
+import com.heretere.hac.api.events.PacketEventExecutor;
 import com.heretere.hac.api.events.Priority;
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The type Simulator flying executor.
  */
-public final class SimulatorFlyingExecutor extends AbstractPacketEventExecutor<FlyingPacket> {
+public final class SimulatorFlyingExecutor extends PacketEventExecutor<FlyingPacket> {
     /**
      * Instantiates a new Simulator flying executor.
      *

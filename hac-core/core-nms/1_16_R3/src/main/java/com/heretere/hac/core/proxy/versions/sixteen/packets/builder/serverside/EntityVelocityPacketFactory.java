@@ -1,9 +1,9 @@
 package com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside;
 
-import com.heretere.hac.api.events.packets.factory.AbstractPacketFactory;
+import com.heretere.hac.api.events.packets.factory.PacketFactory;
 import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityVelocity;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +13,11 @@ import java.lang.reflect.Field;
 /**
  * The type Entity velocity packet factory.
  */
-public final class EntityVelocityPacketFactory extends AbstractPacketFactory<EntityVelocityPacket> {
+public final class EntityVelocityPacketFactory extends PacketFactory<EntityVelocityPacket> {
     /**
      * The HACPlugin reference.
      */
-    private final @NotNull AbstractHACPlugin parent;
+    private final @NotNull HACPlugin parent;
     /* Have to use reflections since fields are private and they're no getters :( */
 
     /**
@@ -42,7 +42,7 @@ public final class EntityVelocityPacketFactory extends AbstractPacketFactory<Ent
      *
      * @param parent the parent
      */
-    public EntityVelocityPacketFactory(final @NotNull AbstractHACPlugin parent) {
+    public EntityVelocityPacketFactory(final @NotNull HACPlugin parent) {
         super(PacketPlayOutEntityVelocity.class);
         this.parent = parent;
 

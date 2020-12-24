@@ -1,6 +1,6 @@
 package com.heretere.hac.util.plugin.dependency;
 
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * The type Maven dependency.
  */
-public final class MavenDependency extends AbstractDependency {
+public final class MavenDependency extends Dependency {
     /**
      * The group id.
      */
@@ -45,7 +45,7 @@ public final class MavenDependency extends AbstractDependency {
      * @param relocations the relocations
      */
     public MavenDependency(
-        final @NotNull AbstractHACPlugin parent,
+        final @NotNull HACPlugin parent,
         final @NotNull String groupId,
         final @NotNull String artifactId,
         final @NotNull String version,
@@ -67,7 +67,7 @@ public final class MavenDependency extends AbstractDependency {
      * @param relocations the relocations
      */
     public MavenDependency(
-        final @NotNull AbstractHACPlugin parent,
+        final @NotNull HACPlugin parent,
         final @NotNull Maven maven,
         final @NotNull Set<Relocation> relocations
     ) {

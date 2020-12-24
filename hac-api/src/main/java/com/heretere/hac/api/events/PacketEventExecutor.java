@@ -5,7 +5,7 @@ import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
+public abstract class PacketEventExecutor<T extends WrappedPacket> {
     /**
      * The run priority of the event executor.
      */
@@ -20,7 +20,7 @@ public abstract class AbstractPacketEventExecutor<T extends WrappedPacket> {
      */
     private final @NotNull Class<T> wrappedClass;
 
-    protected AbstractPacketEventExecutor(
+    protected PacketEventExecutor(
         final @NotNull Priority priority,
         final @NotNull String identifier,
         final @NotNull PacketReferences.PacketReference<T> reference

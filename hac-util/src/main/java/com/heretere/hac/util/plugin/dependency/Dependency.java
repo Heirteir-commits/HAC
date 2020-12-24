@@ -1,7 +1,7 @@
 package com.heretere.hac.util.plugin.dependency;
 
 import com.google.common.collect.ImmutableSet;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,11 +11,11 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class AbstractDependency {
+public abstract class Dependency {
     /**
      * The HACAPI reference.
      */
-    private final @NotNull AbstractHACPlugin parent;
+    private final @NotNull HACPlugin parent;
 
     /**
      * These relocations are processed {@link com.heretere.hac.util.plugin.dependency.relocation.Relocator}
@@ -23,8 +23,8 @@ public abstract class AbstractDependency {
      */
     private final @NotNull Set<Relocation> relocations;
 
-    protected AbstractDependency(
-        final @NotNull AbstractHACPlugin parent,
+    protected Dependency(
+        final @NotNull HACPlugin parent,
         final @NotNull Relocation... relocations
     ) {
         this.parent = parent;
@@ -32,8 +32,8 @@ public abstract class AbstractDependency {
         this.relocations = ImmutableSet.copyOf(relocations);
     }
 
-    protected AbstractDependency(
-        final @NotNull AbstractHACPlugin parent,
+    protected Dependency(
+        final @NotNull HACPlugin parent,
         final @NotNull Collection<Relocation> relocations
     ) {
         this.parent = parent;
@@ -57,7 +57,7 @@ public abstract class AbstractDependency {
 
     /**
      * Where this file should be downloaded to. This should not be equal to the output provided by
-     * {@link AbstractDependency#getRelocatedLocation()}.
+     * {@link Dependency#getRelocatedLocation()}.
      *
      * @return The download location of the dependency.
      */
@@ -65,7 +65,7 @@ public abstract class AbstractDependency {
 
     /**
      * Where the file containing the relocated packages should be placed. This should not be equal to the output
-     * provided by {@link AbstractDependency#getDownloadLocation()}.
+     * provided by {@link Dependency#getDownloadLocation()}.
      *
      * @return The packaged relocated file location.
      */
@@ -100,7 +100,7 @@ public abstract class AbstractDependency {
      *
      * @return The HACAPI reference.
      */
-    protected final @NotNull AbstractHACPlugin getParent() {
+    protected final @NotNull HACPlugin getParent() {
         return this.parent;
     }
 

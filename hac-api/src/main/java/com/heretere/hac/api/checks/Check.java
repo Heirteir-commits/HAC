@@ -1,19 +1,19 @@
 package com.heretere.hac.api.checks;
 
-import com.heretere.hac.api.events.AbstractPacketEventExecutor;
+import com.heretere.hac.api.events.PacketEventExecutor;
 import com.heretere.hac.api.events.Priority;
 import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractCheck<T extends WrappedPacket> extends AbstractPacketEventExecutor<T> {
+public abstract class Check<T extends WrappedPacket> extends PacketEventExecutor<T> {
     /**
      * Base identifier I used for sorting the execution order. This value is appended onto the parent identifier.
      */
     private final @NotNull String baseIdentifier;
 
-    protected AbstractCheck(
+    protected Check(
         final @NotNull Priority priority,
         final @NotNull String identifier,
         final @NotNull PacketReferences.PacketReference<T> reference

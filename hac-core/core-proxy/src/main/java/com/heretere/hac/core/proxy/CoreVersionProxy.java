@@ -1,13 +1,13 @@
 package com.heretere.hac.core.proxy;
 
-import com.heretere.hac.core.proxy.packets.channel.AbstractChannelInjector;
-import com.heretere.hac.util.proxy.AbstractVersionProxy;
+import com.heretere.hac.core.proxy.packets.channel.ChannelInjector;
+import com.heretere.hac.util.proxy.VersionProxy;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * The type Core version proxy.
  */
-public abstract class CoreVersionProxy implements AbstractVersionProxy {
+public abstract class CoreVersionProxy implements VersionProxy {
 
     /**
      * Instantiates a new Core version proxy.
@@ -24,7 +24,7 @@ public abstract class CoreVersionProxy implements AbstractVersionProxy {
      *
      * @return the channel injector
      */
-    public abstract @NotNull AbstractChannelInjector getChannelInjector();
+    public abstract @NotNull ChannelInjector getChannelInjector();
 
     /**
      * Base load.

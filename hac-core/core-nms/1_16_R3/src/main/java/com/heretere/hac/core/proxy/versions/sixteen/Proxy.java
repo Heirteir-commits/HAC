@@ -3,13 +3,13 @@ package com.heretere.hac.core.proxy.versions.sixteen;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.core.proxy.CoreVersionProxy;
-import com.heretere.hac.core.proxy.packets.channel.AbstractChannelInjector;
+import com.heretere.hac.core.proxy.packets.channel.ChannelInjector;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.AbilitiesPacketFactory;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.EntityActionPacketFactory;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.FlyingPacketFactory;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside.EntityVelocityPacketFactory;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.channel.ChannelInjectorProxy;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,7 +19,7 @@ public final class Proxy extends CoreVersionProxy {
     /**
      * The parent plugin reference.
      */
-    private final @NotNull AbstractHACPlugin parent;
+    private final @NotNull HACPlugin parent;
     /**
      * The injector used to attach channel handlers to all players.
      */
@@ -30,7 +30,7 @@ public final class Proxy extends CoreVersionProxy {
      *
      * @param parent the parent
      */
-    public Proxy(final @NotNull AbstractHACPlugin parent) {
+    public Proxy(final @NotNull HACPlugin parent) {
         this.parent = parent;
         this.channelInjectorProxy = new ChannelInjectorProxy(this.parent);
     }
@@ -49,7 +49,7 @@ public final class Proxy extends CoreVersionProxy {
     }
 
     @Override
-    public @NotNull AbstractChannelInjector getChannelInjector() {
+    public @NotNull ChannelInjector getChannelInjector() {
         return this.channelInjectorProxy;
     }
 

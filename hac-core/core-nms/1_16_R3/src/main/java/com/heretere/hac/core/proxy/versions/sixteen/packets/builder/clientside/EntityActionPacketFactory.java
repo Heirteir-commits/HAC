@@ -1,6 +1,6 @@
 package com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside;
 
-import com.heretere.hac.api.events.packets.factory.AbstractPacketFactory;
+import com.heretere.hac.api.events.packets.factory.PacketFactory;
 import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import net.minecraft.server.v1_16_R3.PacketPlayInEntityAction;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The type Entity action packet factory.
  */
-public final class EntityActionPacketFactory extends AbstractPacketFactory<EntityActionPacket> {
+public final class EntityActionPacketFactory extends PacketFactory<EntityActionPacket> {
     /**
      * Instantiates a new Entity action packet factory.
      */

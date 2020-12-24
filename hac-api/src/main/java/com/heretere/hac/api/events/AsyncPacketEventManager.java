@@ -29,7 +29,7 @@ public class AsyncPacketEventManager {
      * @param <T>      WrappedPacket type
      */
     public <T extends WrappedPacket> void registerPacketEventExecutor(
-        final @NotNull AbstractPacketEventExecutor<T> executor
+        final @NotNull PacketEventExecutor<T> executor
     ) {
         this.getPacketEventHandler(executor.getWrappedClass()).addExecutor(executor);
     }
@@ -41,7 +41,7 @@ public class AsyncPacketEventManager {
      * @param <T>      WrappedPacket type
      */
     public <T extends WrappedPacket> void unregisterPacketEventExecutor(
-        final @NotNull AbstractPacketEventExecutor<T> executor
+        final @NotNull PacketEventExecutor<T> executor
     ) {
         this.getPacketEventHandler(executor.getWrappedClass()).removeExecutor(executor);
     }

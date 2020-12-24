@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.heretere.hac.util.plugin.AbstractHACPlugin;
+import com.heretere.hac.util.plugin.HACPlugin;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Set;
 
-public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extends AbstractHACPlugin {
+public abstract class ProxyPlugin<T extends VersionProxy> extends HACPlugin {
     /**
      * This .txt is created by the build.gradle it helps in figuring out what NMS versions this
      * plugin supports at runtime.
@@ -30,7 +30,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     private final @NotNull String basePackage;
 
     /**
-     * The T AbstractVersionProxy class type that should be found.
+     * The T VersionProxy class type that should be found.
      */
     private final @NotNull Class<T> versionProxyClass;
 
@@ -44,7 +44,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
      */
     private boolean success;
 
-    protected AbstractProxyPlugin(
+    protected ProxyPlugin(
         final @NotNull String baseDirectory,
         final @NotNull String prefix,
         final @NotNull String basePackage,
@@ -80,7 +80,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
         } else {
             super.getLog().reportFatalError(() -> String.format(
                 "No version proxy found for server version '%s'. Jar only contains versions '%s'.",
-                AbstractProxyPlugin.getServerVersionString(),
+                ProxyPlugin.getServerVersionString(),
                 Arrays.toString(this.getPackagedVersions().toArray(new String[0]))
             ), false);
             Bukkit.getPluginManager().disablePlugin(this);
@@ -96,7 +96,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
 
     private boolean loadProxy() {
         boolean output;
-        String currentVersion = AbstractProxyPlugin.getServerVersionString();
+        String currentVersion = ProxyPlugin.getServerVersionString();
         if (this.getPackagedVersions().contains(currentVersion)) {
             try {
                 Class<?> clazz = Class.forName(
@@ -105,7 +105,7 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
                     this.getClass().getClassLoader()
                 );
 
-                Object instance = clazz.getConstructor(AbstractHACPlugin.class).newInstance(this);
+                Object instance = clazz.getConstructor(HACPlugin.class).newInstance(this);
 
                 this.proxy = this.versionProxyClass.cast(instance);
 
@@ -121,12 +121,12 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     }
 
     private @NotNull Set<String> getPackagedVersions() {
-        InputStream in = this.getResource(AbstractProxyPlugin.PACKAGED_VERSIONS_NAME);
+        InputStream in = this.getResource(ProxyPlugin.PACKAGED_VERSIONS_NAME);
 
         Preconditions.checkNotNull(
             in,
             "'%s' not located in jar. Please rebuild.",
-            AbstractProxyPlugin.PACKAGED_VERSIONS_NAME
+            ProxyPlugin.PACKAGED_VERSIONS_NAME
         );
 
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
@@ -141,17 +141,17 @@ public abstract class AbstractProxyPlugin<T extends AbstractVersionProxy> extend
     }
 
     /**
-     * Similar to {@link AbstractHACPlugin#load()} except it is passed after the proxy is loaded.
+     * Similar to {@link HACPlugin#load()} except it is passed after the proxy is loaded.
      */
     public abstract void proxyLoad();
 
     /**
-     * Similar to {@link AbstractHACPlugin#enable()} except it is passed after the proxy is loaded.
+     * Similar to {@link HACPlugin#enable()} except it is passed after the proxy is loaded.
      */
     public abstract void proxyEnable();
 
     /**
-     * Similar to {@link AbstractHACPlugin#disable()} except it is passed after the proxy is loaded.
+     * Similar to {@link HACPlugin#disable()} except it is passed after the proxy is loaded.
      */
     public abstract void proxyDisable();
 

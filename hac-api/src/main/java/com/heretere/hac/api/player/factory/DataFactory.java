@@ -2,19 +2,19 @@ package com.heretere.hac.api.player.factory;
 
 import com.google.common.collect.ImmutableSet;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.AbstractPacketEventExecutor;
+import com.heretere.hac.api.events.PacketEventExecutor;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This class is used to build dynamic player data at runtime. After created an instance it needs to be registered
- * by using {@link com.heretere.hac.api.player.HACPlayerFactory#registerDataBuilder(Class, AbstractDataFactory)}.
+ * by using {@link com.heretere.hac.api.player.HACPlayerFactory#registerDataBuilder(Class, DataFactory)}.
  * You can get the {@link com.heretere.hac.api.player.HACPlayerFactory} from
  * {@link com.heretere.hac.api.player.HACPlayerList#getFactory()}.
  *
  * @param <T> The Data class that this builder creates.
  */
-public abstract class AbstractDataFactory<T> {
+public abstract class DataFactory<T> {
     /**
      * The HACAPI reference.
      */
@@ -23,18 +23,18 @@ public abstract class AbstractDataFactory<T> {
     /**
      * These are automatically registered and unregistered by {@link com.heretere.hac.api.player.HACPlayerFactory}.
      */
-    private final @NotNull ImmutableSet<AbstractPacketEventExecutor<?>> events;
+    private final @NotNull ImmutableSet<PacketEventExecutor<?>> events;
 
     /**
-     * You can include a vararg set of {@link AbstractPacketEventExecutor} these will be
-     * registered for you from {@link AbstractDataFactory#registerUpdaters()}.
+     * You can include a vararg set of {@link PacketEventExecutor} these will be
+     * registered for you from {@link DataFactory#registerUpdaters()}.
      *
      * @param api    The HACAPI reference
-     * @param events The instances of {@link AbstractPacketEventExecutor}
+     * @param events The instances of {@link PacketEventExecutor}
      */
-    protected AbstractDataFactory(
+    protected DataFactory(
         final @NotNull HACAPI api,
-        final @NotNull AbstractPacketEventExecutor<?>... events
+        final @NotNull PacketEventExecutor<?>... events
     ) {
         this.api = api;
         this.events = ImmutableSet.copyOf(events);
@@ -52,7 +52,7 @@ public abstract class AbstractDataFactory<T> {
 
     /**
      * Registered updaters from the supplied array in
-     * {@link AbstractDataFactory#AbstractDataFactory(HACAPI, AbstractPacketEventExecutor[])}.
+     * {@link DataFactory#DataFactory(HACAPI, PacketEventExecutor[])}.
      */
     public void registerUpdaters() {
         this.events.forEach(this.api.getEventManager()::registerPacketEventExecutor);
@@ -60,18 +60,18 @@ public abstract class AbstractDataFactory<T> {
 
     /**
      * unregisters updaters from the supplied array in
-     * {@link AbstractDataFactory#AbstractDataFactory(HACAPI, AbstractPacketEventExecutor[])}.
+     * {@link DataFactory#DataFactory(HACAPI, PacketEventExecutor[])}.
      */
     public void unregisterUpdaters() {
         this.events.forEach(this.api.getEventManager()::unregisterPacketEventExecutor);
     }
 
     /**
-     * Gets an {@link ImmutableSet} the {@link AbstractPacketEventExecutor} linked to this builder.
+     * Gets an {@link ImmutableSet} the {@link PacketEventExecutor} linked to this builder.
      *
      * @return An {@link ImmutableSet} of the events linked by this builder.
      */
-    public @NotNull ImmutableSet<AbstractPacketEventExecutor<?>> getEvents() {
+    public @NotNull ImmutableSet<PacketEventExecutor<?>> getEvents() {
         return this.events;
     }
 }

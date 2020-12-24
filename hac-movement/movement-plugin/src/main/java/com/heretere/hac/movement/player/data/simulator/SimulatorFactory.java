@@ -2,7 +2,7 @@ package com.heretere.hac.movement.player.data.simulator;
 
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.api.player.factory.AbstractDataFactory;
+import com.heretere.hac.api.player.factory.DataFactory;
 import com.heretere.hac.movement.Movement;
 import com.heretere.hac.movement.player.data.simulator.executors.SimulatorFlyingExecutor;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The type Simulator factory.
  */
-public final class SimulatorFactory extends AbstractDataFactory<Simulator> {
+public final class SimulatorFactory extends DataFactory<Simulator> {
     /**
      * The movement proxy reference.
      */

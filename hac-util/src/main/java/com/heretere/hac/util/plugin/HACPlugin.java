@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-public abstract class AbstractHACPlugin extends JavaPlugin {
+public abstract class HACPlugin extends JavaPlugin {
     /**
      * The base directory all files should be passed to. This is similar to {@link JavaPlugin#getDataFolder()}
      * except it points to a directory that could be used by multiple plugins.
@@ -30,7 +30,7 @@ public abstract class AbstractHACPlugin extends JavaPlugin {
      */
     private boolean dependencySuccess;
 
-    protected AbstractHACPlugin(
+    protected HACPlugin(
         final @NotNull String baseDirectory,
         final @NotNull String prefix
     ) {
