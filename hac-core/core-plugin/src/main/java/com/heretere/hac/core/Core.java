@@ -93,9 +93,8 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
             return;
         }
 
-        super.getProxy().baseUnload();
-
         this.hacPlayerListUpdater.unload();
+        super.getProxy().baseUnload();
 
         this.getLog().info(() -> "Unregistering player data builder.");
         HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(PlayerData.class);

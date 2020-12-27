@@ -12,7 +12,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The type Hac player list updater.
+ * This is responsible for populating and removing HACPlayer's instances from the hac-api HACPlayerList.
+ * Normally this is only accessed at startup/shutdown to provide a way of tracking player's that have
+ * an attach HACPlayer instance.
  */
 public final class HACPlayerListUpdater implements Listener {
     /**
@@ -21,7 +23,7 @@ public final class HACPlayerListUpdater implements Listener {
     private final @NotNull Core core;
 
     /**
-     * Instantiates a new Hac player list updater.
+     * Creates a new instance.
      *
      * @param core the parent
      */
@@ -30,7 +32,7 @@ public final class HACPlayerListUpdater implements Listener {
     }
 
     /**
-     * Load.
+     * Registers the events in this class, and attaches a HACPlayer to all online players.
      */
     public void load() {
         Bukkit.getPluginManager().registerEvents(this, this.core);
@@ -38,7 +40,7 @@ public final class HACPlayerListUpdater implements Listener {
     }
 
     /**
-     * Unload.
+     * Unregisters the events, and removes the HACPlayer from all online players.
      */
     public void unload() {
         HandlerList.unregisterAll(this);
@@ -57,9 +59,9 @@ public final class HACPlayerListUpdater implements Listener {
     }
 
     /**
-     * On player join.
+     * This is ran when the player joins the server.
      *
-     * @param e the e
+     * @param e The player join event
      */
     @EventHandler
     public void onPlayerJoin(final @NotNull PlayerJoinEvent e) {
@@ -67,9 +69,9 @@ public final class HACPlayerListUpdater implements Listener {
     }
 
     /**
-     * On player quit.
+     * This is ran when a player disconnects from the server.
      *
-     * @param e the e
+     * @param e the player quit event
      */
     @EventHandler
     public void onPlayerQuit(final @NotNull PlayerQuitEvent e) {

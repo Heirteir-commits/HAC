@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.player.factory.DataFactory;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -18,6 +19,10 @@ public final class HACPlayerFactory {
      */
     private final @NotNull HACAPI api;
     /**
+     * The plugin housing the API.
+     */
+    private final @NotNull Plugin parent;
+    /**
      * The HACPlayerList reference.
      */
     private final @NotNull HACPlayerList playerList;
@@ -29,9 +34,11 @@ public final class HACPlayerFactory {
 
     HACPlayerFactory(
         final @NotNull HACAPI api,
+        final @NotNull Plugin parent,
         final @NotNull HACPlayerList playerList
     ) {
         this.api = api;
+        this.parent = parent;
         this.playerList = playerList;
         this.builders = Maps.newLinkedHashMap();
     }
@@ -81,7 +88,7 @@ public final class HACPlayerFactory {
      * @return The built {@link HACPlayer}.
      */
     public @NotNull HACPlayer build(final @NotNull Player player) {
-        HACPlayer hacPlayer = new HACPlayer(this.api, player);
+        HACPlayer hacPlayer = new HACPlayer(this.api, this.parent, player);
         this.builders.forEach((key, value) -> hacPlayer.getDataManager().addDataRaw(key, value.build(hacPlayer)));
         return hacPlayer;
     }

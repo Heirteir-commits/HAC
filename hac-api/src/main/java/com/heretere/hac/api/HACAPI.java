@@ -3,7 +3,7 @@ package com.heretere.hac.api;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.heretere.hac.api.config.HACConfigHandler;
-import com.heretere.hac.api.events.AsyncPacketEventManager;
+import com.heretere.hac.api.events.EventManager;
 import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.api.player.HACPlayerList;
 import org.bukkit.plugin.Plugin;
@@ -31,7 +31,7 @@ public final class HACAPI {
     /**
      * The Event Manager instance.
      */
-    private final @NotNull AsyncPacketEventManager eventManager;
+    private final @NotNull EventManager eventManager;
     /**
      * The ThreadPool instance.
      */
@@ -57,10 +57,10 @@ public final class HACAPI {
         Preconditions.checkState(HACAPI.instance == null, "There can only be one instance of HACAPI.");
 
         this.configHandler = new HACConfigHandler(this);
-        this.eventManager = new AsyncPacketEventManager();
+        this.eventManager = new EventManager();
         this.threadPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d")
                                                                                   .build());
-        this.hacPlayerList = new HACPlayerList(this);
+        this.hacPlayerList = new HACPlayerList(this, JavaPlugin.getProvidingPlugin(HACAPI.class));
         this.errorHandler = new ErrorHandler();
         this.packetReferences = new PacketReferences();
 
@@ -94,7 +94,7 @@ public final class HACAPI {
     public void unload() {
         this.checkLoaded();
         this.configHandler.unload();
-        this.threadPool.shutdownNow();
+        this.threadPool.shutdown();
         this.loaded = false;
     }
 
@@ -113,7 +113,7 @@ public final class HACAPI {
      *
      * @return Global async event manager for HAC.
      */
-    public @NotNull AsyncPacketEventManager getEventManager() {
+    public @NotNull EventManager getEventManager() {
         this.checkLoaded();
         return this.eventManager;
     }

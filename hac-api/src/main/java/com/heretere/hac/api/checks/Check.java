@@ -16,9 +16,10 @@ public abstract class Check<T extends WrappedPacket> extends PacketEventExecutor
     protected Check(
         final @NotNull Priority priority,
         final @NotNull String identifier,
-        final @NotNull PacketReferences.PacketReference<T> reference
+        final @NotNull PacketReferences.PacketReference<T> reference,
+        final boolean sync
     ) {
-        super(priority, identifier, reference);
+        super(priority, identifier, reference, sync);
         this.baseIdentifier = identifier;
     }
 

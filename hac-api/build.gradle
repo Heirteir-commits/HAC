@@ -6,7 +6,7 @@ group 'com.heretere'
 version rootProject.version
 
 dependencies {
-    implementation 'org.tomlj:tomlj:1.0.0'
+    compileOnlyApi 'org.tomlj:tomlj:1.0.0'
 
     compileOnlyApi(LATEST_SPIGOT)
 }

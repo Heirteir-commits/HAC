@@ -23,7 +23,8 @@ public final class PlayerDataEntityActionExecutor extends PacketEventExecutor<En
         super(
             Priority.PROCESS_1,
             identifier,
-            HACAPI.getInstance().getPacketReferences().getClientSide().getEntityAction()
+            HACAPI.getInstance().getPacketReferences().getClientSide().getEntityAction(),
+            false
         );
     }
 

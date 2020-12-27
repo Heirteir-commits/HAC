@@ -15,7 +15,7 @@ public abstract class CoreVersionProxy implements VersionProxy {
     protected CoreVersionProxy() { }
 
     /**
-     * Register packets.
+     * This registers the packet factories for each core-nms version.
      */
     protected abstract void registerPackets();
 
@@ -41,13 +41,7 @@ public abstract class CoreVersionProxy implements VersionProxy {
         this.unload();
     }
 
-    /**
-     * Load.
-     */
     protected abstract void load();
 
-    /**
-     * Unload.
-     */
     protected abstract void unload();
 }

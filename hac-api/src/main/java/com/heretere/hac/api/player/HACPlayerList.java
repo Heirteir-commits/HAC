@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -30,10 +31,14 @@ public final class HACPlayerList {
     /**
      * This constructor should only ever be called by {@link HACAPI}.
      *
-     * @param api the api
+     * @param api    the api
+     * @param parent the plugin housing the API
      */
-    public HACPlayerList(final @NotNull HACAPI api) {
-        this.factory = new HACPlayerFactory(api, this);
+    public HACPlayerList(
+        final @NotNull HACAPI api,
+        final @NotNull Plugin parent
+    ) {
+        this.factory = new HACPlayerFactory(api, parent, this);
         this.players = Maps.newHashMap();
     }
 

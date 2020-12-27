@@ -19,7 +19,8 @@ public final class PlayerDataAbilitiesExecutor extends PacketEventExecutor<Abili
         super(
             Priority.PROCESS_1,
             identifier,
-            HACAPI.getInstance().getPacketReferences().getClientSide().getAbilities()
+            HACAPI.getInstance().getPacketReferences().getClientSide().getAbilities(),
+            false
         );
     }
 

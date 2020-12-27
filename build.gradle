@@ -90,6 +90,7 @@ allprojects {
         compileJava {
             /* Ensure that all versions are compiled with 1.8 support */
             sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
         }
     }
 }

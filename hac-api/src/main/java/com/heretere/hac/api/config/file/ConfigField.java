@@ -59,7 +59,7 @@ public final class ConfigField<T> extends ConfigPath {
     }
 
     /**
-     * Sets the getter.
+     * Done internally, Used to bind a delegate getter to a Config Field.
      *
      * @param getter the getter
      */
@@ -69,7 +69,7 @@ public final class ConfigField<T> extends ConfigPath {
     }
 
     /**
-     * Sets setter.
+     * Done internally, used to bind a delegate setter to a Config Field.
      *
      * @param setter the setter
      */
@@ -78,7 +78,7 @@ public final class ConfigField<T> extends ConfigPath {
     }
 
     /**
-     * Gets value.
+     * Gets value of config field. If getter is present it will delegate to the getter.
      *
      * @return the value
      */
@@ -101,7 +101,7 @@ public final class ConfigField<T> extends ConfigPath {
     }
 
     /**
-     * Sets value.
+     * Set value of config field. If setter is present it will delegate to the setter.
      *
      * @param value the value
      */

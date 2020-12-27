@@ -1,8 +1,9 @@
 package com.heretere.hac.movement.proxy;
 
+import com.heretere.hac.movement.proxy.simulation.HumanAccessorFactory;
 import com.heretere.hac.util.proxy.VersionProxy;
 
-public abstract class MovementVersionProxy implements VersionProxy {
+public abstract class MovementVersionProxy implements VersionProxy, HumanAccessorFactory {
     protected MovementVersionProxy() {
     }
 

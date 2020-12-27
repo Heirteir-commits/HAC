@@ -20,14 +20,29 @@ public abstract class PacketEventExecutor<T extends WrappedPacket> {
      */
     private final @NotNull Class<T> wrappedClass;
 
+    /**
+     * True if this executor is ran on the main server thread.
+     */
+    private final boolean sync;
+
+    /**
+     * Creates a new PacketEventExecutor.
+     *
+     * @param priority   the priority of this event.
+     * @param identifier the unique identifier for this event. This is used to determine equality by the event system.
+     * @param reference  The packet reference this packet event executor is using.
+     * @param sync       true if ran on the main server thread, false if async.
+     */
     protected PacketEventExecutor(
         final @NotNull Priority priority,
         final @NotNull String identifier,
-        final @NotNull PacketReferences.PacketReference<T> reference
+        final @NotNull PacketReferences.PacketReference<T> reference,
+        final boolean sync
     ) {
         this.priority = priority;
         this.identifier = identifier + "_" + reference.getIdentifier();
         this.wrappedClass = reference.getWrappedPacketClass();
+        this.sync = sync;
     }
 
     /**
@@ -92,5 +107,13 @@ public abstract class PacketEventExecutor<T extends WrappedPacket> {
      */
     public @NotNull Class<T> getWrappedClass() {
         return this.wrappedClass;
+    }
+
+
+    /**
+     * @return true if ran on the main thread, false otherwise.
+     */
+    public final boolean isSync() {
+        return this.sync;
     }
 }

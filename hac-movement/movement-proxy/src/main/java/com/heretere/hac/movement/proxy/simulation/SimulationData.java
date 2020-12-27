@@ -1,5 +1,6 @@
 package com.heretere.hac.movement.proxy.simulation;
 
+import com.heretere.hac.core.util.math.vector.MutableVector2F;
 import com.heretere.hac.core.util.math.vector.MutableVector3F;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,8 @@ public class SimulationData {
      * Motion applied to the next tick of the simulator.
      */
     private final MutableVector3F motion;
+
+    private final MutableVector2F direction;
 
     /**
      * Current bukkit world of the simulator.
@@ -56,6 +59,10 @@ public class SimulationData {
      */
     private float jumpSpeedFactor;
 
+    private float forward;
+    private float strafe;
+    private boolean jumping;
+
     /**
      * Instantiates a new Simulation data.
      */
@@ -63,6 +70,7 @@ public class SimulationData {
         this.location = new MutableVector3F(0, 0, 0);
         this.velocity = new MutableVector3F(0, 0, 0);
         this.motion = new MutableVector3F(0, 0, 0);
+        this.direction = new MutableVector2F(0, 0);
 
         this.onGround = true;
     }
@@ -77,6 +85,7 @@ public class SimulationData {
         this.location.set(other.location);
         this.velocity.set(other.velocity);
         this.motion.set(other.motion);
+        this.direction.set(other.direction);
 
         this.onGround = other.onGround;
         this.sprinting = other.sprinting;
@@ -86,6 +95,45 @@ public class SimulationData {
 
         this.fallDistance = other.fallDistance;
         this.jumpSpeedFactor = other.jumpSpeedFactor;
+
+        this.forward = other.forward;
+        this.strafe = other.strafe;
+        this.jumping = other.jumping;
+    }
+
+    public void setDirection(
+        final double yaw,
+        final double pitch
+    ) {
+        this.direction.set(yaw, pitch);
+    }
+
+    public MutableVector2F getDirection() {
+        return direction;
+    }
+
+    public float getForward() {
+        return forward;
+    }
+
+    public void setForward(final float forward) {
+        this.forward = forward;
+    }
+
+    public float getStrafe() {
+        return strafe;
+    }
+
+    public void setStrafe(final float strafe) {
+        this.strafe = strafe;
+    }
+
+    public boolean isJumping() {
+        return jumping;
+    }
+
+    public void setJumping(final boolean jumping) {
+        this.jumping = jumping;
     }
 
     /**
@@ -303,5 +351,11 @@ public class SimulationData {
      */
     public void setJumpSpeedFactor(final float jumpSpeedFactor) {
         this.jumpSpeedFactor = jumpSpeedFactor;
+    }
+
+    public SimulationData copy() {
+        SimulationData data = new SimulationData();
+        data.apply(this);
+        return data;
     }
 }

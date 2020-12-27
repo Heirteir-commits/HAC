@@ -29,6 +29,11 @@ public final class PacketEventHandler {
     private @NotNull Set<PacketEventExecutor<?>> executors;
 
     /**
+     * The size of this PacketEventHandler.
+     */
+    private int size;
+
+    /**
      * Instantiates a new Packet event handler.
      */
     public PacketEventHandler() {
@@ -63,6 +68,7 @@ public final class PacketEventHandler {
         set.add(executor);
 
         this.executors = ImmutableSortedSet.copyOf(PacketEventHandler.COMPARATOR, set);
+        this.size = this.executors.size();
     }
 
     /**
@@ -75,11 +81,19 @@ public final class PacketEventHandler {
         set.remove(executor);
 
         this.executors = ImmutableSortedSet.copyOf(PacketEventHandler.COMPARATOR, set);
+        this.size = this.executors.size();
     }
 
     private @NotNull Set<PacketEventExecutor<?>> tempTreeSet() {
         Set<PacketEventExecutor<?>> set = Sets.newTreeSet(PacketEventHandler.COMPARATOR);
         set.addAll(this.executors);
         return set;
+    }
+
+    /**
+     * @return The amount of executors in this event executor.
+     */
+    public int getSize() {
+        return this.size;
     }
 }

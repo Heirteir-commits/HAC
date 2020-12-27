@@ -3,25 +3,19 @@ package com.heretere.hac.api.player;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.player.factory.DataManager;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 
 /**
  * {@link HACPlayer} is a wrapper used to handle all data related to {@link org.bukkit.entity.Player}
  * for the plugin.
  */
 public final class HACPlayer {
-    /**
-     * The HAC API reference.
-     */
-    private final @NotNull HACAPI api;
     /**
      * The UUID of the player.
      */
@@ -38,42 +32,17 @@ public final class HACPlayer {
      * The chained CompletableFutures. The goal of this is to allow for a thread per player design approach.
      * Without created a bunch of new threads on the server.
      */
-    private @NotNull CompletableFuture<Void> future;
+    private final @NotNull FutureChain futureChain;
 
-    /**
-     * Instantiates a new Hac player.
-     *
-     * @param api    the api
-     * @param player the player
-     */
     HACPlayer(
         final @NotNull HACAPI api,
+        final @NotNull Plugin parent,
         final @NotNull Player player
     ) {
-        this.api = api;
-        this.future = CompletableFuture.allOf();
+        this.futureChain = new FutureChain(api, parent);
         this.uuid = player.getUniqueId();
         this.player = new WeakReference<>(player);
         this.dataManager = new DataManager();
-    }
-
-    /**
-     * This passes a runnable to the HAC thread pool.
-     * Anything passed to this method is ran in guaranteed serial order.
-     *
-     * @param runnable     The runnable to run in the HAC thread pool
-     * @param errorHandler if null it uses the hac-api error handler. Otherwise it uses the supplied error handler
-     */
-    public void runTaskAsync(
-        final @NotNull Runnable runnable,
-        final @Nullable BiConsumer<? super Void, ? super Throwable> errorHandler
-    ) {
-        this.future = this.future.thenRunAsync(runnable, this.api.getThreadPool())
-                                 .whenCompleteAsync(errorHandler == null ? (msg, ex) -> {
-                                     if (ex != null) {
-                                         this.api.getErrorHandler().getHandler().accept(ex);
-                                     }
-                                 } : errorHandler, this.api.getThreadPool());
     }
 
     /**
@@ -102,5 +71,14 @@ public final class HACPlayer {
      */
     public @NotNull DataManager getDataManager() {
         return this.dataManager;
+    }
+
+    /**
+     * The Future Chain allows for tasks to be executed in a pseudo single thread.
+     *
+     * @return The future chain
+     */
+    public @NotNull FutureChain getFutureChain() {
+        return this.futureChain;
     }
 }

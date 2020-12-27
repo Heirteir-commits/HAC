@@ -18,7 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * The type Channel injector base.
+ * This class is responsible for injecting a channel handler into the netty pipeline. So HAC can process,
+ * incoming and outgoing packets for the checks.
  */
 public abstract class ChannelInjector {
     /**
@@ -91,7 +92,7 @@ public abstract class ChannelInjector {
     }
 
     /**
-     * Gets pipeline.
+     * Gets the pipeline, this is implemented in core-nms.
      *
      * @param player the player
      * @return the pipeline

@@ -19,7 +19,12 @@ public final class PlayerDataFlyingExecutor extends PacketEventExecutor<FlyingPa
      * @param identifier the identifier
      */
     public PlayerDataFlyingExecutor(final @NotNull String identifier) {
-        super(Priority.PROCESS_1, identifier, HACAPI.getInstance().getPacketReferences().getClientSide().getFlying());
+        super(
+            Priority.PROCESS_1,
+            identifier,
+            HACAPI.getInstance().getPacketReferences().getClientSide().getFlying(),
+            false
+        );
     }
 
     @Override

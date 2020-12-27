@@ -19,7 +19,12 @@ public final class SimulatorFlyingExecutor extends PacketEventExecutor<FlyingPac
      * @param identifier the identifier
      */
     public SimulatorFlyingExecutor(final @NotNull String identifier) {
-        super(Priority.PROCESS_2, identifier, HACAPI.getInstance().getPacketReferences().getClientSide().getFlying());
+        super(
+            Priority.PROCESS_2,
+            identifier,
+            HACAPI.getInstance().getPacketReferences().getClientSide().getFlying(),
+            true
+        );
     }
 
     @Override
