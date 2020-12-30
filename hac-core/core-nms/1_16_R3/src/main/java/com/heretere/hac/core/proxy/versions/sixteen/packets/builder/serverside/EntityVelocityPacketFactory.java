@@ -5,7 +5,7 @@ import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPack
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.util.plugin.HACPlugin;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityVelocity;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;

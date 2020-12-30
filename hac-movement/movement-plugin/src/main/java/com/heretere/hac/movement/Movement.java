@@ -1,9 +1,8 @@
 package com.heretere.hac.movement;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.movement.player.data.simulator.Simulator;
-import com.heretere.hac.movement.player.data.simulator.SimulatorFactory;
-import com.heretere.hac.movement.proxy.MovementVersionProxy;
+import com.heretere.hac.movement.simulator.SimulatorData;
+import com.heretere.hac.movement.simulator.SimulatorDataFactory;
 import com.heretere.hac.util.proxy.ProxyPlugin;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
@@ -11,9 +10,6 @@ import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * The type Movement.
- */
 /* Plugin.yml */
 @Plugin(name = "HAC-Movement", version = "0.0.1")
 @LogPrefix("-")
@@ -21,27 +17,23 @@ import org.jetbrains.annotations.Nullable;
 @Dependency("HAC-Core")
 
 public final class Movement extends ProxyPlugin<MovementVersionProxy> {
-    /**
-     * The factory responsible for attaching a simulator to each HACPlayer.
-     */
-    private @Nullable SimulatorFactory simulatorFactory;
+    private @Nullable SimulatorDataFactory simulatorDataFactory;
 
-    /**
-     * The entry point for the HAC movement module.
-     */
     public Movement() {
-        super("HAC", "Movement", "com.heretere.hac.movement.proxy.versions", MovementVersionProxy.class);
-
+        super(
+            "HAC",
+            "Movement",
+            "com.heretere.hac.movement.versions",
+            MovementVersionProxy.class
+        );
     }
 
-    @Override
-    public void proxyLoad() {
-        this.simulatorFactory = new SimulatorFactory(HACAPI.getInstance(), this);
+    @Override public void proxyLoad() {
+        this.simulatorDataFactory = new SimulatorDataFactory(HACAPI.getInstance(), this);
     }
 
-    @Override
-    public void proxyEnable() {
-        if (this.simulatorFactory == null) {
+    @Override public void proxyEnable() {
+        if (this.simulatorDataFactory == null) {
             super.getLog()
                  .reportFatalError(
                      () -> "HAC didn't start correctly please check the latest.log for more info.",
@@ -53,14 +45,17 @@ public final class Movement extends ProxyPlugin<MovementVersionProxy> {
         HACAPI.getInstance()
               .getHacPlayerList()
               .getFactory()
-              .registerDataBuilder(Simulator.class, this.simulatorFactory);
+              .registerDataBuilder(SimulatorData.class, this.simulatorDataFactory);
 
-        super.getProxy().baseLoad();
+        super.getProxy().preLoad();
     }
 
-    @Override
-    public void proxyDisable() {
-        super.getProxy().baseUnload();
-        HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(Simulator.class);
+    @Override public void proxyDisable() {
+        if (this.simulatorDataFactory == null) {
+            return;
+        }
+
+        super.getProxy().preUnload();
+        HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(SimulatorData.class);
     }
 }

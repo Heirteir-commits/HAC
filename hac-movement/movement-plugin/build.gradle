@@ -39,9 +39,12 @@ shadowJar {
                     VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.replace.toString()
         }
 
+        /* Global relocations */
+        relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
+        relocate 'org.apache.commons.lang3', 'com.heretere.hac.core.libs.lang3'
+
         /* module specific */
         relocate 'com.heretere.hac.util', 'com.heretere.hac.movement.util'
-        relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
 
         archiveFileName = 'HAC.Movement.jar'
         destinationDirectory = SHADOW_JAR_OUTPUT_DIR;

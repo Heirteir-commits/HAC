@@ -53,13 +53,11 @@ public final class Proxy extends CoreVersionProxy {
         return this.channelInjectorProxy;
     }
 
-    @Override
-    protected void load() {
+    @Override public void load() {
         //Nothing yet
     }
 
-    @Override
-    protected void unload() {
+    @Override public void unload() {
         this.channelInjectorProxy.shutdown();
     }
 }

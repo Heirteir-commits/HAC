@@ -1,12 +1,15 @@
 package com.heretere.hac.api.events.packets.wrapper.clientside;
 
 
+import com.flowpowered.math.GenericMath;
 import com.heretere.hac.api.events.packets.wrapper.WrappedPacketIn;
 
 /**
  * This is the wrapped version of the PacketPlayInFlyingPacket.
  */
 public final class FlyingPacket implements WrappedPacketIn {
+    private static final float ANGLE_WRAP = 360F;
+
     /**
      * The x location of the packet.
      */
@@ -54,8 +57,8 @@ public final class FlyingPacket implements WrappedPacketIn {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
+        this.yaw = yaw % ANGLE_WRAP;
+        this.pitch = GenericMath.wrapAnglePitchDeg((float) pitch);
         this.onGround = onGround;
     }
 

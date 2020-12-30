@@ -1,5 +1,6 @@
 package com.heretere.hac.core.util.math.vector;
 
+import com.flowpowered.math.GenericMath;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -202,6 +203,22 @@ public final class MutableVector2F {
      */
     public MutableVector2F setY(final float y) {
         this.y = y;
+        return this;
+    }
+
+    public float length() {
+        return (float) GenericMath.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    public MutableVector2F normalize() {
+        float length = this.length();
+
+        if (length < GenericMath.FLT_EPSILON) {
+            throw new ArithmeticException("Can't divide by 0");
+        }
+
+        this.set(this.x / length, this.y / length);
+
         return this;
     }
 

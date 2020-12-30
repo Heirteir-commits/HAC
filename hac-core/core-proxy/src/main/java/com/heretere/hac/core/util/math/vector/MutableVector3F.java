@@ -305,6 +305,18 @@ public final class MutableVector3F {
         return (float) GenericMath.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
 
+    public MutableVector3F normalize() {
+        float length = this.length();
+
+        if (length < GenericMath.FLT_EPSILON) {
+            throw new ArithmeticException("Can't divide by 0");
+        }
+
+        this.set(this.x / length, this.y / length, this.z / length);
+
+        return this;
+    }
+
     /**
      * Copy mutable vector 3 f.
      *

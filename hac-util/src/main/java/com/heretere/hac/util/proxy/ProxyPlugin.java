@@ -13,8 +13,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class ProxyPlugin<T extends VersionProxy> extends HACPlugin {
@@ -105,11 +108,20 @@ public abstract class ProxyPlugin<T extends VersionProxy> extends HACPlugin {
                     this.getClass().getClassLoader()
                 );
 
-                Object instance = clazz.getConstructor(HACPlugin.class).newInstance(this);
+                Optional<Object> instance = Optional.empty();
+                for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+                    if (constructor.getParameterCount() != 0) {
+                        instance = Optional.of(clazz.getConstructor(HACPlugin.class).newInstance(this));
+                    } else {
+                        instance = Optional.of(clazz.getConstructor().newInstance());
+                    }
+                }
 
-                this.proxy = this.versionProxyClass.cast(instance);
+                output = instance.isPresent();
 
-                output = true;
+                if (output) {
+                    this.proxy = this.versionProxyClass.cast(instance.get());
+                }
             } catch (Exception e) {
                 output = false;
                 super.getLog().reportFatalError(e, false);
@@ -161,8 +173,6 @@ public abstract class ProxyPlugin<T extends VersionProxy> extends HACPlugin {
      * @return T version proxy instance.
      */
     public @NotNull T getProxy() {
-        assert this.proxy != null;
-        return this.proxy;
+        return Objects.requireNonNull(this.proxy);
     }
 }
-

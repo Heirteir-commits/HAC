@@ -40,10 +40,14 @@ shadowJar {
                     VERSION_PACKAGE_ABSOLUTE.toString() + v.replacer.replace.toString()
         }
 
+        /* Global relocations */
+        relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
+        relocate 'org.apache.commons.lang3', 'com.heretere.hac.core.libs.lang3'
+
+
         /* module specific */
         relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
         relocate 'org.bstats.bukkit', 'com.heretere.hac.core.libs.bstats.bukkit'
-        relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
         relocate 'org.antlr', 'com.heretere.hac.core.libs.antlr'
         relocate 'org.tomlj', 'com.heretere.hac.core.libs.tomlj'
 

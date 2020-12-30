@@ -26,22 +26,16 @@ public abstract class CoreVersionProxy implements VersionProxy {
      */
     public abstract @NotNull ChannelInjector getChannelInjector();
 
-    /**
-     * Base load.
-     */
-    public final void baseLoad() {
+    @Override public final void preLoad() {
         this.registerPackets();
         this.load();
     }
 
-    /**
-     * Base unload.
-     */
-    public final void baseUnload() {
+    @Override public final void preUnload() {
         this.unload();
     }
 
-    protected abstract void load();
+    @Override public abstract void load();
 
-    protected abstract void unload();
+    @Override public abstract void unload();
 }

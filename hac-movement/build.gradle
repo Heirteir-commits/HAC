@@ -8,7 +8,7 @@ ext {
     PROJECT_ALL_VERSIONS = PROJECT_PREPEND + ':movement-nms'
     PROJECT_PROXY = PROJECT_PREPEND + ':movement-proxy'
     PROJECT_PLUGIN = PROJECT_PREPEND + ':movement-plugin'
-    VERSION_PACKAGE_ABSOLUTE = 'com.heretere.hac.movement.proxy.versions.'
+    VERSION_PACKAGE_ABSOLUTE = 'com.heretere.hac.movement.versions.'
 }
 
 group 'com.heretere'

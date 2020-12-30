@@ -27,12 +27,13 @@ import org.jetbrains.annotations.Nullable;
 @Maven(groupId = "com|flowpowered", artifactId = "flow-math", version = "1.0.3")
 @Maven(groupId = "org|tomlj", artifactId = "tomlj", version = "1.0.0")
 @Maven(groupId = "org|antlr", artifactId = "antlr4-runtime", version = "4.7.2")
-
+@Maven(groupId = "org|apache|commons", artifactId = "commons-lang3", version = "3.11")
 /* Relocations */
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
 @Relocation(from = "org|tomlj", to = "com|heretere|hac|core|libs|tomlj")
 @Relocation(from = "org|antlr", to = "com|heretere|hac|core|libs|antlr")
+@Relocation(from = "org|apache|commons|lang3", to = "com|heretere|hac|core|libs|lang3")
 public final class Core extends ProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.
@@ -84,7 +85,7 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
               .registerDataBuilder(PlayerData.class, this.playerDataFactory);
 
         this.hacPlayerListUpdater.load();
-        super.getProxy().baseLoad();
+        super.getProxy().preLoad();
     }
 
     @Override
@@ -94,7 +95,7 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
         }
 
         this.hacPlayerListUpdater.unload();
-        super.getProxy().baseUnload();
+        super.getProxy().preUnload();
 
         this.getLog().info(() -> "Unregistering player data builder.");
         HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(PlayerData.class);

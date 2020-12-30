@@ -7,6 +7,8 @@ version rootProject.version
 
 dependencies {
     compileOnlyApi 'org.tomlj:tomlj:1.0.0'
+    compileOnlyApi 'org.apache.commons:commons-lang3:3.11'
+    compileOnlyApi 'com.flowpowered:flow-math:1.0.3'
 
     compileOnlyApi(LATEST_SPIGOT)
 }

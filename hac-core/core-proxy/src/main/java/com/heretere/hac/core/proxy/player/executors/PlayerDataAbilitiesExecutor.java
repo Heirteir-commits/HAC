@@ -6,7 +6,7 @@ import com.heretere.hac.api.events.Priority;
 import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.proxy.player.PlayerData;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlayerDataAbilitiesExecutor extends PacketEventExecutor<AbilitiesPacket> {

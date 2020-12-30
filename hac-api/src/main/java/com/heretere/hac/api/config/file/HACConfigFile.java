@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.config.annotations.ConfigFile;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.tomlj.Toml;
@@ -138,9 +138,9 @@ public final class HACConfigFile {
     private void addParent(final @NotNull ConfigPath path) {
         String parentPath = StringUtils.substringBeforeLast(path.getPath(), ".");
 
-        if (!parentPath.isEmpty() && (!this.entries.containsKey(parentPath) || !this.entries.get(parentPath)
-                                                                                            .getComments()
-                                                                                            .isEmpty())) {
+        if (!parentPath.isEmpty()
+            && (!this.entries.containsKey(parentPath)
+            || !this.entries.get(parentPath).getComments().isEmpty())) {
             this.entries.put(parentPath, new ConfigSection(this.api, parentPath));
         }
     }
