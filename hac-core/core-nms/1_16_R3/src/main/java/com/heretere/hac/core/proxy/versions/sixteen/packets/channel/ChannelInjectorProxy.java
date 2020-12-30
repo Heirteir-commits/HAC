@@ -1,5 +1,6 @@
 package com.heretere.hac.core.proxy.versions.sixteen.packets.channel;
 
+import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.core.proxy.packets.channel.ChannelInjector;
 import com.heretere.hac.util.plugin.HACPlugin;
 import io.netty.channel.ChannelPipeline;
@@ -11,10 +12,14 @@ public final class ChannelInjectorProxy extends ChannelInjector {
     /**
      * Instantiates a new Channel injector base.
      *
+     * @param api    the HACAPI reference
      * @param parent the parent plugin
      */
-    public ChannelInjectorProxy(final @NotNull HACPlugin parent) {
-        super(parent);
+    public ChannelInjectorProxy(
+        final @NotNull HACAPI api,
+        final @NotNull HACPlugin parent
+    ) {
+        super(api, parent);
     }
 
     @Override

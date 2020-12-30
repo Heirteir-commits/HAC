@@ -65,7 +65,7 @@ public final class SimulatorData {
 
         MutableVector3F difference = this.playerData.getCurrent().getVelocity().copy().subtract(noMove.getVelocity());
 
-        boolean moving = this.playerData.getCurrent().getVelocity().length() > GenericMath.FLT_EPSILON;
+        boolean moving = this.playerData.getCurrent().getVelocity().lengthSqr() > GenericMath.FLT_EPSILON;
 
         if (!moving || difference.length() < MIN_DIFF) {
             this.current.apply(noMove);
@@ -108,6 +108,4 @@ public final class SimulatorData {
                                             .subtract(this.current.getVelocity()));
         }
     }
-
-
 }

@@ -10,12 +10,19 @@ import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.F
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside.EntityVelocityPacketFactory;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.channel.ChannelInjectorProxy;
 import com.heretere.hac.util.plugin.HACPlugin;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * The type Proxy.
  */
 public final class Proxy extends CoreVersionProxy {
+    /**
+     * The HACAPI reference.
+     */
+    private final @NotNull HACAPI api;
     /**
      * The parent plugin reference.
      */
@@ -31,13 +38,14 @@ public final class Proxy extends CoreVersionProxy {
      * @param parent the parent
      */
     public Proxy(final @NotNull HACPlugin parent) {
+        this.api = Objects.requireNonNull(Bukkit.getServer().getServicesManager().load(HACAPI.class));
         this.parent = parent;
-        this.channelInjectorProxy = new ChannelInjectorProxy(this.parent);
+        this.channelInjectorProxy = new ChannelInjectorProxy(this.api, this.parent);
     }
 
     @Override
     protected void registerPackets() {
-        PacketReferences packetReferences = HACAPI.getInstance().getPacketReferences();
+        PacketReferences packetReferences = this.api.getPacketReferences();
 
         //clientside
         packetReferences.getClientSide().getAbilities().register(new AbilitiesPacketFactory());

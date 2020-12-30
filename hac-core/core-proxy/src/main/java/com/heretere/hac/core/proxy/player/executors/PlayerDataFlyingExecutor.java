@@ -16,13 +16,17 @@ public final class PlayerDataFlyingExecutor extends PacketEventExecutor<FlyingPa
     /**
      * Instantiates a new Player data flying executor.
      *
+     * @param api        the HACAPI reference
      * @param identifier the identifier
      */
-    public PlayerDataFlyingExecutor(final @NotNull String identifier) {
+    public PlayerDataFlyingExecutor(
+        final @NotNull HACAPI api,
+        final @NotNull String identifier
+    ) {
         super(
             Priority.PROCESS_1,
             identifier,
-            HACAPI.getInstance().getPacketReferences().getClientSide().getFlying(),
+            api.getPacketReferences().getClientSide().getFlying(),
             false
         );
     }

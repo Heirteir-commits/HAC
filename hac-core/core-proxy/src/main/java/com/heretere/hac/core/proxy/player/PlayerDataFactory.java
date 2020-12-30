@@ -25,9 +25,9 @@ public final class PlayerDataFactory extends DataFactory<PlayerData> {
     public PlayerDataFactory(final @NotNull HACAPI api) {
         super(
             api,
-            new PlayerDataAbilitiesExecutor(PlayerDataFactory.IDENTIFIER),
-            new PlayerDataEntityActionExecutor(PlayerDataFactory.IDENTIFIER),
-            new PlayerDataFlyingExecutor(PlayerDataFactory.IDENTIFIER)
+            new PlayerDataAbilitiesExecutor(api, PlayerDataFactory.IDENTIFIER),
+            new PlayerDataEntityActionExecutor(api, PlayerDataFactory.IDENTIFIER),
+            new PlayerDataFlyingExecutor(api, PlayerDataFactory.IDENTIFIER)
         );
     }
 

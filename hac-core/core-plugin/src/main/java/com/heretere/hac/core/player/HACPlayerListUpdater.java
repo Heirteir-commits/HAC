@@ -18,6 +18,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class HACPlayerListUpdater implements Listener {
     /**
+     * The HACAPI reference.
+     */
+    private final @NotNull HACAPI api;
+    /**
      * The parent plugin reference.
      */
     private final @NotNull Core core;
@@ -25,9 +29,14 @@ public final class HACPlayerListUpdater implements Listener {
     /**
      * Creates a new instance.
      *
+     * @param api  the HACAPI reference
      * @param core the parent
      */
-    public HACPlayerListUpdater(final @NotNull Core core) {
+    public HACPlayerListUpdater(
+        final @NotNull HACAPI api,
+        final @NotNull Core core
+    ) {
+        this.api = api;
         this.core = core;
     }
 
@@ -48,14 +57,14 @@ public final class HACPlayerListUpdater implements Listener {
     }
 
     private void addPlayer(final @NotNull Player player) {
-        this.core.getProxy().getChannelInjector().inject(HACAPI.getInstance().getHacPlayerList().getPlayer(player));
+        this.core.getProxy().getChannelInjector().inject(this.api.getHacPlayerList().getPlayer(player));
     }
 
     private void removePlayer(final @NotNull Player player) {
-        HACAPI.getInstance()
-              .getHacPlayerList()
-              .removePlayer(player)
-              .ifPresent(hacPlayer -> this.core.getProxy().getChannelInjector().remove(hacPlayer));
+        this.api
+            .getHacPlayerList()
+            .removePlayer(player)
+            .ifPresent(hacPlayer -> this.core.getProxy().getChannelInjector().remove(hacPlayer));
     }
 
     /**

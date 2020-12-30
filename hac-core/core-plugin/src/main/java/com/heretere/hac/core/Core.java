@@ -9,9 +9,12 @@ import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import com.heretere.hac.util.proxy.ProxyPlugin;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /* Plugin */
@@ -43,6 +46,11 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
     private static final int BSTATS_ID = 9648;
 
     /**
+     * The HACAPI instance.
+     */
+    private final @NotNull HACAPI api;
+
+    /**
      * The class responsible for updating the HACPlayerList in the api.
      */
     private @Nullable HACPlayerListUpdater hacPlayerListUpdater;
@@ -56,37 +64,42 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
      */
     public Core() {
         super("HAC", "Core", "com.heretere.hac.core.proxy.versions", CoreVersionProxy.class);
+        this.api = new HACAPI(this);
     }
 
     @Override
     public void proxyLoad() {
-        this.hacPlayerListUpdater = new HACPlayerListUpdater(this);
-        this.playerDataFactory = new PlayerDataFactory(HACAPI.getInstance());
+        Bukkit.getServer()
+              .getServicesManager()
+              .register(HACAPI.class, this.api, this, ServicePriority.Normal);
     }
 
     @Override
     public void proxyEnable() {
-        if (this.hacPlayerListUpdater == null || this.playerDataFactory == null) {
+        try {
+            this.hacPlayerListUpdater = new HACPlayerListUpdater(this.api, this);
+            this.playerDataFactory = new PlayerDataFactory(this.api);
+        } catch (Exception e) {
             super.getLog()
                  .reportFatalError(() -> "HAC failed to start correctly. Please look at the latest.log to determine " +
                      "the issue.", true);
             return;
         }
 
-        HACAPI.getInstance().getConfigHandler().loadConfigClass(this);
+        this.api.getConfigHandler().loadConfigClass(this);
         new Metrics(this, Core.BSTATS_ID);
 
-        HACAPI.getInstance().getErrorHandler().setHandler(ex -> {
+        this.api.getErrorHandler().setHandler(ex -> {
             if (ex != null) {
                 this.getLog().severe(ex);
             }
         });
 
         this.getLog().info(() -> "Registering player data builder.");
-        HACAPI.getInstance()
-              .getHacPlayerList()
-              .getFactory()
-              .registerDataBuilder(PlayerData.class, this.playerDataFactory);
+        this.api
+            .getHacPlayerList()
+            .getFactory()
+            .registerDataBuilder(PlayerData.class, this.playerDataFactory);
 
         this.hacPlayerListUpdater.load();
         super.getProxy().preLoad();
@@ -102,8 +115,8 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
         super.getProxy().preUnload();
 
         this.getLog().info(() -> "Unregistering player data builder.");
-        HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(PlayerData.class);
+        this.api.getHacPlayerList().getFactory().unregisterDataBuilder(PlayerData.class);
 
-        HACAPI.getInstance().unload();
+        this.api.unload();
     }
 }

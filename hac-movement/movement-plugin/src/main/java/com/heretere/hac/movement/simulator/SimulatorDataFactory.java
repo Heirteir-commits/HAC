@@ -17,14 +17,14 @@ public final class SimulatorDataFactory extends DataFactory<SimulatorData> {
      * You can include a vararg set of {@link PacketEventExecutor} these will be
      * registered for you from {@link DataFactory#registerUpdaters()}.
      *
-     * @param api    The HACAPI reference
-     * @param events The instances of {@link PacketEventExecutor}
+     * @param api      The HACAPI reference
+     * @param movement the Movement reference
      */
     public SimulatorDataFactory(
         final @NotNull HACAPI api,
         final @NotNull Movement movement
     ) {
-        super(api, new SimulatorFlyingExecutor(BASE_IDENTIFIER));
+        super(api, new SimulatorFlyingExecutor(api, BASE_IDENTIFIER));
         this.movement = movement;
     }
 

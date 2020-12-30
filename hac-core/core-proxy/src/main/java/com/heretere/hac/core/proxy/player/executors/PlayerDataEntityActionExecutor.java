@@ -17,13 +17,17 @@ public final class PlayerDataEntityActionExecutor extends PacketEventExecutor<En
     /**
      * Instantiates a new Player data entity action executor.
      *
+     * @param api        the HACAPI reference
      * @param identifier the identifier
      */
-    public PlayerDataEntityActionExecutor(final @NotNull String identifier) {
+    public PlayerDataEntityActionExecutor(
+        final @NotNull HACAPI api,
+        final @NotNull String identifier
+    ) {
         super(
             Priority.PROCESS_1,
             identifier,
-            HACAPI.getInstance().getPacketReferences().getClientSide().getEntityAction(),
+            api.getPacketReferences().getClientSide().getEntityAction(),
             false
         );
     }

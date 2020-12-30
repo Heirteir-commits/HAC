@@ -34,6 +34,10 @@ public abstract class ChannelInjector {
     /**
      * The HACAPI reference.
      */
+    private final @NotNull HACAPI api;
+    /**
+     * The HACAPI reference.
+     */
     private final @NotNull HACPlugin parent;
     /**
      * This executor service is responsible for attaching our channel handler in a way that doesn't
@@ -46,7 +50,11 @@ public abstract class ChannelInjector {
      *
      * @param parent The parent HACPlugin instance.
      */
-    protected ChannelInjector(final @NotNull HACPlugin parent) {
+    protected ChannelInjector(
+        final @NotNull HACAPI api,
+        final @NotNull HACPlugin parent
+    ) {
+        this.api = api;
         this.parent = parent;
         this.channelChangeExecutor = Executors.newSingleThreadExecutor();
     }
@@ -62,7 +70,7 @@ public abstract class ChannelInjector {
             this.channelChangeExecutor.execute(() -> this.getPipeline(bukkitPlayer).addBefore(
                 ChannelInjector.AFTER_KEY,
                 ChannelInjector.HANDLER_KEY,
-                new HACChannelHandler(this.parent, player)
+                new HACChannelHandler(this.api, this.parent, player)
             ));
         });
     }
@@ -101,9 +109,15 @@ public abstract class ChannelInjector {
 
     private static final class HACChannelHandler extends ChannelDuplexHandler {
         /**
+         * The HACAPI reference.
+         */
+        private final @NotNull HACAPI api;
+
+        /**
          * The plugin instance that is hosting HACChannelHandler.
          */
         private final @NotNull HACPlugin parent;
+
 
         /**
          * The HACPlayer this ChannelHandler is attached to.
@@ -111,10 +125,12 @@ public abstract class ChannelInjector {
         private final @NotNull HACPlayer player;
 
         private HACChannelHandler(
+            final @NotNull HACAPI api,
             final @NotNull HACPlugin parent,
             final @NotNull HACPlayer player
         ) {
             super();
+            this.api = api;
             this.parent = parent;
             this.player = player;
         }
@@ -153,22 +169,22 @@ public abstract class ChannelInjector {
             final boolean clientSide
         ) {
             Optional<PacketReferences.PacketReference<?>> optionalReference = clientSide
-                ? HACAPI.getInstance()
-                        .getPacketReferences()
-                        .getClientSide()
-                        .get(packet.getClass())
-                : HACAPI.getInstance().getPacketReferences().getServerSide().get(packet.getClass());
+                ? this.api
+                .getPacketReferences()
+                .getClientSide()
+                .get(packet.getClass())
+                : this.api.getPacketReferences().getServerSide().get(packet.getClass());
 
 
             optionalReference.ifPresent(reference -> {
                 WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
 
                 if (clientSide) {
-                    HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket);
+                    this.api.getEventManager().callPacketEvent(this.player, wrappedPacket);
                 } else {
                     this.player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
                         if (((WrappedPacketOut) wrappedPacket).getEntityId() == bukkitPlayer.getEntityId()) {
-                            HACAPI.getInstance().getEventManager().callPacketEvent(this.player, wrappedPacket);
+                            this.api.getEventManager().callPacketEvent(this.player, wrappedPacket);
                         }
                     });
                 }

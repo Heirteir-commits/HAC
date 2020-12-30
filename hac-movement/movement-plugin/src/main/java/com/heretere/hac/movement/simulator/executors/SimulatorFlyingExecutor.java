@@ -10,11 +10,18 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 public final class SimulatorFlyingExecutor extends PacketEventExecutor<FlyingPacket> {
-    public SimulatorFlyingExecutor(final @NotNull String identifier) {
+    /**
+     * @param api        The HACAPI reference
+     * @param identifier the identifier
+     */
+    public SimulatorFlyingExecutor(
+        final @NotNull HACAPI api,
+        final @NotNull String identifier
+    ) {
         super(
             Priority.PROCESS_2,
             identifier,
-            HACAPI.getInstance().getPacketReferences().getClientSide().getFlying(),
+            api.getPacketReferences().getClientSide().getFlying(),
             true
         );
     }

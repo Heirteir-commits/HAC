@@ -6,10 +6,9 @@ import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.events.EventManager;
 import com.heretere.hac.api.events.packets.PacketReferences;
 import com.heretere.hac.api.player.HACPlayerList;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,10 +19,6 @@ import java.util.logging.Level;
  * API for HAC.
  */
 public final class HACAPI {
-    /**
-     * The singleton instance.
-     */
-    private static @Nullable HACAPI instance;
     /**
      * The Config Handler instance.
      */
@@ -53,31 +48,28 @@ public final class HACAPI {
      */
     private boolean loaded;
 
-    private HACAPI() {
-        Preconditions.checkState(HACAPI.instance == null, "There can only be one instance of HACAPI.");
+    /**
+     * Creates a new instance of the API. This is called in hac-core then registered to the Services Manager.
+     * <p>
+     * To get this instance call Bukkit.getServer().getServicesManager().load(HACAPI.class).
+     *
+     * @param parent The providing plugin.
+     */
+    public HACAPI(final @NotNull Plugin parent) {
+        Preconditions.checkState(
+            Bukkit.getServicesManager().load(HACAPI.class) != null,
+            "API already registered. Please use the ServicesManager instead of creating a new instance."
+        );
 
         this.configHandler = new HACConfigHandler(this);
         this.eventManager = new EventManager();
         this.threadPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d")
                                                                                   .build());
-        this.hacPlayerList = new HACPlayerList(this, JavaPlugin.getProvidingPlugin(HACAPI.class));
-        this.errorHandler = new ErrorHandler();
+        this.hacPlayerList = new HACPlayerList(this, parent);
+        this.errorHandler = new ErrorHandler(parent);
         this.packetReferences = new PacketReferences();
 
         this.loaded = true;
-    }
-
-    /**
-     * Gets the current instance of the API.
-     *
-     * @return The API instance.
-     */
-    public static @NotNull HACAPI getInstance() {
-        if (HACAPI.instance == null) {
-            instance = new HACAPI();
-        }
-
-        return HACAPI.instance;
     }
 
     /**
@@ -170,11 +162,10 @@ public final class HACAPI {
          */
         private @NotNull Consumer<Throwable> handler;
 
-        private ErrorHandler() {
-            Plugin plugin = JavaPlugin.getProvidingPlugin(ErrorHandler.class);
+        private ErrorHandler(final @NotNull Plugin parent) {
             this.handler = ex -> {
                 if (ex != null) {
-                    plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                    parent.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                 }
             };
         }

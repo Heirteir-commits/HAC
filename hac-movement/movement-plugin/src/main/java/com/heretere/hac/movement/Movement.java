@@ -4,11 +4,14 @@ import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.movement.simulator.SimulatorData;
 import com.heretere.hac.movement.simulator.SimulatorDataFactory;
 import com.heretere.hac.util.proxy.ProxyPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 /* Plugin.yml */
 @Plugin(name = "HAC-Movement", version = "0.0.1")
@@ -17,6 +20,11 @@ import org.jetbrains.annotations.Nullable;
 @Dependency("HAC-Core")
 
 public final class Movement extends ProxyPlugin<MovementVersionProxy> {
+    /**
+     * The HACAPI reference.
+     */
+    private @Nullable HACAPI api;
+
     private @Nullable SimulatorDataFactory simulatorDataFactory;
 
     public Movement() {
@@ -29,11 +37,12 @@ public final class Movement extends ProxyPlugin<MovementVersionProxy> {
     }
 
     @Override public void proxyLoad() {
-        this.simulatorDataFactory = new SimulatorDataFactory(HACAPI.getInstance(), this);
+        this.api = Objects.requireNonNull(Bukkit.getServicesManager().load(HACAPI.class));
+        this.simulatorDataFactory = new SimulatorDataFactory(this.api, this);
     }
 
     @Override public void proxyEnable() {
-        if (this.simulatorDataFactory == null) {
+        if (this.api == null || this.simulatorDataFactory == null) {
             super.getLog()
                  .reportFatalError(
                      () -> "HAC didn't start correctly please check the latest.log for more info.",
@@ -42,20 +51,20 @@ public final class Movement extends ProxyPlugin<MovementVersionProxy> {
             return;
         }
 
-        HACAPI.getInstance()
-              .getHacPlayerList()
-              .getFactory()
-              .registerDataBuilder(SimulatorData.class, this.simulatorDataFactory);
+        this.api
+            .getHacPlayerList()
+            .getFactory()
+            .registerDataBuilder(SimulatorData.class, this.simulatorDataFactory);
 
         super.getProxy().preLoad();
     }
 
     @Override public void proxyDisable() {
-        if (this.simulatorDataFactory == null) {
+        if (this.api == null || this.simulatorDataFactory == null) {
             return;
         }
 
         super.getProxy().preUnload();
-        HACAPI.getInstance().getHacPlayerList().getFactory().unregisterDataBuilder(SimulatorData.class);
+        this.api.getHacPlayerList().getFactory().unregisterDataBuilder(SimulatorData.class);
     }
 }

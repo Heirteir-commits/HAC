@@ -13,13 +13,17 @@ public final class PlayerDataAbilitiesExecutor extends PacketEventExecutor<Abili
     /**
      * Instantiates a new Player data abilities executor.
      *
+     * @param api        the HACAPI reference
      * @param identifier the identifier
      */
-    public PlayerDataAbilitiesExecutor(final @NotNull String identifier) {
+    public PlayerDataAbilitiesExecutor(
+        final @NotNull HACAPI api,
+        final @NotNull String identifier
+    ) {
         super(
             Priority.PROCESS_1,
             identifier,
-            HACAPI.getInstance().getPacketReferences().getClientSide().getAbilities(),
+            api.getPacketReferences().getClientSide().getAbilities(),
             false
         );
     }

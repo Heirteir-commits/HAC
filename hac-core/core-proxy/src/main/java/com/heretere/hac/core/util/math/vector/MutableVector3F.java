@@ -297,20 +297,29 @@ public final class MutableVector3F {
     }
 
     /**
-     * Length float.
+     * Gets the square root of the length squared.
      *
      * @return the float
      */
     public float length() {
-        return (float) GenericMath.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+        return (float) GenericMath.sqrt(this.lengthSqr());
+    }
+
+    /**
+     * @return get's the length squared.
+     */
+    public float lengthSqr() {
+        return this.x * this.x + this.y * this.y + this.z * this.z;
     }
 
     public MutableVector3F normalize() {
-        float length = this.length();
+        float length = this.lengthSqr();
 
         if (length < GenericMath.FLT_EPSILON) {
             throw new ArithmeticException("Can't divide by 0");
         }
+
+        length = (float) GenericMath.sqrt(length);
 
         this.set(this.x / length, this.y / length, this.z / length);
 
