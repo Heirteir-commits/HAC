@@ -9,7 +9,7 @@ import com.heretere.hac.api.config.file.ConfigField;
 import com.heretere.hac.api.config.file.ConfigPath;
 import com.heretere.hac.api.config.file.ConfigSection;
 import com.heretere.hac.api.config.file.HACConfigFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -40,11 +40,15 @@ public class HACConfigHandler {
     /**
      * Instantiates a new Hac config handler.
      *
-     * @param api the api
+     * @param api    the api
+     * @param parent the providing plugin
      */
-    public HACConfigHandler(final @NotNull HACAPI api) {
+    public HACConfigHandler(
+        final @NotNull HACAPI api,
+        final @NotNull Plugin parent
+    ) {
         this.api = api;
-        this.basePath = JavaPlugin.getProvidingPlugin(HACConfigHandler.class)
+        this.basePath =  parent
                                   .getDataFolder()
                                   .toPath()
                                   .getParent()

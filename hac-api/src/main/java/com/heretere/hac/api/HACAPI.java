@@ -57,11 +57,11 @@ public final class HACAPI {
      */
     public HACAPI(final @NotNull Plugin parent) {
         Preconditions.checkState(
-            Bukkit.getServicesManager().load(HACAPI.class) != null,
+            Bukkit.getServicesManager().load(HACAPI.class) == null,
             "API already registered. Please use the ServicesManager instead of creating a new instance."
         );
 
-        this.configHandler = new HACConfigHandler(this);
+        this.configHandler = new HACConfigHandler(this, parent);
         this.eventManager = new EventManager();
         this.threadPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d")
                                                                                   .build());

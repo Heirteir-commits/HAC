@@ -65,13 +65,14 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
     public Core() {
         super("HAC", "Core", "com.heretere.hac.core.proxy.versions", CoreVersionProxy.class);
         this.api = new HACAPI(this);
+        Bukkit.getServer()
+              .getServicesManager()
+              .register(HACAPI.class, this.api, this, ServicePriority.Normal);
     }
 
     @Override
     public void proxyLoad() {
-        Bukkit.getServer()
-              .getServicesManager()
-              .register(HACAPI.class, this.api, this, ServicePriority.Normal);
+        //not used currently
     }
 
     @Override
