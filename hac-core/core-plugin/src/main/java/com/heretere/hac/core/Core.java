@@ -76,7 +76,11 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
         HACAPI.getInstance().getConfigHandler().loadConfigClass(this);
         new Metrics(this, Core.BSTATS_ID);
 
-        HACAPI.getInstance().getErrorHandler().setHandler(ex -> this.getLog().severe(ex));
+        HACAPI.getInstance().getErrorHandler().setHandler(ex -> {
+            if (ex != null) {
+                this.getLog().severe(ex);
+            }
+        });
 
         this.getLog().info(() -> "Registering player data builder.");
         HACAPI.getInstance()

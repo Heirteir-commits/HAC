@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.BiConsumer;
 
 /**
  * This class is responsible for ensuring tasks sent towards the player are ran in a serialized order.
@@ -30,11 +29,6 @@ public final class FutureChain {
     private @NotNull CompletableFuture<Void> chain;
 
     /**
-     * This BiConsumer passes any error that occurs in the future chain. To the error handler registered in the API.
-     */
-    private final @NotNull BiConsumer<? super Object, ? super Throwable> errorHandler;
-
-    /**
      * Creates a new Future Chain instance.
      *
      * @param api    the API instance
@@ -47,14 +41,6 @@ public final class FutureChain {
         this.api = api;
         this.parent = parent;
         this.chain = CompletableFuture.allOf();
-        this.errorHandler = (msg, ex) -> {
-            if (ex != null) {
-                this.api
-                    .getErrorHandler()
-                    .getHandler()
-                    .accept(ex);
-            }
-        };
     }
 
     /**
@@ -62,9 +48,9 @@ public final class FutureChain {
      *
      * @param runnable the runnable to execute
      */
-    public void addAsyncTask(final @NotNull Runnable runnable) {
+    public synchronized void addAsyncTask(final @NotNull Runnable runnable) {
         this.chain = this.chain.thenRunAsync(runnable, this.api.getThreadPool())
-                               .whenCompleteAsync(this.errorHandler, this.api.getThreadPool());
+                               .whenCompleteAsync((msg, ex) -> this.api.getErrorHandler().getHandler().accept(ex));
     }
 
     /**
@@ -72,13 +58,18 @@ public final class FutureChain {
      *
      * @param runnable the runnable to execute
      */
-    public void addServerMainThreadTask(final @NotNull Runnable runnable) {
+    public synchronized void addServerMainThreadTask(final @NotNull Runnable runnable) {
         this.chain = this.chain.thenRunAsync(() -> {
             CountDownLatch latch = new CountDownLatch(1);
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(this.parent, () -> {
-                runnable.run();
-                latch.countDown();
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    this.api.getErrorHandler().getHandler().accept(e);
+                } finally {
+                    latch.countDown();
+                }
             });
 
             try {
@@ -87,6 +78,6 @@ public final class FutureChain {
                 this.api.getErrorHandler().getHandler().accept(e);
                 Thread.currentThread().interrupt();
             }
-        }, this.api.getThreadPool()).whenCompleteAsync(this.errorHandler, this.api.getThreadPool());
+        }, this.api.getThreadPool()).whenCompleteAsync((msg, ex) -> this.api.getErrorHandler().getHandler().accept(ex));
     }
 }

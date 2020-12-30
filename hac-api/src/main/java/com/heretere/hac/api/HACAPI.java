@@ -172,7 +172,11 @@ public final class HACAPI {
 
         private ErrorHandler() {
             Plugin plugin = JavaPlugin.getProvidingPlugin(ErrorHandler.class);
-            this.handler = ex -> plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            this.handler = ex -> {
+                if (ex != null) {
+                    plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                }
+            };
         }
 
         /**
