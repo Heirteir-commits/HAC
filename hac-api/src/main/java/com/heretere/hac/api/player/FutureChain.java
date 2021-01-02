@@ -12,8 +12,6 @@ import java.util.concurrent.CountDownLatch;
  * This class is responsible for ensuring tasks sent towards the player are ran in a serialized order.
  */
 public final class FutureChain {
-
-
     /**
      * The API instance.
      */
@@ -48,9 +46,11 @@ public final class FutureChain {
      *
      * @param runnable the runnable to execute
      */
-    public synchronized void addAsyncTask(final @NotNull Runnable runnable) {
-        this.chain = this.chain.thenRunAsync(runnable, this.api.getThreadPool())
-                               .whenCompleteAsync((msg, ex) -> this.api.getErrorHandler().getHandler().accept(ex));
+    public void addAsyncTask(final @NotNull Runnable runnable) {
+        this.chain = this.chain.thenRunAsync(runnable, this.api.getThreadPool()).whenCompleteAsync(
+            (msg, ex) -> this.api.getErrorHandler().getHandler().accept(ex),
+            this.api.getThreadPool()
+        );
     }
 
     /**
@@ -58,7 +58,7 @@ public final class FutureChain {
      *
      * @param runnable the runnable to execute
      */
-    public synchronized void addServerMainThreadTask(final @NotNull Runnable runnable) {
+    public void addServerMainThreadTask(final @NotNull Runnable runnable) {
         this.chain = this.chain.thenRunAsync(() -> {
             CountDownLatch latch = new CountDownLatch(1);
 
@@ -78,6 +78,9 @@ public final class FutureChain {
                 this.api.getErrorHandler().getHandler().accept(e);
                 Thread.currentThread().interrupt();
             }
-        }, this.api.getThreadPool()).whenCompleteAsync((msg, ex) -> this.api.getErrorHandler().getHandler().accept(ex));
+        }, this.api.getThreadPool()).whenCompleteAsync(
+            (msg, ex) -> this.api.getErrorHandler().getHandler().accept(ex),
+            this.api.getThreadPool()
+        );
     }
 }

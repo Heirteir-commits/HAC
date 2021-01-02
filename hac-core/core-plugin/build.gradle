@@ -11,7 +11,6 @@ version rootProject.version
 
 dependencies {
     compileOnlyApi 'org.bstats:bstats-bukkit:1.7'
-    compileOnlyApi LATEST_SPIGOT
 
     implementation project(PROJECT_PROXY)
     implementation project(PROJECT_ALL_VERSIONS)
@@ -43,7 +42,8 @@ shadowJar {
         /* Global relocations */
         relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
         relocate 'org.apache.commons.lang3', 'com.heretere.hac.core.libs.lang3'
-
+        relocate 'cloud.commandframework', 'com.heretere.hac.core.libs.commands'
+        relocate 'io.leangen.geantyref', 'com.heretere.hac.core.libs.commands.typetoken'
 
         /* module specific */
         relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'

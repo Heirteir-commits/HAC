@@ -1,11 +1,11 @@
 package com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside;
 
+import com.flowpowered.math.vector.Vector2f;
+import com.flowpowered.math.vector.Vector3d;
 import com.heretere.hac.api.events.packets.factory.PacketFactory;
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.proxy.player.PlayerData;
-import com.heretere.hac.core.util.math.vector.MutableVector2F;
-import com.heretere.hac.core.util.math.vector.MutableVector3F;
 import net.minecraft.server.v1_16_R3.PacketPlayInFlying;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,25 +31,19 @@ public final class FlyingPacketFactory extends PacketFactory<FlyingPacket> {
         final @NotNull Object packet
     ) {
         PacketPlayInFlying flying = (PacketPlayInFlying) packet;
-        PlayerData playerData = player.getDataManager().getData(PlayerData.class).orElse(null);
+        PlayerData playerData = player.getDataManager()
+                                      .getData(PlayerData.class)
+                                      .orElseThrow(IllegalArgumentException::new);
 
-        MutableVector3F location;
-        MutableVector2F direction;
+        Vector3d location = playerData.getCurrent().getLocation();
+        Vector2f direction = playerData.getCurrent().getDirection();
 
-        if (playerData == null) {
-            location = new MutableVector3F(0, 0, 0);
-            direction = new MutableVector2F(0, 0);
-        } else {
-            location = playerData.getCurrent().getLocation();
-            direction = playerData.getCurrent().getDirection();
-        }
+        double x = flying.a(location.getX());
+        double y = flying.b(location.getY());
+        double z = flying.c(location.getZ());
 
-        double x = flying.a((double) location.getX()); //Must cast to double due to obfuscation
-        double y = flying.b((double) location.getY()); //Must cast to double due to obfuscation
-        double z = flying.c(location.getZ()); //Don't need to cast to double
-
-        double yaw = flying.a(direction.getX());
-        double pitch = flying.b(direction.getY());
+        float yaw = flying.a(direction.getX());
+        float pitch = flying.b(direction.getY());
 
         return new FlyingPacket(x, y, z, yaw, pitch, flying.b() /* onGround */);
     }

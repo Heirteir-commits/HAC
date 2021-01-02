@@ -80,6 +80,7 @@ public class DependencyLoader {
      * @return true if all dependencies were successfully loaded
      */
     public boolean loadDependencies() {
+        this.parent.getLog().info(() -> "Loading Dependencies...");
         return this.getDependencies(this.parent.getClass()).parallelStream().allMatch(this::loadDependency);
     }
 
@@ -93,8 +94,6 @@ public class DependencyLoader {
         boolean success = true;
 
         if (dependency.needsUpdate()) {
-            this.parent.getLog().info(() -> String.format("Downloading dependency '%s'.", dependency.getName()));
-
             Optional<URL> optionalURL = dependency.getDownloadURL();
 
             if (optionalURL.isPresent()) {
@@ -134,7 +133,6 @@ public class DependencyLoader {
         boolean success = true;
 
         if (dependency.needsRelocation()) {
-            this.parent.getLog().info(() -> String.format("Relocating dependency '%s'.", dependency.getName()));
             Optional<Throwable> relocate = this.relocator.relocate(dependency);
 
             if (relocate.isPresent()) {
@@ -162,8 +160,6 @@ public class DependencyLoader {
 
         if (success) {
             URLClassLoader classLoader = (URLClassLoader) this.parent.getClass().getClassLoader();
-
-            this.parent.getLog().info(() -> String.format("Loading dependency '%s'.", dependency.getName()));
 
             try {
                 Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);

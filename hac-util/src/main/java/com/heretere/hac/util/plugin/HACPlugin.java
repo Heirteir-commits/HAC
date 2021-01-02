@@ -35,7 +35,7 @@ public abstract class HACPlugin extends JavaPlugin {
         final @NotNull String prefix
     ) {
         this.baseDirectory = this.getDataFolder().toPath().getParent().resolve(baseDirectory);
-        this.prefix = "[" + prefix + "] ";
+        this.prefix = "[HAC] [" + prefix + "] ";
 
         this.log = new Log(this);
         this.log.open();

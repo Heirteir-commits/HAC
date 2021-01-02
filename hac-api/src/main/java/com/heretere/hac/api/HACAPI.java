@@ -61,6 +61,8 @@ public final class HACAPI {
             "API already registered. Please use the ServicesManager instead of creating a new instance."
         );
 
+        this.loaded = true;
+
         this.configHandler = new HACConfigHandler(this, parent);
         this.eventManager = new EventManager();
         this.threadPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d")
@@ -68,8 +70,6 @@ public final class HACAPI {
         this.hacPlayerList = new HACPlayerList(this, parent);
         this.errorHandler = new ErrorHandler(parent);
         this.packetReferences = new PacketReferences();
-
-        this.loaded = true;
     }
 
     /**

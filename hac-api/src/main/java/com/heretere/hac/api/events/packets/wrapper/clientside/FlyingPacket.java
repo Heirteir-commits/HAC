@@ -22,11 +22,11 @@ public final class FlyingPacket implements WrappedPacketIn {
     /**
      * The yaw of the packet.
      */
-    private final double yaw;
+    private final float yaw;
     /**
      * The pitch of the packet.
      */
-    private final double pitch;
+    private final float pitch;
 
     /**
      * if that packet is on the ground.
@@ -47,8 +47,8 @@ public final class FlyingPacket implements WrappedPacketIn {
         final double x,
         final double y,
         final double z,
-        final double yaw,
-        final double pitch,
+        final float yaw,
+        final float pitch,
         final boolean onGround
     ) {
         this.x = x;
@@ -91,7 +91,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      *
      * @return the yaw
      */
-    public double getYaw() {
+    public float getYaw() {
         return this.yaw;
     }
 
@@ -100,7 +100,7 @@ public final class FlyingPacket implements WrappedPacketIn {
      *
      * @return the pitch
      */
-    public double getPitch() {
+    public float getPitch() {
         return this.pitch;
     }
 

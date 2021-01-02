@@ -1,9 +1,9 @@
 package com.heretere.hac.core.proxy.player;
 
+import com.flowpowered.math.vector.Vector2f;
+import com.flowpowered.math.vector.Vector3d;
 import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.core.util.math.vector.MutableVector2F;
-import com.heretere.hac.core.util.math.vector.MutableVector3F;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,9 +27,7 @@ public final class PlayerData {
      * @param player the player
      */
     public PlayerData(final @NotNull HACPlayer player) {
-        Player bukkitPlayer = player.getBukkitPlayer().orElse(null);
-
-        assert bukkitPlayer != null;
+        Player bukkitPlayer = player.getBukkitPlayer().orElseThrow(IllegalStateException::new);
 
         this.current = new Data(bukkitPlayer);
         this.previous = new Data(bukkitPlayer);
@@ -43,18 +41,9 @@ public final class PlayerData {
     public void update(final @NotNull FlyingPacket flyingPacket) {
         this.previous.apply(this.current);
 
-        this.current.getLocation().set(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ());
-
-        MutableVector3F currentLocation = this.current.getLocation();
-        MutableVector3F previousLocation = this.previous.getLocation();
-
-        this.current.getVelocity().set(
-            currentLocation.getX() - previousLocation.getX(),
-            currentLocation.getY() - previousLocation.getY(),
-            currentLocation.getZ() - previousLocation.getZ()
-        );
-
-        this.current.getDirection().set(flyingPacket.getYaw(), flyingPacket.getPitch());
+        this.current.setLocation(Vector3d.from(flyingPacket.getX(), flyingPacket.getY(), flyingPacket.getZ()));
+        this.current.setVelocity(this.current.getLocation().sub(this.previous.getLocation()));
+        this.current.setDirection(Vector2f.from((float) flyingPacket.getYaw(), (float) flyingPacket.getPitch()));
 
         this.current.setOnGround(flyingPacket.isOnGround());
     }
@@ -87,15 +76,15 @@ public final class PlayerData {
         /**
          * The player's location.
          */
-        private final @NotNull MutableVector3F location;
+        private @NotNull Vector3d location;
         /**
          * The player's velocity.
          */
-        private final @NotNull MutableVector3F velocity;
+        private @NotNull Vector3d velocity;
         /**
          * The player's direction yaw being x and pitch being y.
          */
-        private final @NotNull MutableVector2F direction;
+        private @NotNull Vector2f direction;
 
         /**
          * Whether or not the player say's they're on the ground.
@@ -124,15 +113,14 @@ public final class PlayerData {
          * @param player the bukkit player
          */
         public Data(final @NotNull Player player) {
-            this.location = new MutableVector3F(
+            this.location = Vector3d.from(
                 player.getLocation().getX(),
                 player.getLocation().getY(),
                 player.getLocation().getZ()
             );
 
-            this.velocity = new MutableVector3F(0, 0, 0);
-
-            this.direction = new MutableVector2F(player.getLocation().getYaw(), player.getLocation().getPitch());
+            this.velocity = Vector3d.ZERO;
+            this.direction = Vector2f.from(player.getLocation().getYaw(), player.getLocation().getPitch());
 
             this.onGround = true;
             this.sneaking = player.isSneaking();
@@ -147,9 +135,9 @@ public final class PlayerData {
          * @param other Data
          */
         public void apply(final @NotNull Data other) {
-            this.location.set(other.location);
-            this.velocity.set(other.velocity);
-            this.direction.set(other.direction);
+            this.location = other.location;
+            this.velocity = other.velocity;
+            this.direction = other.direction;
 
             this.onGround = other.onGround;
             this.sneaking = other.sneaking;
@@ -158,74 +146,48 @@ public final class PlayerData {
             this.flying = other.flying;
         }
 
+
         /**
-         * Gets location.
-         *
-         * @return the location
+         * @return The player's location
          */
-        public @NotNull MutableVector3F getLocation() {
+        public @NotNull Vector3d getLocation() {
             return this.location;
         }
 
         /**
-         * Sets location.
-         *
-         * @param x the x
-         * @param y the y
-         * @param z the z
+         * @param location The player's location
          */
-        public void setLocation(
-            final double x,
-            final double y,
-            final double z
-        ) {
-            this.location.set(x, y, z);
+        public void setLocation(final @NotNull Vector3d location) {
+            this.location = location;
         }
 
         /**
-         * Gets velocity.
-         *
-         * @return the velocity
+         * @return The player's velocity
          */
-        public @NotNull MutableVector3F getVelocity() {
+        public @NotNull Vector3d getVelocity() {
             return this.velocity;
         }
 
         /**
-         * Sets velocity.
-         *
-         * @param dx the dx
-         * @param dy the dy
-         * @param dz the dz
+         * @param velocity The player's velocity
          */
-        public void setVelocity(
-            final double dx,
-            final double dy,
-            final double dz
-        ) {
-            this.velocity.set(dx, dy, dz);
+        public void setVelocity(final @NotNull Vector3d velocity) {
+            this.velocity = velocity;
         }
 
+
         /**
-         * Gets direction.
-         *
-         * @return the direction
+         * @return The player's yaw/pitch. (yaw x, pitch y)
          */
-        public @NotNull MutableVector2F getDirection() {
+        public @NotNull Vector2f getDirection() {
             return this.direction;
         }
 
         /**
-         * Sets direction.
-         *
-         * @param yaw   the yaw
-         * @param pitch the pitch
+         * @param direction The player's yaw/pitch. (yaw x, pitch y)
          */
-        public void setDirection(
-            final double yaw,
-            final double pitch
-        ) {
-            this.direction.set(yaw, pitch);
+        public void setDirection(final @NotNull Vector2f direction) {
+            this.direction = direction;
         }
 
         /**

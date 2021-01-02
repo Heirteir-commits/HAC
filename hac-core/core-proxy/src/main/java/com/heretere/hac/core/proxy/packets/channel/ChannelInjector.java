@@ -48,6 +48,7 @@ public abstract class ChannelInjector {
     /**
      * Instantiates a new Channel injector base.
      *
+     * @param api the HACAPI reference.
      * @param parent The parent HACPlugin instance.
      */
     protected ChannelInjector(

@@ -43,7 +43,6 @@ public final class HACPlayerFactory {
         this.builders = Maps.newLinkedHashMap();
     }
 
-
     /**
      * Registers a {@link DataFactory} to be added to the
      * {@link com.heretere.hac.api.player.factory.DataManager} instance. This will also add the data to all active

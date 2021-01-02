@@ -40,7 +40,6 @@ public abstract class DataFactory<T> {
         this.events = ImmutableSet.copyOf(events);
     }
 
-
     /**
      * Use to build t data object from a HACPlayer instance.
      *
@@ -48,7 +47,6 @@ public abstract class DataFactory<T> {
      * @return A built t data object.
      */
     public abstract @NotNull T build(@NotNull HACPlayer player);
-
 
     /**
      * Registered updaters from the supplied array in
