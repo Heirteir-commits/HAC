@@ -2,7 +2,7 @@ package com.heretere.hac.core.proxy.player;
 
 import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3d;
-import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
+import com.heretere.hac.api.event.packet.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

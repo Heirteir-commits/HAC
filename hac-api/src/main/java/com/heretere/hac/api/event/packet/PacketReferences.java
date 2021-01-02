@@ -1,13 +1,13 @@
-package com.heretere.hac.api.events.packets;
+package com.heretere.hac.api.event.packet;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.events.packets.factory.PacketFactory;
-import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
-import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
-import com.heretere.hac.api.events.packets.wrapper.clientside.EntityActionPacket;
-import com.heretere.hac.api.events.packets.wrapper.clientside.FlyingPacket;
-import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
+import com.heretere.hac.api.event.packet.factory.PacketFactory;
+import com.heretere.hac.api.event.packet.wrapper.WrappedPacket;
+import com.heretere.hac.api.event.packet.wrapper.clientside.AbilitiesPacket;
+import com.heretere.hac.api.event.packet.wrapper.clientside.EntityActionPacket;
+import com.heretere.hac.api.event.packet.wrapper.clientside.FlyingPacket;
+import com.heretere.hac.api.event.packet.wrapper.serverside.EntityVelocityPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

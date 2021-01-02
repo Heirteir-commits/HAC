@@ -80,8 +80,13 @@ public class DependencyLoader {
      * @return true if all dependencies were successfully loaded
      */
     public boolean loadDependencies() {
+        Set<Dependency> set = this.getDependencies(this.parent.getClass());
         this.parent.getLog().info(() -> "Loading Dependencies...");
-        return this.getDependencies(this.parent.getClass()).parallelStream().allMatch(this::loadDependency);
+        boolean passed = set.parallelStream().allMatch(this::loadDependency);
+        if (passed) {
+            this.parent.getLog().info(() -> "Loaded " + set.size() + " Dependencies.");
+        }
+        return passed;
     }
 
     /**
@@ -93,7 +98,7 @@ public class DependencyLoader {
     public boolean downloadDependency(final @NotNull Dependency dependency) {
         boolean success = true;
 
-        if (dependency.needsUpdate()) {
+        if (dependency.needsDownload() && dependency.needsRelocation()) {
             Optional<URL> optionalURL = dependency.getDownloadURL();
 
             if (optionalURL.isPresent()) {
@@ -139,6 +144,13 @@ public class DependencyLoader {
                 success = false;
 
                 this.parent.getLog().reportFatalError(relocate.get(), false);
+            } else {
+                try {
+                    Files.delete(dependency.getDownloadLocation());
+                } catch (IOException e) {
+                    success = false;
+                    this.parent.getLog().reportFatalError(e, false);
+                }
             }
         }
 

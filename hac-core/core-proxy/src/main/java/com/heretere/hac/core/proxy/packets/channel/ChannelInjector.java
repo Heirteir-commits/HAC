@@ -1,9 +1,9 @@
 package com.heretere.hac.core.proxy.packets.channel;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.packets.PacketReferences;
-import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
-import com.heretere.hac.api.events.packets.wrapper.WrappedPacketOut;
+import com.heretere.hac.api.event.packet.PacketReferences;
+import com.heretere.hac.api.event.packet.wrapper.WrappedPacket;
+import com.heretere.hac.api.event.packet.wrapper.WrappedPacketOut;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.util.plugin.HACPlugin;
 import io.netty.channel.ChannelDuplexHandler;

@@ -63,7 +63,7 @@ ext {
 group 'com.heretere'
 
 /* This is used to change the version for all subprojects */
-version '0.0.6'
+version '0.0.1'
 
 /* Project wide dependencies */
 allprojects {

@@ -1,6 +1,6 @@
-package com.heretere.hac.api.events.packets.wrapper.clientside;
+package com.heretere.hac.api.event.packet.wrapper.clientside;
 
-import com.heretere.hac.api.events.packets.wrapper.WrappedPacketIn;
+import com.heretere.hac.api.event.packet.wrapper.WrappedPacketIn;
 import org.jetbrains.annotations.NotNull;
 
 /**

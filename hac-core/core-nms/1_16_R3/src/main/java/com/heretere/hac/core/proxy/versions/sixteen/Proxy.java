@@ -1,7 +1,7 @@
 package com.heretere.hac.core.proxy.versions.sixteen;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.packets.PacketReferences;
+import com.heretere.hac.api.event.packet.PacketReferences;
 import com.heretere.hac.core.proxy.CoreVersionProxy;
 import com.heretere.hac.core.proxy.packets.channel.ChannelInjector;
 import com.heretere.hac.core.proxy.versions.sixteen.packets.builder.clientside.AbilitiesPacketFactory;

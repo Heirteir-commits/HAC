@@ -24,9 +24,9 @@ import java.util.Set;
 /**
  * The type Relocator.
  */
-@Maven(groupId = "org.ow2.asm", artifactId = "asm-commons", version = "6.0")
-@Maven(groupId = "org.ow2.asm", artifactId = "asm", version = "6.0")
-@Maven(groupId = "me.lucko", artifactId = "jar-relocator", version = "1.3")
+@Maven(groupId = "org.ow2.asm", artifactId = "asm-commons", version = "7.0")
+@Maven(groupId = "org.ow2.asm", artifactId = "asm", version = "7.0")
+@Maven(groupId = "me.lucko", artifactId = "jar-relocator", version = "1.4")
 public final class Relocator {
     /**
      * Isolated class loader to stop from polluting the class path with unneeded packages.

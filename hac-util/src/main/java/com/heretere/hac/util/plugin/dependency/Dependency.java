@@ -46,7 +46,7 @@ public abstract class Dependency {
      *
      * @return true if it should be downloaded.
      */
-    public abstract boolean needsUpdate();
+    public abstract boolean needsDownload();
 
     /**
      * Whether or not this dependency needs to be ran through the Relocator.

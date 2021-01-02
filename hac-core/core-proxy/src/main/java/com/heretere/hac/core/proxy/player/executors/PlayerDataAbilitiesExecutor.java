@@ -1,9 +1,9 @@
 package com.heretere.hac.core.proxy.player.executors;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.events.PacketEventExecutor;
-import com.heretere.hac.api.events.Priority;
-import com.heretere.hac.api.events.packets.wrapper.clientside.AbilitiesPacket;
+import com.heretere.hac.api.event.PacketEventExecutor;
+import com.heretere.hac.api.event.Priority;
+import com.heretere.hac.api.event.packet.wrapper.clientside.AbilitiesPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.core.proxy.player.PlayerData;
 import org.apache.commons.lang3.NotImplementedException;

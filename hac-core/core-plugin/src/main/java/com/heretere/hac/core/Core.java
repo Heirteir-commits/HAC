@@ -108,7 +108,12 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
             return;
         }
 
-        this.api.getConfigHandler().loadConfigClass(this);
+        if (!this.api.getConfigHandler().load()) {
+            super.getLog().reportFatalError(() -> "HAC failed to load the config files correctly. " +
+                "Please look at the latest.log to determine the issue.", true);
+            return;
+        }
+
         new Metrics(this, Core.BSTATS_ID);
 
         this.api.getErrorHandler().setHandler(ex -> {

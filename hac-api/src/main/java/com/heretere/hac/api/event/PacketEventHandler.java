@@ -1,4 +1,4 @@
-package com.heretere.hac.api.events;
+package com.heretere.hac.api.event;
 
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;

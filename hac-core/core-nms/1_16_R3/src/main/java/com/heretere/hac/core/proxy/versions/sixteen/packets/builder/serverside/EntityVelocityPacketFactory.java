@@ -1,7 +1,7 @@
 package com.heretere.hac.core.proxy.versions.sixteen.packets.builder.serverside;
 
-import com.heretere.hac.api.events.packets.factory.PacketFactory;
-import com.heretere.hac.api.events.packets.wrapper.serverside.EntityVelocityPacket;
+import com.heretere.hac.api.event.packet.factory.PacketFactory;
+import com.heretere.hac.api.event.packet.wrapper.serverside.EntityVelocityPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.util.plugin.HACPlugin;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityVelocity;

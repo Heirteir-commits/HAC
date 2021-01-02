@@ -1,4 +1,4 @@
-package com.heretere.hac.api.config.file;
+package com.heretere.hac.api.config.annotations.backend;
 
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
@@ -14,7 +14,6 @@ public abstract class ConfigPath {
      * The HACAPI reference.
      */
     private final @NotNull HACAPI api;
-
     /**
      * The {@link Type} of this Config Path.
      */

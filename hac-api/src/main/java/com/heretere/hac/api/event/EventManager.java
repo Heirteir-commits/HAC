@@ -1,7 +1,7 @@
-package com.heretere.hac.api.events;
+package com.heretere.hac.api.event;
 
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.events.packets.wrapper.WrappedPacket;
+import com.heretere.hac.api.event.packet.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 

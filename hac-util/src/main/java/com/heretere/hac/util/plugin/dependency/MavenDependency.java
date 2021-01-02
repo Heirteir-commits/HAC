@@ -75,7 +75,7 @@ public final class MavenDependency extends Dependency {
     }
 
     @Override
-    public boolean needsUpdate() {
+    public boolean needsDownload() {
         return !Files.exists(this.getDownloadLocation());
     }
 

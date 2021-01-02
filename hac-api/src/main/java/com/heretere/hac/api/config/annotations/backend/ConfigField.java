@@ -1,4 +1,4 @@
-package com.heretere.hac.api.config.file;
+package com.heretere.hac.api.config.annotations.backend;
 
 import com.heretere.hac.api.HACAPI;
 import org.jetbrains.annotations.NotNull;
