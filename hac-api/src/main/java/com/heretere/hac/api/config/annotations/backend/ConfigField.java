@@ -6,8 +6,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Optional;
 
 /**
@@ -25,13 +26,9 @@ public final class ConfigField<T> extends ConfigPath {
      */
     private final @NotNull Reference<?> instance;
     /**
-     * The getter to retrieve the value.
+     * The field reference.
      */
-    private @Nullable Method getter;
-    /**
-     * The setter to set the value.
-     */
-    private @Nullable Method setter;
+    private @NotNull Reference<Field> field;
     /**
      * If the WeakReference is null, this is the last known value that was retrieved.
      */
@@ -56,25 +53,14 @@ public final class ConfigField<T> extends ConfigPath {
         super(api, Type.VALUE, path, comments);
         this.type = type;
         this.instance = new WeakReference<>(instance);
+        this.field = new WeakReference<>(null);
     }
 
     /**
-     * Done internally, Used to bind a delegate getter to a Config Field.
-     *
-     * @param getter the getter
+     * @param field The field value attached to this instance.
      */
-    public void setGetter(final @NotNull Method getter) {
-        this.getter = getter;
-        this.lastKnownValue = this.getValue().orElse(null);
-    }
-
-    /**
-     * Done internally, used to bind a delegate setter to a Config Field.
-     *
-     * @param setter the setter
-     */
-    public void setSetter(final @NotNull Method setter) {
-        this.setter = setter;
+    public void setField(final @NotNull Field field) {
+        this.field = new WeakReference<>(field);
     }
 
     /**
@@ -85,13 +71,21 @@ public final class ConfigField<T> extends ConfigPath {
     public @NotNull Optional<T> getValue() {
         T output;
         Object tmpInstance = this.instance.get();
-        if (tmpInstance == null || this.getter == null) {
+        Field tmpField = this.field.get();
+        if (tmpInstance == null || tmpField == null) {
             output = this.lastKnownValue;
         } else {
             try {
-                this.lastKnownValue = this.type.cast(this.getter.invoke(tmpInstance));
+                boolean accessible = ConfigField.canAccess(tmpInstance, tmpField);
+                if (!accessible) {
+                    ConfigField.changeAccessibility(tmpField, true);
+                }
+                this.lastKnownValue = this.type.cast(tmpField.get(tmpField));
                 output = this.lastKnownValue;
-            } catch (IllegalAccessException | InvocationTargetException e) {
+                if (!accessible) {
+                    ConfigField.changeAccessibility(tmpField, false);
+                }
+            } catch (IllegalAccessException e) {
                 output = null;
                 super.getAPI().getErrorHandler().getHandler().accept(e);
             }
@@ -108,10 +102,18 @@ public final class ConfigField<T> extends ConfigPath {
     public void setValue(final @NotNull T value) {
         this.lastKnownValue = value;
         Object tmpInstance = this.instance.get();
-        if (tmpInstance != null && this.setter != null) {
+        Field tmpField = this.field.get();
+        if (tmpInstance != null && tmpField != null) {
             try {
-                this.setter.invoke(tmpInstance, value);
-            } catch (IllegalAccessException | InvocationTargetException e) {
+                boolean accessible = ConfigField.canAccess(tmpInstance, tmpField);
+                if (!accessible) {
+                    ConfigField.changeAccessibility(tmpField, true);
+                }
+                tmpField.set(tmpField, value);
+                if (!accessible) {
+                    ConfigField.changeAccessibility(tmpField, false);
+                }
+            } catch (IllegalAccessException e) {
                 super.getAPI().getErrorHandler().getHandler().accept(e);
             }
         }
@@ -133,5 +135,29 @@ public final class ConfigField<T> extends ConfigPath {
      */
     public @NotNull Class<T> getClassType() {
         return this.type;
+    }
+
+    private static void changeAccessibility(
+        final @NotNull Field field,
+        final boolean flag
+    ) {
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            field.setAccessible(flag);
+            return null;
+        });
+    }
+
+    private static boolean canAccess(
+        final @NotNull Object instance,
+        final @NotNull Field field
+    ) {
+        boolean accessible;
+        try {
+            accessible = field.get(instance) != null;
+        } catch (IllegalAccessException e) {
+            accessible = false;
+        }
+
+        return accessible;
     }
 }

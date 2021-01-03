@@ -13,10 +13,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigFile {
-    /**
-     * The relative path to the config file.
-     *
-     * @return the path
-     */
     @NotNull String value();
 }

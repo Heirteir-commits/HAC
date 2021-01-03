@@ -58,6 +58,7 @@ import org.jetbrains.annotations.Nullable;
 @Relocation(from = "io|leangen|geantyref", to = "com|heretere|hac|core|libs|commands|typetoken")
 /* Kyori Relocations */
 @Relocation(from = "net|kyori|adventure", to = "com|heretere|hac|core|libs|adventure")
+
 public final class Core extends ProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.
@@ -107,6 +108,8 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
                      "the issue.", true);
             return;
         }
+
+        this.api.getConfigHandler().loadConfigClass(this);
 
         if (!this.api.getConfigHandler().load()) {
             super.getLog().reportFatalError(() -> "HAC failed to load the config files correctly. " +
