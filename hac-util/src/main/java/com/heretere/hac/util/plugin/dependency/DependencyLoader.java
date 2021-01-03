@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Heflin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.heretere.hac.util.plugin.dependency;
 
 import com.google.common.collect.Sets;
@@ -16,6 +41,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +68,32 @@ public class DependencyLoader {
     public DependencyLoader(final @NotNull HACPlugin parent) {
         this.parent = parent;
         this.relocator = new Relocator(parent, this);
+
+        this.openClassLoaderJava9();
+    }
+
+    /**
+     * Gives this module access to the URLClassLoader.
+     * Thanks lucko :)
+     * Modified from: lucko/LuckPerms repo on GitHub (ReflectiveClassLoader)
+     */
+    @SuppressWarnings("JavaReflectionInvocation") private void openClassLoaderJava9() {
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            try {
+                Class<?> moduleClass = Class.forName("java.lang.Module");
+                Method getModuleMethod = Class.class.getMethod("getModule");
+                Method addOpensMethod = moduleClass.getMethod("addOpens", String.class, moduleClass);
+
+                Object urlClassLoaderModule = getModuleMethod.invoke(URLClassLoader.class);
+                Object thisModule = getModuleMethod.invoke(DependencyLoader.class);
+
+                addOpensMethod.invoke(urlClassLoaderModule, URLClassLoader.class.getPackage().getName(), thisModule);
+            } catch (Exception ignored) {
+                //Will throw error on <Java9
+            }
+            return null;
+        });
+
     }
 
     /**
@@ -175,7 +228,10 @@ public class DependencyLoader {
 
             try {
                 Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-                method.setAccessible(true);
+                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                    method.setAccessible(true);
+                    return null;
+                });
                 method.invoke(classLoader, dependency.getRelocatedLocation().toUri().toURL());
             } catch (NoSuchMethodException
                 | MalformedURLException
