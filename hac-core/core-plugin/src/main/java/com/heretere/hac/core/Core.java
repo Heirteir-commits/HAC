@@ -87,7 +87,7 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.
      *
-     * @see <a href="https://bstats.org/9648">http://bstats.org</a>
+     * @see <a href="https://bstats.org/plugin/bukkit/HAC/9648">http://bstats.org</a>
      */
     private static final int BSTATS_ID = 9648;
 
