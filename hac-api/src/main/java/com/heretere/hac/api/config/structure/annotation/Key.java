@@ -23,17 +23,20 @@
  *
  */
 
-package com.heretere.hac.api.config.backendv2;
+package com.heretere.hac.api.config.structure.annotation;
 
-import com.heretere.hac.api.util.generics.TypeDefinition;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface ConfigField<T> extends ConfigPath, TypeDefinition<T> {
-    @NotNull Optional<T> getValue();
-
-    void setValue(@NotNull T value);
-
-    void setValueRaw(@NotNull Object value);
+/**
+ * The interface Config key.
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Key {
+    @NotNull String value();
 }

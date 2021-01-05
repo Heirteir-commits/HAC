@@ -23,12 +23,12 @@
  *
  */
 
-package com.heretere.hac.api.config.builder;
+package com.heretere.hac.api.config.structure.builder;
 
 import com.google.common.collect.Lists;
-import com.heretere.hac.api.config.backendv2.ConfigPath;
-import com.heretere.hac.api.config.backendv2.ConfigSection;
-import com.heretere.hac.api.config.backendv2.SuppliedConfigField;
+import com.heretere.hac.api.config.structure.backend.ConfigPath;
+import com.heretere.hac.api.config.structure.backend.ConfigSection;
+import com.heretere.hac.api.config.structure.backend.SuppliedConfigField;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

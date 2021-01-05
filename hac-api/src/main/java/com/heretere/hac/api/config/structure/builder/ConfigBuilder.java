@@ -23,27 +23,46 @@
  *
  */
 
-package com.heretere.hac.api.config.backend;
+package com.heretere.hac.api.config.structure.builder;
 
+import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * The type Config section.
- */
-public class ConfigSection extends ConfigPath {
-    /**
-     * Instantiates a new Config section.
-     *
-     * @param api      the api
-     * @param path     the path
-     * @param comments the comments
-     */
-    public ConfigSection(
-        final @NotNull HACAPI api,
-        final @NotNull String path,
-        final @NotNull String... comments
-    ) {
-        super(api, Type.SECTION, path, comments);
+import java.util.List;
+
+public class ConfigBuilder {
+    private final @NotNull HACAPI api;
+    private @Nullable String relativePath;
+
+    private final List<ConfigPath> paths;
+
+    private ConfigBuilder(final @NotNull HACAPI api) {
+        this.api = api;
+        this.paths = Lists.newArrayList();
+    }
+
+    public @NotNull ConfigBuilder setRelativePath(final @NotNull String relativePath) {
+        this.relativePath = relativePath;
+        return this;
+    }
+
+    public @NotNull ConfigBuilder addConfigPath(final @NotNull ConfigPath path) {
+        this.paths.add(path);
+        return this;
+    }
+
+    public void build() {
+        if (this.relativePath == null) {
+            throw new IllegalStateException("Please define the relative path.");
+        }
+
+        this.api.getConfigHandler().loadConfigPaths(this.relativePath, this.paths);
+    }
+
+    public static @NotNull ConfigBuilder builder(final @NotNull HACAPI api) {
+        return new ConfigBuilder(api);
     }
 }

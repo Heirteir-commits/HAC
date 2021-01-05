@@ -27,9 +27,9 @@ package com.heretere.hac.api.config;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.config.annotation.ConfigFile;
-import com.heretere.hac.api.config.backend.ConfigClassParser;
-import com.heretere.hac.api.config.backend.ConfigPath;
+import com.heretere.hac.api.config.structure.annotation.ConfigFile;
+import com.heretere.hac.api.config.structure.backend.ConfigClassParser;
+import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import com.heretere.hac.api.config.processor.Processor;
 import com.heretere.hac.api.config.processor.toml.TOMLProcessor;
 import org.bukkit.plugin.Plugin;

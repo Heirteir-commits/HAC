@@ -27,7 +27,7 @@ package com.heretere.hac.api.config.processor;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.config.backend.ConfigPath;
+import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;

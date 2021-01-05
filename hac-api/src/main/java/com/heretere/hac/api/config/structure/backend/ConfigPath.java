@@ -23,20 +23,14 @@
  *
  */
 
-package com.heretere.hac.api.config.annotation;
+package com.heretere.hac.api.config.structure.backend;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.List;
 
-/**
- * The interface Config file.
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ConfigFile {
-    @NotNull String value();
+public interface ConfigPath {
+    @NotNull String getKey();
+
+    @NotNull List<@NotNull String> getComments();
 }

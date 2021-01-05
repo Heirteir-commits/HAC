@@ -23,14 +23,17 @@
  *
  */
 
-package com.heretere.hac.api.config.backendv2;
+package com.heretere.hac.api.config.structure.backend;
 
+import com.heretere.hac.api.util.generics.TypeDefinition;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface ConfigPath {
-    @NotNull String getKey();
+public interface ConfigField<T> extends ConfigPath, TypeDefinition<T> {
+    @NotNull Optional<T> getValue();
 
-    @NotNull List<@NotNull String> getComments();
+    void setValue(@NotNull T value);
+
+    void setValueRaw(@NotNull Object value);
 }

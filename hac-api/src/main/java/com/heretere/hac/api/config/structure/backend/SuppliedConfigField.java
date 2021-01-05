@@ -23,7 +23,7 @@
  *
  */
 
-package com.heretere.hac.api.config.backendv2;
+package com.heretere.hac.api.config.structure.backend;
 
 import org.jetbrains.annotations.NotNull;
 

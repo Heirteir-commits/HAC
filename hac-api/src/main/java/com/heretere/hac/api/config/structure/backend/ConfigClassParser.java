@@ -23,15 +23,15 @@
  *
  */
 
-package com.heretere.hac.api.config.backend;
+package com.heretere.hac.api.config.structure.backend;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.config.annotation.Comment;
-import com.heretere.hac.api.config.annotation.ConfigFile;
-import com.heretere.hac.api.config.annotation.Key;
-import com.heretere.hac.api.config.annotation.Section;
+import com.heretere.hac.api.config.structure.annotation.Comment;
+import com.heretere.hac.api.config.structure.annotation.ConfigFile;
+import com.heretere.hac.api.config.structure.annotation.Key;
+import com.heretere.hac.api.config.structure.annotation.Section;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AnnotatedElement;
@@ -73,13 +73,21 @@ public class ConfigClassParser {
                 if (field.isAnnotationPresent(Key.class)) {
                     Key key = field.getAnnotation(Key.class);
 
-                    ConfigField<?> configField = (ConfigField<?>) output.computeIfAbsent(
+                    List<String> comments = Lists.newArrayList();
+                    comments.addAll(ConfigClassParser.getComments(field));
+
+                    ReflectiveConfigField<?> configField = (ReflectiveConfigField<?>) output.computeIfAbsent(
                         key.value(),
-                        path -> new ConfigField<>(this.api, field.getType(), instance, path)
+                        path -> new ReflectiveConfigField<>(
+                            this.api,
+                            path,
+                            comments,
+                            field.getType(),
+                            instance
+                        )
                     );
 
                     configField.setField(field);
-                    ConfigClassParser.getComments(field).forEach(configField::addComment);
                 }
             }
         }
@@ -95,13 +103,14 @@ public class ConfigClassParser {
 
         if (valid && clazz.isAnnotationPresent(Section.class)) {
             Section section = clazz.getAnnotation(Section.class);
-            ConfigSection sectionBackend = (ConfigSection) output.computeIfAbsent(
+
+            List<String> comments = Lists.newArrayList();
+            comments.addAll(ConfigClassParser.getComments(clazz));
+
+            output.put(section.value(), output.computeIfAbsent(
                 section.value(),
-                key -> new ConfigSection(this.api, key)
-            );
-
-
-            ConfigClassParser.getComments(clazz).forEach(sectionBackend::addComment);
+                key -> new ConfigSection(key, comments)
+            ));
         }
 
         return valid;

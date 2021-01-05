@@ -23,29 +23,20 @@
  *
  */
 
-package com.heretere.hac.api.config.backendv2;
+package com.heretere.hac.api.config.structure.annotation;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ConfigSection implements ConfigPath {
-    private final @NotNull String key;
-    private final @NotNull List<@NotNull String> comments;
-
-    public ConfigSection(
-        final @NotNull String key,
-        final @NotNull List<@NotNull String> comments
-    ) {
-        this.key = key;
-        this.comments = comments;
-    }
-
-    @Override public final @NotNull String getKey() {
-        return this.key;
-    }
-
-    @Override public final @NotNull List<@NotNull String> getComments() {
-        return this.comments;
-    }
+/**
+ * The interface Config file.
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ConfigFile {
+    @NotNull String value();
 }
