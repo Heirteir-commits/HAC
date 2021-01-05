@@ -27,9 +27,9 @@ package com.heretere.hac.api.config.processor.toml;
 
 import com.google.common.collect.Sets;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.config.annotations.backend.ConfigField;
-import com.heretere.hac.api.config.annotations.backend.ConfigPath;
-import com.heretere.hac.api.config.annotations.backend.ConfigSection;
+import com.heretere.hac.api.config.backend.ConfigField;
+import com.heretere.hac.api.config.backend.ConfigPath;
+import com.heretere.hac.api.config.backend.ConfigSection;
 import com.heretere.hac.api.config.processor.Processor;
 import com.heretere.hac.api.config.processor.TypeDeserializer;
 import com.heretere.hac.api.config.processor.TypeSerializer;

@@ -57,20 +57,6 @@ import org.jetbrains.annotations.Nullable;
 @Maven(groupId = "org|antlr", artifactId = "antlr4-runtime", version = "4.7.2")
 @Maven(groupId = "org|apache|commons", artifactId = "commons-lang3", version = "3.11")
 @Maven(groupId = "com|google|guava", artifactId = "guava", version = "30.1-jre")
-/* CCF Dependencies */
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-annotations", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-paper", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-bukkit", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-brigadier", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-core", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-services", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-minecraft-extras", version = "1.3.0")
-@Maven(groupId = "cloud|commandframework", artifactId = "cloud-tasks", version = "1.3.0")
-@Maven(groupId = "io|leangen|geantyref", artifactId = "geantyref", version = "1.3.11")
-/* Kyori Dependencies */
-@Maven(groupId = "net|kyori", artifactId = "adventure-api", version = "4.3.0")
-@Maven(groupId = "net|kyori", artifactId = "examination-api", version = "1.0.0")
-@Maven(groupId = "net|kyori", artifactId = "examination-string", version = "1.0.0")
 /* Relocations */
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
@@ -78,11 +64,6 @@ import org.jetbrains.annotations.Nullable;
 @Relocation(from = "org|antlr", to = "com|heretere|hac|core|libs|antlr")
 @Relocation(from = "org|apache|commons|lang3", to = "com|heretere|hac|core|libs|lang3")
 @Relocation(from = "com|google|common", to = "com|heretere|hac|core|libs|guava")
-/* CCF Relocations */
-@Relocation(from = "cloud|commandframework", to = "com|heretere|hac|core|libs|commands")
-@Relocation(from = "io|leangen|geantyref", to = "com|heretere|hac|core|libs|commands|typetoken")
-/* Kyori Relocations */
-@Relocation(from = "net|kyori|adventure", to = "com|heretere|hac|core|libs|adventure")
 public final class Core extends ProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.

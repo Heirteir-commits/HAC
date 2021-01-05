@@ -25,6 +25,7 @@
 
 package com.heretere.hac.api.config.processor;
 
+import com.heretere.hac.api.util.generics.TypeDefinition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

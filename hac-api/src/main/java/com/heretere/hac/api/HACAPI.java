@@ -29,7 +29,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.event.EventManager;
-import com.heretere.hac.api.event.packet.PacketReferences;
+import com.heretere.hac.api.packet.PacketReferences;
 import com.heretere.hac.api.player.HACPlayerList;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

@@ -27,7 +27,7 @@ package com.heretere.hac.api.config.processor;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.config.annotations.backend.ConfigPath;
+import com.heretere.hac.api.config.backend.ConfigPath;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -58,14 +58,14 @@ public abstract class Processor<T> {
     public final <K> Processor<T> attachTypeSerializer(
         final @NotNull TypeSerializer<K> serializer
     ) {
-        this.serializers.put(serializer.getClassType(), serializer);
+        this.serializers.put(serializer.getGenericType(), serializer);
         return this;
     }
 
     public final <K> Processor<T> attachTypeDeserializer(
         final @NotNull TypeDeserializer<T, K> deserializer
     ) {
-        this.deserializers.put(deserializer.getClassType(), deserializer);
+        this.deserializers.put(deserializer.getGenericType(), deserializer);
         return this;
     }
 

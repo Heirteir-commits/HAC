@@ -26,19 +26,12 @@
 package com.heretere.hac.core.proxy.packets.channel;
 
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.event.packet.PacketReferences;
-import com.heretere.hac.api.event.packet.wrapper.WrappedPacket;
-import com.heretere.hac.api.event.packet.wrapper.WrappedPacketOut;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.util.plugin.HACPlugin;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -133,89 +126,4 @@ public abstract class ChannelInjector {
      */
     protected abstract @NotNull ChannelPipeline getPipeline(Player player);
 
-    private static final class HACChannelHandler extends ChannelDuplexHandler {
-        /**
-         * The HACAPI reference.
-         */
-        private final @NotNull HACAPI api;
-
-        /**
-         * The plugin instance that is hosting HACChannelHandler.
-         */
-        private final @NotNull HACPlugin parent;
-
-
-        /**
-         * The HACPlayer this ChannelHandler is attached to.
-         */
-        private final @NotNull HACPlayer player;
-
-        private HACChannelHandler(
-            final @NotNull HACAPI api,
-            final @NotNull HACPlugin parent,
-            final @NotNull HACPlayer player
-        ) {
-            super();
-            this.api = api;
-            this.parent = parent;
-            this.player = player;
-        }
-
-        @Override
-        public void write(
-            final ChannelHandlerContext ctx,
-            final Object msg,
-            final ChannelPromise promise
-        ) throws Exception {
-            super.write(ctx, msg, promise);
-
-            try {
-                this.handle(msg, false);
-            } catch (Exception e) {
-                this.parent.getLog().severe(e);
-            }
-        }
-
-        @Override
-        public void channelRead(
-            final ChannelHandlerContext ctx,
-            final Object msg
-        ) throws Exception {
-            super.channelRead(ctx, msg);
-
-            try {
-                this.handle(msg, true);
-            } catch (Exception e) {
-                this.parent.getLog().severe(e);
-            }
-        }
-
-        private void handle(
-            final @NotNull Object packet,
-            final boolean clientSide
-        ) {
-            Optional<PacketReferences.PacketReference<?>> optionalReference = clientSide
-                ? this.api
-                .getPacketReferences()
-                .getClientSide()
-                .get(packet.getClass())
-                : this.api.getPacketReferences().getServerSide().get(packet.getClass());
-
-
-            optionalReference.ifPresent(reference -> {
-                WrappedPacket wrappedPacket = reference.getBuilder().create(this.player, packet);
-
-                if (clientSide) {
-                    this.api.getEventManager().callPacketEvent(this.player, wrappedPacket);
-                } else {
-                    this.player.getBukkitPlayer().ifPresent(bukkitPlayer -> {
-                        if (((WrappedPacketOut) wrappedPacket).getEntityId() == bukkitPlayer.getEntityId()) {
-                            this.api.getEventManager().callPacketEvent(this.player, wrappedPacket);
-                        }
-                    });
-                }
-            });
-
-        }
-    }
 }

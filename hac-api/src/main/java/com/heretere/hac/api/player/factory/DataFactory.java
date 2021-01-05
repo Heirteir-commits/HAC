@@ -27,7 +27,7 @@ package com.heretere.hac.api.player.factory;
 
 import com.google.common.collect.ImmutableSet;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.event.PacketEventExecutor;
+import com.heretere.hac.api.event.EventExecutor;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,18 +48,18 @@ public abstract class DataFactory<T> {
     /**
      * These are automatically registered and unregistered by {@link com.heretere.hac.api.player.HACPlayerFactory}.
      */
-    private final @NotNull ImmutableSet<PacketEventExecutor<?>> events;
+    private final @NotNull ImmutableSet<EventExecutor<?>> events;
 
     /**
-     * You can include a vararg set of {@link PacketEventExecutor} these will be
+     * You can include a vararg set of {@link EventExecutor} these will be
      * registered for you from {@link DataFactory#registerUpdaters()}.
      *
      * @param api    The HACAPI reference
-     * @param events The instances of {@link PacketEventExecutor}
+     * @param events The instances of {@link EventExecutor}
      */
     protected DataFactory(
         final @NotNull HACAPI api,
-        final @NotNull PacketEventExecutor<?>... events
+        final @NotNull EventExecutor<?>... events
     ) {
         this.api = api;
         this.events = ImmutableSet.copyOf(events);
@@ -75,7 +75,7 @@ public abstract class DataFactory<T> {
 
     /**
      * Registered updaters from the supplied array in
-     * {@link DataFactory#DataFactory(HACAPI, PacketEventExecutor[])}.
+     * {@link DataFactory#DataFactory(HACAPI, EventExecutor[])}.
      */
     public void registerUpdaters() {
         this.events.forEach(this.api.getEventManager()::registerPacketEventExecutor);
@@ -83,18 +83,18 @@ public abstract class DataFactory<T> {
 
     /**
      * unregisters updaters from the supplied array in
-     * {@link DataFactory#DataFactory(HACAPI, PacketEventExecutor[])}.
+     * {@link DataFactory#DataFactory(HACAPI, EventExecutor[])}.
      */
     public void unregisterUpdaters() {
         this.events.forEach(this.api.getEventManager()::unregisterPacketEventExecutor);
     }
 
     /**
-     * Gets an {@link ImmutableSet} the {@link PacketEventExecutor} linked to this builder.
+     * Gets an {@link ImmutableSet} the {@link EventExecutor} linked to this builder.
      *
      * @return An {@link ImmutableSet} of the events linked by this builder.
      */
-    public @NotNull ImmutableSet<PacketEventExecutor<?>> getEvents() {
+    public @NotNull ImmutableSet<EventExecutor<?>> getEvents() {
         return this.events;
     }
 }

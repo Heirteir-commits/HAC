@@ -27,15 +27,16 @@ package com.heretere.hac.api.config;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.config.annotations.ConfigFile;
-import com.heretere.hac.api.config.annotations.backend.ConfigClassParser;
-import com.heretere.hac.api.config.annotations.backend.ConfigPath;
+import com.heretere.hac.api.config.annotation.ConfigFile;
+import com.heretere.hac.api.config.backend.ConfigClassParser;
+import com.heretere.hac.api.config.backend.ConfigPath;
 import com.heretere.hac.api.config.processor.Processor;
 import com.heretere.hac.api.config.processor.toml.TOMLProcessor;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -78,6 +79,10 @@ public class HACConfigHandler {
         this.files = Maps.newHashMap();
     }
 
+    private Processor<?> getProcessor(final @NotNull String path) {
+        return this.files.computeIfAbsent(path, key -> new TOMLProcessor(this.api, this.basePath.resolve(key)));
+    }
+
     /**
      * Load config class.
      *
@@ -88,14 +93,19 @@ public class HACConfigHandler {
 
         if (!configPaths.isEmpty()) {
             ConfigFile file = instance.getClass().getAnnotation(ConfigFile.class);
-            Processor<?> processor =
-                this.files.computeIfAbsent(
-                    file.value(),
-                    key -> new TOMLProcessor(this.api, this.basePath.resolve(file.value()))
-                );
+            Processor<?> processor = this.getProcessor(file.value());
 
             configPaths.values().forEach(processor::processConfigPath);
         }
+    }
+
+    public void loadConfigPaths(
+        final @NotNull String relativeFilePath,
+        final @NotNull Collection<ConfigPath> configPaths
+    ) {
+        Processor<?> processor = this.getProcessor(relativeFilePath);
+
+        configPaths.forEach(processor::processConfigPath);
     }
 
     public boolean load() {

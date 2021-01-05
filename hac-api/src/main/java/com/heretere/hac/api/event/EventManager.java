@@ -26,111 +26,102 @@
 package com.heretere.hac.api.event;
 
 import com.google.common.collect.Maps;
-import com.heretere.hac.api.event.packet.wrapper.WrappedPacket;
+import com.heretere.hac.api.event.annotation.Priority;
+import com.heretere.hac.api.event.annotation.SyncState;
+import com.heretere.hac.api.event.exception.InvalidExecutorException;
+import com.heretere.hac.api.packet.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.api.util.annotation.UniqueIdentifier;
+import com.heretere.hac.api.util.generics.ImmutablePair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
+import java.util.Optional;
 
-/**
- * The Event Manager handles executing tasks on specific threads.
- */
 public final class EventManager {
-    /**
-     * The event executors this manager handles.
-     */
-    private final @NotNull Map<Class<? extends WrappedPacket>,
-        SimpleImmutableEntry<PacketEventHandler, PacketEventHandler>> executors;
+    private final Map<Class<? extends WrappedPacket>, ImmutablePair<EventHandler<?>, EventHandler<?>>>
+        handlers;
 
-    /**
-     * Creates a new Event Manager.
-     */
     public EventManager() {
-        this.executors = Maps.newIdentityHashMap();
+        this.handlers = Maps.newIdentityHashMap();
     }
 
-    /**
-     * Register a packet event executor.
-     *
-     * @param executor The executor instance.
-     * @param <T>      WrappedPacket type
-     */
     public <T extends WrappedPacket> void registerPacketEventExecutor(
-        final @NotNull PacketEventExecutor<T> executor
+        final @NotNull EventExecutor<T> executor
     ) {
-        if (executor.isSync()) {
-            this.getSyncPacketEventHandler(executor.getWrappedClass())
-                .addExecutor(executor);
+        if (!Optional.ofNullable(executor.getClass().getAnnotation(UniqueIdentifier.class)).isPresent()) {
+            throw new InvalidExecutorException(String.format(
+                "Please add a %s annotation to the executor.",
+                UniqueIdentifier.class
+            ));
+        }
+
+        if (!Optional.ofNullable(executor.getClass().getAnnotation(Priority.class)).isPresent()) {
+            throw new InvalidExecutorException(String.format(
+                "Please add a %s annotation to the executor.",
+                Priority.class
+            ));
+        }
+
+        Optional<SyncState> syncState = Optional.ofNullable(executor.getClass().getAnnotation(SyncState.class));
+
+        if (syncState.isPresent() && syncState.get().value() == SyncState.State.SYNCHRONOUS) {
+            this.getSyncPacketEventHandler(executor.getGenericType()).addExecutor(executor);
         } else {
-            this.getAsyncPacketEventHandler(executor.getWrappedClass())
-                .addExecutor(executor);
+            this.getAsyncPacketEventHandler(executor.getGenericType()).addExecutor(executor);
         }
     }
 
-    /**
-     * Unregister a packet event executor.
-     *
-     * @param executor The executor instance
-     * @param <T>      WrappedPacket type
-     */
     public <T extends WrappedPacket> void unregisterPacketEventExecutor(
-        final @NotNull PacketEventExecutor<T> executor
+        final @NotNull EventExecutor<T> executor
     ) {
-        if (executor.isSync()) {
-            this.getSyncPacketEventHandler(executor.getWrappedClass())
-                .removeExecutor(executor);
+        Optional<SyncState> syncState = Optional.ofNullable(executor.getClass().getAnnotation(SyncState.class));
+
+        if (syncState.isPresent() && syncState.get().value() == SyncState.State.SYNCHRONOUS) {
+            this.getSyncPacketEventHandler(executor.getGenericType()).removeExecutor(executor);
         } else {
-            this.getAsyncPacketEventHandler(executor.getWrappedClass())
-                .removeExecutor(executor);
+            this.getAsyncPacketEventHandler(executor.getGenericType()).removeExecutor(executor);
         }
     }
 
-    private @NotNull PacketEventHandler getAsyncPacketEventHandler(
-        final @NotNull Class<? extends WrappedPacket> packetClass
+    private @NotNull EventHandler<?> getSyncPacketEventHandler(
+        final @NotNull Class<? extends WrappedPacket> clazz
     ) {
-        return this.getEventHandlers(packetClass).getKey();
+        return this.getEventHandlers(clazz).getA();
     }
 
-    private @NotNull PacketEventHandler getSyncPacketEventHandler(
-        final @NotNull Class<? extends WrappedPacket> packetClass
+    private @NotNull EventHandler<?> getAsyncPacketEventHandler(
+        final @NotNull Class<? extends WrappedPacket> clazz
     ) {
-        return this.getEventHandlers(packetClass).getValue();
+        return this.getEventHandlers(clazz).getB();
     }
 
-    private @NotNull SimpleImmutableEntry<PacketEventHandler, PacketEventHandler> getEventHandlers(
+    private @NotNull ImmutablePair<EventHandler<?>, EventHandler<?>> getEventHandlers(
         final @NotNull Class<? extends WrappedPacket> packetClass
     ) {
-        return this.executors.computeIfAbsent(
-            packetClass,
-            pc -> new SimpleImmutableEntry<>(
-                new PacketEventHandler(),
-                new PacketEventHandler()
-            )
+        return this.handlers.computeIfAbsent(
+            packetClass, clazz ->
+                new ImmutablePair<>(new EventHandler<>(clazz), new EventHandler<>(clazz))
         );
     }
 
-    /**
-     * Calls a packet event.
-     *
-     * @param player The HACPlayer
-     * @param packet The WrappedPacket
-     */
-    public void callPacketEvent(
+    public <T extends WrappedPacket> void callPacketEvent(
         final @NotNull HACPlayer player,
-        final @NotNull WrappedPacket packet
+        final @NotNull T packet
     ) {
-        SimpleImmutableEntry<PacketEventHandler, PacketEventHandler> syncAsyncHandlerEntry =
+        ImmutablePair<EventHandler<?>, EventHandler<?>> syncAsyncPair =
             this.getEventHandlers(packet.getClass());
 
-        if (syncAsyncHandlerEntry.getKey().getSize() != 0) {
+        if (!syncAsyncPair.getB().isEmpty()) {
             player.getFutureChain()
-                  .addAsyncTask(() -> syncAsyncHandlerEntry.getKey().execute(player, packet));
+                  .addAsyncTask(() -> syncAsyncPair.getB().execute(player, packet));
         }
 
-        if (syncAsyncHandlerEntry.getValue().getSize() != 0) {
+        if (!syncAsyncPair.getA().isEmpty()) {
             player.getFutureChain()
-                  .addServerMainThreadTask(() -> syncAsyncHandlerEntry.getValue().execute(player, packet));
+                  .addServerMainThreadTask(() -> syncAsyncPair.getA().execute(player, packet));
         }
     }
+
+
 }

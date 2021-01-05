@@ -109,13 +109,13 @@ allprojects {
     /* Project wide dependencies */
     pluginManager.withPlugin('java-library') {
         dependencies {
-            compileOnlyApi 'org.jetbrains:annotations-java5:20.1.0'
+            compileOnlyApi 'org.jetbrains:annotations:20.1.0'
         }
 
         compileJava {
             /* Ensure that all versions are compiled with 1.8 support */
-            sourceCompatibility = JavaVersion.VERSION_1_9
-            targetCompatibility = JavaVersion.VERSION_1_9
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
         }
     }
 }
