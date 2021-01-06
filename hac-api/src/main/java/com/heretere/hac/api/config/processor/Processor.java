@@ -32,12 +32,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class Processor<T> {
     private final @NotNull HACAPI api;
     private final @NotNull Path fileLocation;
 
-    private final @NotNull Map<Class<?>, TypeSerializer<?>> serializers;
+    private final @NotNull Map<Class<?>, TypeSerializer<T, ?>> serializers;
     private final @NotNull Map<Class<?>, TypeDeserializer<T, ?>> deserializers;
 
     private final @NotNull Map<String, ConfigPath> entries;
@@ -55,18 +56,48 @@ public abstract class Processor<T> {
         this.entries = Maps.newTreeMap();
     }
 
-    public final <K> Processor<T> attachTypeSerializer(
-        final @NotNull TypeSerializer<K> serializer
+    public final @NotNull <K> Processor<T> attachTypeHandler(
+        final @NotNull TypeHandler<T, K> handler
     ) {
-        this.serializers.put(serializer.getGenericType(), serializer);
+        if (handler instanceof TypeDeserializer) {
+            this.deserializers.put(handler.getGenericType(), (TypeDeserializer<T, K>) handler);
+        }
+
+        if (handler instanceof TypeSerializer) {
+            this.serializers.put(handler.getGenericType(), (TypeSerializer<T, K>) handler);
+        }
+
         return this;
     }
 
-    public final <K> Processor<T> attachTypeDeserializer(
-        final @NotNull TypeDeserializer<T, K> deserializer
-    ) {
-        this.deserializers.put(deserializer.getGenericType(), deserializer);
-        return this;
+    protected @NotNull Optional<TypeDeserializer<T, ?>> getDeserializer(final @NotNull Class<?> type) {
+        Optional<TypeDeserializer<T, ?>> optionalDeserializer = Optional.ofNullable(this.deserializers.get(type));
+
+        if (!optionalDeserializer.isPresent()) {
+            for (TypeDeserializer<T, ?> deserializer : this.deserializers.values()) {
+                if (deserializer.getGenericType().isAssignableFrom(type)) {
+                    optionalDeserializer = Optional.of(deserializer);
+                    break;
+                }
+            }
+        }
+
+        return optionalDeserializer;
+    }
+
+    protected @NotNull Optional<TypeSerializer<T, ?>> getSerializer(final @NotNull Class<?> type) {
+        Optional<TypeSerializer<T, ?>> optionalSerializer = Optional.ofNullable(this.serializers.get(type));
+
+        if (!optionalSerializer.isPresent()) {
+            for (TypeSerializer<T, ?> serializer : this.serializers.values()) {
+                if (serializer.getGenericType().isAssignableFrom(type)) {
+                    optionalSerializer = Optional.of(serializer);
+                    break;
+                }
+            }
+        }
+
+        return optionalSerializer;
     }
 
     public abstract boolean processConfigPath(@NotNull ConfigPath configPath);
@@ -76,14 +107,6 @@ public abstract class Processor<T> {
     public abstract boolean save();
 
     protected abstract String getPathString(@NotNull String path);
-
-    protected final @NotNull Map<Class<?>, TypeSerializer<?>> getSerializers() {
-        return this.serializers;
-    }
-
-    protected final @NotNull Map<Class<?>, TypeDeserializer<T, ?>> getDeserializers() {
-        return this.deserializers;
-    }
 
     protected final @NotNull HACAPI getAPI() {
         return this.api;

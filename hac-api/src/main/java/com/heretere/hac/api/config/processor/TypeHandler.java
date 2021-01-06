@@ -25,10 +25,7 @@
 
 package com.heretere.hac.api.config.processor;
 
-import org.jetbrains.annotations.NotNull;
+import com.heretere.hac.api.util.generics.TypeDefinition;
 
-import java.util.List;
-
-public interface TypeSerializer<T, K> extends TypeHandler<T, K> {
-    @NotNull List<String> serialize(@NotNull Object value);
+public interface TypeHandler<T, K> extends TypeDefinition<K> {
 }

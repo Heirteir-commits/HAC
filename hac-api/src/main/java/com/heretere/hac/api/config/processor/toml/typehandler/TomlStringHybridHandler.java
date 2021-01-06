@@ -23,12 +23,41 @@
  *
  */
 
-package com.heretere.hac.api.config.processor;
+package com.heretere.hac.api.config.processor.toml.typehandler;
 
+import com.google.common.collect.Lists;
+import com.heretere.hac.api.config.processor.HybridHandler;
+import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
 import org.jetbrains.annotations.NotNull;
+import org.tomlj.Toml;
+import org.tomlj.TomlParseResult;
 
 import java.util.List;
 
-public interface TypeSerializer<T, K> extends TypeHandler<T, K> {
-    @NotNull List<String> serialize(@NotNull Object value);
+public final class TomlStringHybridHandler implements HybridHandler<TomlParseResult, String> {
+    @Override public @NotNull String deserialize(
+        final @NotNull TomlParseResult parser,
+        final @NotNull Class<?> exactType,
+        final @NotNull String key
+    ) throws InvalidTypeException {
+        if (!parser.isString(key)) {
+            throw new InvalidTypeException();
+        }
+
+        String output = parser.getString(key);
+
+        if (output == null) {
+            throw new InvalidTypeException();
+        }
+
+        return output;
+    }
+
+    @Override public @NotNull List<String> serialize(final @NotNull Object value) {
+        return Lists.newArrayList("\"" + Toml.tomlEscape(this.getGenericType().cast(value)) + "\"");
+    }
+
+    @Override public @NotNull Class<String> getGenericType() {
+        return String.class;
+    }
 }

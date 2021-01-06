@@ -28,8 +28,9 @@ package com.heretere.hac.api.config.processor.toml;
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.processor.Processor;
-import com.heretere.hac.api.config.processor.toml.serialization.TomlBooleanHybridHandler;
-import com.heretere.hac.api.config.processor.toml.serialization.TomlStringHybridHandler;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlBooleanHybridHandler;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlEnumHybridHandler;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlStringHybridHandler;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import com.heretere.hac.api.config.structure.backend.ConfigSection;
@@ -61,13 +62,9 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
     }
 
     private void createDefaultHandlers() {
-        TomlStringHybridHandler tomlStringHybridHandler = new TomlStringHybridHandler();
-        TomlBooleanHybridHandler booleanHandler = new TomlBooleanHybridHandler();
-
-        super.attachTypeSerializer(tomlStringHybridHandler);
-        super.attachTypeDeserializer(tomlStringHybridHandler);
-        super.attachTypeSerializer(booleanHandler);
-        super.attachTypeDeserializer(booleanHandler);
+        super.attachTypeHandler(new TomlStringHybridHandler());
+        super.attachTypeHandler(new TomlBooleanHybridHandler());
+        super.attachTypeHandler(new TomlEnumHybridHandler());
     }
 
     private void attachSectionParent(final @NotNull ConfigPath path) {
@@ -82,9 +79,13 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
         AtomicBoolean success = new AtomicBoolean(true);
 
         if (this.current != null) {
-            Optional.ofNullable(super.getDeserializers().get(configField.getGenericType())).ifPresent(deserializer -> {
+            super.getDeserializer(configField.getGenericType()).ifPresent(deserializer -> {
                 try {
-                    configField.setValueRaw(deserializer.deserialize(this.current, configField.getKey()));
+                    configField.setValueRaw(deserializer.deserialize(
+                        this.current,
+                        configField.getGenericType(),
+                        configField.getKey()
+                    ));
                 } catch (Exception e) {
                     success.set(false);
                     super.getAPI().getErrorHandler().getHandler().accept(e);
@@ -203,8 +204,8 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
     private List<String> serializeToString(final @NotNull Object object) {
         List<String> output = Lists.newArrayList();
 
-        Optional.ofNullable(super.getSerializers().get(object.getClass()))
-                .ifPresent(serializer -> output.addAll(serializer.serialize(object)));
+        super.getSerializer(object.getClass())
+             .ifPresent(serializer -> output.addAll(serializer.serialize(object)));
 
         if (output.isEmpty()) {
             output.add(Toml.tomlEscape(object.toString()).toString());

@@ -23,7 +23,7 @@
  *
  */
 
-package com.heretere.hac.api.config.processor.toml.serialization;
+package com.heretere.hac.api.config.processor.toml.typehandler;
 
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.config.processor.HybridHandler;
@@ -34,9 +34,9 @@ import org.tomlj.TomlParseResult;
 import java.util.List;
 
 public final class TomlBooleanHybridHandler implements HybridHandler<TomlParseResult, Boolean> {
-
     @Override public @NotNull Boolean deserialize(
         final @NotNull TomlParseResult parser,
+        final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
         if (!parser.isBoolean(key)) {

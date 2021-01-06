@@ -53,10 +53,15 @@ public class ConfigExample {
     @Comment("Ayo bro enable this")
     private Boolean enabled = true;
 
+    @Key("section.to.add.comments.enum")
+    @Comment("Can define enums")
+    private Test enumTest = Test.TESTING_1;
+
     /* Builder Example */
     private Boolean valueBuilder = false;
     private String nameBuilder = "SquadBuilder";
     private Boolean enabledBuilder = false;
+    private Test enumTestBuilder = Test.TESTING_2;
 
     public ConfigExample() {
         /* Usually I would use DI to get the HACAPI instance but since this is just a one off class i'll use the
@@ -101,6 +106,19 @@ public class ConfigExample {
                                                      .setDefaultValue(true)
                                                      .build()
                      )
+                     .addConfigPath(ConfigPathBuilder.builder(Test.class, ConfigPathBuilder.Type.FIELD)
+                                                     .setKey("section.to.add.comments.enum")
+                                                     .addComment("Can define enums")
+                                                     .setGetterSupplier(() -> this.enumTestBuilder)
+                                                     .setSetterConsumer(b -> this.enumTestBuilder = b)
+                                                     .setDefaultValue(Test.TESTING_2)
+                                                     .build()
+                     )
                      .build();
+    }
+
+    private enum Test {
+        TESTING_1,
+        TESTING_2
     }
 }
