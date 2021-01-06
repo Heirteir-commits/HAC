@@ -25,6 +25,7 @@
 
 package com.heretere.hac.api.config.structure.backend;
 
+import com.google.common.base.Preconditions;
 import com.heretere.hac.api.HACAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +53,9 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
         final @Nullable Object instance
     ) {
         super(key, comments);
+
+        Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
+
         this.api = api;
         this.type = type;
         this.instance = new WeakReference<>(instance);
@@ -79,7 +83,7 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
                 if (!accessible) {
                     ReflectiveConfigField.changeAccessibility(tmpField, true);
                 }
-                this.lastKnownValue = this.type.cast(this.convert(tmpField.get(tmpInstance)));
+                this.lastKnownValue = this.type.cast(tmpField.get(tmpInstance));
                 output = this.lastKnownValue;
                 if (!accessible) {
                     ReflectiveConfigField.changeAccessibility(tmpField, false);
@@ -124,13 +128,11 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
      * @param value the value
      */
     public void setValueRaw(final @NotNull Object value) {
-        this.setValue(this.convert(value));
+        this.setValue(this.getGenericType().cast(value));
     }
 
-    private T convert(
-        final @NotNull Object value
-    ) {
-        return this.type.cast(value);
+    private boolean convertWrapped(final @NotNull Boolean value) {
+        return value.booleanValue();
     }
 
     @Override public @NotNull Class<T> getGenericType() {

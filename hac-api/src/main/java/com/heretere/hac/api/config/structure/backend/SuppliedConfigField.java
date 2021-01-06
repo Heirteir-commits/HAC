@@ -25,6 +25,7 @@
 
 package com.heretere.hac.api.config.structure.backend;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -45,6 +46,9 @@ public final class SuppliedConfigField<T> extends ConfigSection implements Confi
         final @NotNull Consumer<@NotNull T> setter
     ) {
         super(key, comments);
+
+        Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
+
         this.type = type;
         this.getter = getter;
         this.setter = setter;
@@ -59,17 +63,7 @@ public final class SuppliedConfigField<T> extends ConfigSection implements Confi
     }
 
     @Override public void setValueRaw(final @NotNull Object value) {
-        this.setter.accept(this.convert(value));
-    }
-
-    private T convert(
-        final @NotNull Object value
-    ) {
-        if (this.type == boolean.class) {
-            return this.type.cast(value);
-        }
-
-        return this.type.cast(value);
+        this.setter.accept(this.getGenericType().cast(value));
     }
 
     @Override public @NotNull Class<T> getGenericType() {
