@@ -26,10 +26,14 @@
 package com.heretere.hac.core.proxy.player;
 
 import com.heretere.hac.api.event.EventExecutor;
+import com.heretere.hac.api.event.annotation.Priority;
 import com.heretere.hac.api.packet.wrapper.clientside.FlyingPacket;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.api.util.annotation.UniqueIdentifier;
 import org.jetbrains.annotations.NotNull;
 
+@UniqueIdentifier("player_data_flying")
+@Priority
 final class PlayerDataFlyingExecutor implements EventExecutor<FlyingPacket> {
 
     @Override public boolean execute(

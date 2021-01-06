@@ -29,7 +29,6 @@ import com.google.common.collect.Lists;
 import com.heretere.hac.api.config.processor.HybridHandler;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
 import org.jetbrains.annotations.NotNull;
-import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public final class TomlBooleanHybridHandler implements HybridHandler<TomlParseRe
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList(Toml.tomlEscape(this.getGenericType().cast(value).toString()).toString());
+        return Lists.newArrayList(this.getGenericType().cast(value).toString());
     }
 
     @Override @NotNull public Class<Boolean> getGenericType() {

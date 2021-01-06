@@ -79,7 +79,7 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
                 if (!accessible) {
                     ReflectiveConfigField.changeAccessibility(tmpField, true);
                 }
-                this.lastKnownValue = this.type.cast(tmpField.get(tmpField));
+                this.lastKnownValue = this.type.cast(this.convert(tmpField.get(tmpInstance)));
                 output = this.lastKnownValue;
                 if (!accessible) {
                     ReflectiveConfigField.changeAccessibility(tmpField, false);
@@ -108,7 +108,7 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
                 if (!accessible) {
                     ReflectiveConfigField.changeAccessibility(tmpField, true);
                 }
-                tmpField.set(tmpField, value);
+                tmpField.set(tmpInstance, value);
                 if (!accessible) {
                     ReflectiveConfigField.changeAccessibility(tmpField, false);
                 }
@@ -130,10 +130,6 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
     private T convert(
         final @NotNull Object value
     ) {
-        if (this.type == boolean.class) {
-            return this.type.cast(value);
-        }
-
         return this.type.cast(value);
     }
 

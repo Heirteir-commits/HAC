@@ -53,7 +53,7 @@ public final class TomlStringHybridHandler implements HybridHandler<TomlParseRes
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList(Toml.tomlEscape(this.getGenericType().cast(value)).toString());
+        return Lists.newArrayList("\"" + Toml.tomlEscape(this.getGenericType().cast(value)) + "\"");
     }
 
     @Override public @NotNull Class<String> getGenericType() {

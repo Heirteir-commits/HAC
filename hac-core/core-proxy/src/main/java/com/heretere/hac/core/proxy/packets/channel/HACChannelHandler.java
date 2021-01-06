@@ -97,10 +97,7 @@ final class HACChannelHandler extends ChannelDuplexHandler {
         final boolean clientSide
     ) {
         Optional<PacketReference<?>> optionalReference = clientSide
-            ? this.api
-            .getPacketReferences()
-            .getClientSide()
-            .getReferenceFromNMSClass(packet.getClass())
+            ? this.api.getPacketReferences().getClientSide().getReferenceFromNMSClass(packet.getClass())
             : this.api.getPacketReferences().getServerSide().getReferenceFromNMSClass(packet.getClass());
 
 

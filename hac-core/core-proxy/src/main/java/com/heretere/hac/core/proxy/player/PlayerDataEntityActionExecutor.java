@@ -27,10 +27,14 @@ package com.heretere.hac.core.proxy.player;
 
 
 import com.heretere.hac.api.event.EventExecutor;
+import com.heretere.hac.api.event.annotation.Priority;
 import com.heretere.hac.api.packet.wrapper.clientside.EntityActionPacket;
 import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.api.util.annotation.UniqueIdentifier;
 import org.jetbrains.annotations.NotNull;
 
+@UniqueIdentifier("player_data_entity_action")
+@Priority
 final class PlayerDataEntityActionExecutor implements EventExecutor<EntityActionPacket> {
 
     @Override public boolean execute(

@@ -26,17 +26,14 @@
 package com.heretere.hac.api.config.processor.toml;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.config.processor.Processor;
+import com.heretere.hac.api.config.processor.toml.serialization.TomlBooleanHybridHandler;
+import com.heretere.hac.api.config.processor.toml.serialization.TomlStringHybridHandler;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import com.heretere.hac.api.config.structure.backend.ConfigSection;
 import com.heretere.hac.api.config.structure.backend.ReflectiveConfigField;
-import com.heretere.hac.api.config.processor.Processor;
-import com.heretere.hac.api.config.processor.TypeDeserializer;
-import com.heretere.hac.api.config.processor.TypeSerializer;
-import com.heretere.hac.api.config.processor.toml.serialization.TomlBooleanHybridHandler;
-import com.heretere.hac.api.config.processor.toml.serialization.TomlStringHybridHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,21 +46,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class TOMLProcessor extends Processor<TomlParseResult> {
+public class TOMLProcessor extends Processor<TomlParseResult> {
     private @Nullable TomlParseResult current;
-
-    private boolean loadSuccess = false;
 
     public TOMLProcessor(
         final @NotNull HACAPI api,
         final @NotNull Path fileLocation
     ) {
         super(api, fileLocation);
+        this.createDefaultHandlers();
+    }
 
+    private void createDefaultHandlers() {
         TomlStringHybridHandler tomlStringHybridHandler = new TomlStringHybridHandler();
         TomlBooleanHybridHandler booleanHandler = new TomlBooleanHybridHandler();
 
@@ -73,45 +70,40 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
         super.attachTypeDeserializer(booleanHandler);
     }
 
-    private void addParent(final @NotNull ConfigPath path) {
+    private void attachSectionParent(final @NotNull ConfigPath path) {
         String parentPath = StringUtils.substringBeforeLast(path.getKey(), ".");
 
-        if (!parentPath.isEmpty()
-            && (!super.getEntries().containsKey(parentPath)
-            || !super.getEntries().get(parentPath).getComments().isEmpty())) {
+        if (!parentPath.isEmpty() && !super.getEntries().containsKey(parentPath)) {
             super.getEntries().put(parentPath, new ConfigSection(parentPath));
         }
     }
 
-    private boolean deserializeToField(final @NotNull ConfigField<?> field) {
-        boolean success = true;
-        if (this.current != null) {
-            TypeDeserializer<TomlParseResult, ?> deserializer = super.getDeserializers().get(field.getGenericType());
+    private boolean deserializeToField(final @NotNull ConfigField<?> configField) {
+        AtomicBoolean success = new AtomicBoolean(true);
 
-            if (deserializer != null) {
+        if (this.current != null) {
+            Optional.ofNullable(super.getDeserializers().get(configField.getGenericType())).ifPresent(deserializer -> {
                 try {
-                    field.setValueRaw(deserializer.deserialize(this.current, field.getKey()));
+                    configField.setValueRaw(deserializer.deserialize(this.current, configField.getKey()));
                 } catch (Exception e) {
-                    success = false;
+                    success.set(false);
                     super.getAPI().getErrorHandler().getHandler().accept(e);
                 }
-            }
+            });
         }
 
-        return success;
+        return success.get();
     }
 
     @Override public boolean processConfigPath(final @NotNull ConfigPath configPath) {
         boolean success = true;
 
         if (configPath instanceof ConfigField) {
-            this.addParent(configPath);
+            this.attachSectionParent(configPath);
             super.getEntries().put(configPath.getKey(), configPath);
 
             if (this.current != null && this.current.contains(configPath.getKey())) {
-                ConfigField<?> field = (ConfigField<?>) configPath;
-
-                success = this.deserializeToField(field);
+                success = this.deserializeToField((ConfigField<?>) configPath);
             }
         } else {
             this.getEntries().put(configPath.getKey(), configPath);
@@ -120,103 +112,77 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
         return success;
     }
 
+    private void createFileIfNotExists() throws IOException {
+        if (!Files.exists(super.getFileLocation())) {
+            Files.createDirectories(super.getFileLocation().getParent());
+            Files.createFile(super.getFileLocation());
+        }
+    }
+
     @Override public boolean load() {
         boolean success = true;
-        try {
-            if (!Files.exists(super.getFileLocation())) {
-                Files.createDirectories(super.getFileLocation().getParent());
-                Files.createFile(super.getFileLocation());
-            }
 
+        try {
+            this.createFileIfNotExists();
             this.current = Toml.parse(super.getFileLocation());
 
-            if (this.current.hasErrors()) {
-                success = false;
-                this.current.errors().forEach(error -> super.getAPI().getErrorHandler().getHandler().accept(error));
-            } else {
-                for (String key : this.current.dottedKeySet(false)) {
-                    if (this.current.isTable(key)
-                        && !Objects.requireNonNull(this.current.getTable(key)).isEmpty()) {
-                        super.getEntries().put(key, new ConfigSection(key));
-                    } else {
-                        Object value = this.current.get(key);
+            this.current.dottedKeySet(false).forEach(key -> {
+                if (this.current.isTable(key)) {
+                    super.getEntries().put(key, new ConfigSection(key));
+                } else {
+                    ConfigField<?> configField = super.getEntries().containsKey(key)
+                        ? (ConfigField<?>) super.getEntries().get(key)
+                        : new ReflectiveConfigField<>(
+                            super.getAPI(),
+                            key,
+                            Lists.newArrayList(),
+                            Object.class,
+                            null
+                        );
 
-                        if (this.current.hasErrors()) {
-                            success = false;
-                            this.current.errors()
-                                        .forEach(error -> super.getAPI().getErrorHandler().getHandler().accept(error));
-                            continue;
-                        }
-
-                        if (value != null) {
-                            ConfigField<?> field;
-                            if (super.getEntries().containsKey(key)) {
-                                field = (ConfigField<?>) super.getEntries().get(key);
-
-                                this.deserializeToField(field);
-
-                                if (!field.getValue().isPresent()) {
-                                    field.setValueRaw(value);
-                                }
-                            } else {
-                                field = new ReflectiveConfigField<>(
-                                    super.getAPI(),
-                                    key,
-                                    Lists.newArrayList(),
-                                    Object.class,
-                                    null
-                                );
-                                field.setValueRaw(value);
-                                super.getEntries().put(key, field);
-                            }
-                        }
-                    }
+                    this.deserializeToField(configField);
+                    super.getEntries().put(key, configField);
                 }
+            });
+
+            if (this.current.hasErrors()) {
+                throw this.current.errors().get(0);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             success = false;
             super.getAPI().getErrorHandler().getHandler().accept(e);
         }
 
-        this.loadSuccess = success;
         return success;
     }
 
     @Override public boolean save() {
-        if (!this.loadSuccess || !this.load()) {
+        if (!this.load()) {
             return false;
         }
 
         boolean success = true;
-        Set<String> lines = Sets.newLinkedHashSet();
+        List<String> lines = Lists.newArrayList();
 
-        super.getEntries()
-             .values()
+        super.getEntries().values()
              .forEach(configPath -> {
                  configPath.getComments().forEach(comment -> lines.add("# " + comment));
 
                  if (configPath instanceof ConfigField) {
-                     ConfigField<?> field = (ConfigField<?>) configPath;
-
+                     AtomicBoolean attached = new AtomicBoolean(false);
                      String firstLine = this.getPathString(configPath.getKey()) + " = ";
-                     Optional<?> value = field.getValue();
+                     Optional<?> value = ((ConfigField<?>) configPath).getValue();
 
                      if (value.isPresent()) {
-                         TypeSerializer<?> serializer = super.getSerializers().get(field.getGenericType());
-
-                         if (serializer != null) {
-                             List<String> serialized = serializer.serialize(value.get());
-
-                             for (int x = 0; x != serialized.size(); x++) {
-                                 if (x == 0) {
-                                     lines.add(firstLine + serialized.get(x));
-                                 } else {
-                                     lines.add(StringUtils.repeat(' ', 4) + serialized.get(x));
-                                 }
+                         this.serializeToString(value.get()).forEach(line -> {
+                             if (!attached.getAndSet(true)) {
+                                 lines.add(firstLine + line);
+                             } else {
+                                 lines.add(StringUtils.repeat(' ', firstLine.length()) + line);
                              }
-                         }
+                         });
                      } else {
-                         lines.add(firstLine + "null");
+                         lines.add(firstLine + null);
                      }
                  } else {
                      lines.add("[" + configPath.getKey() + "]");
@@ -224,13 +190,9 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
              });
 
         try {
-            if (!Files.exists(super.getFileLocation())) {
-                Files.createDirectories(super.getFileLocation().getParent());
-                Files.createFile(super.getFileLocation());
-            }
-
-            Files.write(super.getFileLocation(), lines, StandardCharsets.UTF_8, StandardOpenOption.WRITE);
-        } catch (IOException e) {
+            this.createFileIfNotExists();
+            Files.write(super.getFileLocation(), lines, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (Exception e) {
             success = false;
             super.getAPI().getErrorHandler().getHandler().accept(e);
         }
@@ -238,13 +200,25 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
         return success;
     }
 
-    @Override protected @NotNull String getPathString(final @NotNull String path) {
+    private List<String> serializeToString(final @NotNull Object object) {
+        List<String> output = Lists.newArrayList();
+
+        Optional.ofNullable(super.getSerializers().get(object.getClass()))
+                .ifPresent(serializer -> output.addAll(serializer.serialize(object)));
+
+        if (output.isEmpty()) {
+            output.add(Toml.tomlEscape(object.toString()).toString());
+        }
+
+        return output;
+    }
+
+    @Override protected String getPathString(final @NotNull String path) {
         String output = StringUtils.substringAfterLast(path, ".");
 
         if (output.isEmpty()) {
             output = path;
         }
-
         return output;
     }
 }
