@@ -29,6 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface TypeSerializer<T, K> extends TypeHandler<T, K> {
+public interface TypeSerializer<K> extends TypeHandler<K> {
     @NotNull List<String> serialize(@NotNull Object value);
 }

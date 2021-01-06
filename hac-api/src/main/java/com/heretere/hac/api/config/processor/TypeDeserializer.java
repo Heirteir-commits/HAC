@@ -28,7 +28,7 @@ package com.heretere.hac.api.config.processor;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
 import org.jetbrains.annotations.NotNull;
 
-public interface TypeDeserializer<T, K> extends TypeHandler<T, K> {
+public interface TypeDeserializer<T, K> extends TypeHandler<K> {
     @NotNull K deserialize(
         @NotNull T parser,
         @NotNull Class<?> exactType,

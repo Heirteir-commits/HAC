@@ -38,7 +38,7 @@ public abstract class Processor<T> {
     private final @NotNull HACAPI api;
     private final @NotNull Path fileLocation;
 
-    private final @NotNull Map<Class<?>, TypeSerializer<T, ?>> serializers;
+    private final @NotNull Map<Class<?>, TypeSerializer<?>> serializers;
     private final @NotNull Map<Class<?>, TypeDeserializer<T, ?>> deserializers;
 
     private final @NotNull Map<String, ConfigPath> entries;
@@ -57,14 +57,14 @@ public abstract class Processor<T> {
     }
 
     public final @NotNull <K> Processor<T> attachTypeHandler(
-        final @NotNull TypeHandler<T, K> handler
+        final @NotNull TypeHandler<K> handler
     ) {
         if (handler instanceof TypeDeserializer) {
             this.deserializers.put(handler.getGenericType(), (TypeDeserializer<T, K>) handler);
         }
 
         if (handler instanceof TypeSerializer) {
-            this.serializers.put(handler.getGenericType(), (TypeSerializer<T, K>) handler);
+            this.serializers.put(handler.getGenericType(), (TypeSerializer<K>) handler);
         }
 
         return this;
@@ -85,11 +85,11 @@ public abstract class Processor<T> {
         return optionalDeserializer;
     }
 
-    protected @NotNull Optional<TypeSerializer<T, ?>> getSerializer(final @NotNull Class<?> type) {
-        Optional<TypeSerializer<T, ?>> optionalSerializer = Optional.ofNullable(this.serializers.get(type));
+    protected @NotNull Optional<TypeSerializer<?>> getSerializer(final @NotNull Class<?> type) {
+        Optional<TypeSerializer<?>> optionalSerializer = Optional.ofNullable(this.serializers.get(type));
 
         if (!optionalSerializer.isPresent()) {
-            for (TypeSerializer<T, ?> serializer : this.serializers.values()) {
+            for (TypeSerializer<?> serializer : this.serializers.values()) {
                 if (serializer.getGenericType().isAssignableFrom(type)) {
                     optionalSerializer = Optional.of(serializer);
                     break;

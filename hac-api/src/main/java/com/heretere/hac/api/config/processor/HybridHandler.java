@@ -27,5 +27,5 @@ package com.heretere.hac.api.config.processor;
 
 import com.heretere.hac.api.util.generics.TypeDefinition;
 
-public interface HybridHandler<T, K> extends TypeDeserializer<T, K>, TypeSerializer<T, K>, TypeDefinition<K> {
+public interface HybridHandler<T, K> extends TypeDeserializer<T, K>, TypeSerializer<K>, TypeDefinition<K> {
 }
