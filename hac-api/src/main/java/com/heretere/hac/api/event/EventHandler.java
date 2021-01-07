@@ -41,7 +41,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 /**
- * This class is responsible for
+ * This class is responsible for storing and executing all the event executors for a {@link WrappedPacket} type.
  *
  * @param <T> The wrapped packet this class handles for.
  */
@@ -73,38 +73,61 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
 
     EventHandler(final @NotNull Class<T> type) {
         this.type = type;
+        /* ImmutableSortedSet's are backed by an array for faster iteration. They also allow us
+         * to use equality with EventHandler.COMPARATOR instead of using #equals. */
         this.executors = ImmutableSortedSet.of();
     }
 
-    void execute(
+    /**
+     * Loops through all the {@link EventExecutor}s.
+     *
+     * @param player The {@link HACPlayer} that caused this event.
+     * @param packet the {@link WrappedPacket} for this event.
+     */
+    void runEventExecutors(
         final @NotNull HACPlayer player,
         final @NotNull WrappedPacket packet
     ) {
-        if (packet.getClass() != this.getGenericType()) {
-            throw new IllegalArgumentException("Invalid Packet Type.");
-        }
-
+        /* Loop through all the event executors in this event handler. */
         for (EventExecutor<T> executor : this.executors) {
-            boolean shouldRun = !(executor instanceof DynamicStateEventExecutor)
-                || ((DynamicStateEventExecutor<T>) executor).canRun();
+            /* This makes sure that the passed in wrapped packet is of the correct type. */
+            T wrappedPacket = this.getGenericType().cast(packet);
 
+            /* This checks if this event executor should be ran.
+             * If it's of the type DynamicStateEventExecutor that means there are conditions for it to run. */
+            boolean shouldRun = !(executor instanceof DynamicStateEventExecutor)
+                || ((DynamicStateEventExecutor<T>) executor).canRun(player, wrappedPacket);
+
+            /* This checks if the loop should be stopped.
+             * Only StoppableEventExecutors can stop the loop. */
             boolean stopLoop = shouldRun
-                && !executor.execute(player, this.getGenericType().cast(packet))
+                && !executor.execute(player, wrappedPacket)
                 && executor instanceof StoppableEventExecutor;
 
-            if (shouldRun && stopLoop) {
-                ((StoppableEventExecutor<T>) executor).onStop(player, this.getGenericType().cast(packet));
+            /* This stops running the loop if a StoppableEventExecutor tells the loop to stop executing. */
+            if (stopLoop) {
+                ((StoppableEventExecutor<T>) executor).onStop(player, wrappedPacket);
                 break;
             }
         }
     }
 
+    /**
+     * This makes sure that any passed in event executor is of the correct type.
+     *
+     * @param executor The {@link EventExecutor} that needs to be checked.
+     */
     private void checkExecutor(final @NotNull EventExecutor<?> executor) {
         if (executor.getGenericType() != this.getGenericType()) {
             throw new IllegalArgumentException("Invalid executor.");
         }
     }
 
+    /**
+     * Adds a new {@link EventExecutor} to this event handler.
+     *
+     * @param executor The {@link EventExecutor} to add to this event handler.
+     */
     @SuppressWarnings("unchecked") //The type is checked by #checkExecutor
     public void addExecutor(final @NotNull EventExecutor<?> executor) {
         this.checkExecutor(executor);
@@ -115,6 +138,11 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
         this.executors = ImmutableSortedSet.copyOf(EventHandler.COMPARATOR, set);
     }
 
+    /**
+     * Removes a {@link EventExecutor} from this event handler.
+     *
+     * @param executor The {@link EventHandler} to remove from this event handler.
+     */
     public void removeExecutor(final @NotNull EventExecutor<?> executor) {
         this.checkExecutor(executor);
 
@@ -124,6 +152,13 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
         this.executors = ImmutableSortedSet.copyOf(EventHandler.COMPARATOR, set);
     }
 
+    /**
+     * A temporary tree set is created so we can add executors to the immutable sorted set.
+     * We use a TreeSet because it allows us to use EventHandler.COMPARATOR for equality instead of #equals.
+     * It's not the main collection type, because it's not backed by an array.
+     *
+     * @return A {@link java.util.TreeSet} of {@link EventHandler#executors}.
+     */
     private @NotNull Set<EventExecutor<T>> tempTreeSet() {
         Set<EventExecutor<T>> set = Sets.newTreeSet(EventHandler.COMPARATOR);
         set.addAll(this.executors);
@@ -134,6 +169,9 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
         return this.type;
     }
 
+    /**
+     * @return True if this event handler has no event executors attached.
+     */
     public boolean isNotEmpty() {
         return !this.executors.isEmpty();
     }

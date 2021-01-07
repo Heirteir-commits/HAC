@@ -25,8 +25,16 @@
 
 package com.heretere.hac.api.event.exception;
 
-public class InvalidExecutorException extends RuntimeException {
-    public InvalidExecutorException(String message) {
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * This is used when an invalid event executor is passed to the {@link com.heretere.hac.api.event.EventManager}.
+ */
+public final class InvalidExecutorException extends RuntimeException {
+    /**
+     * @param message The message to be passed.
+     */
+    public InvalidExecutorException(final @NotNull String message) {
         super(message);
     }
 }

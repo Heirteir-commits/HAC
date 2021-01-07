@@ -25,6 +25,7 @@
 
 package com.heretere.hac.api.config.structure.backend;
 
+import com.google.common.base.Preconditions;
 import com.heretere.hac.api.HACAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +54,7 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
     ) {
         super(key, comments);
 
-//        Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
+        Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
 
         this.api = api;
         this.type = type;

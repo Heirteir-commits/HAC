@@ -57,6 +57,8 @@ public final class EventManager {
      * {@link com.heretere.hac.api.HACAPI}.
      */
     public EventManager() {
+        /* Using a IdentityHashMap because we only need reference equality since we are only using class types as
+        keys.*/
         this.handlers = Maps.newIdentityHashMap();
     }
 
@@ -101,8 +103,8 @@ public final class EventManager {
     /**
      * Unregister a {@link EventExecutor}.
      *
-     * @param executor
-     * @param <T>
+     * @param executor The {@link EventExecutor}.
+     * @param <T>      The {@link WrappedPacket} type the event executor handles.
      */
     public <T extends WrappedPacket> void unregisterPacketEventExecutor(
         final @NotNull EventExecutor<T> executor
@@ -116,18 +118,37 @@ public final class EventManager {
         }
     }
 
+    /**
+     * Gets the first value in the pair from {@link EventManager#getEventHandlers(Class)}.
+     *
+     * @param packetClass the {@link WrappedPacket} type.
+     * @return The sync event handler for this {@link WrappedPacket} type.
+     */
     private @NotNull EventHandler<?> getSyncPacketEventHandler(
-        final @NotNull Class<? extends WrappedPacket> clazz
+        final @NotNull Class<? extends WrappedPacket> packetClass
     ) {
-        return this.getEventHandlers(clazz).getA();
+        return this.getEventHandlers(packetClass).getA();
     }
 
+    /**
+     * Gets the second value in the pair from {@link EventManager#getEventHandlers(Class)}.
+     *
+     * @param packetClass the {@link WrappedPacket} type.
+     * @return The async event handler for this {@link WrappedPacket} type.
+     */
     private @NotNull EventHandler<?> getAsyncPacketEventHandler(
-        final @NotNull Class<? extends WrappedPacket> clazz
+        final @NotNull Class<? extends WrappedPacket> packetClass
     ) {
-        return this.getEventHandlers(clazz).getB();
+        return this.getEventHandlers(packetClass).getB();
     }
 
+    /**
+     * Gets the {@link ImmutablePair} for this {@link WrappedPacket} type.
+     * If it does not exist it creates one.
+     *
+     * @param packetClass the {@link WrappedPacket} type.
+     * @return The {@link ImmutablePair} for this {@link WrappedPacket} type.
+     */
     private @NotNull ImmutablePair<@NotNull EventHandler<?>, @NotNull EventHandler<?>> getEventHandlers(
         final @NotNull Class<? extends WrappedPacket> packetClass
     ) {
@@ -137,21 +158,30 @@ public final class EventManager {
         );
     }
 
+    /**
+     * @param player        The HACPlayer that caused this wrappedPacket.
+     * @param wrappedPacket The {@link WrappedPacket} for this event.
+     * @param <T>           The {@link WrappedPacket} type.
+     */
     public <T extends WrappedPacket> void callPacketEvent(
         final @NotNull HACPlayer player,
-        final @NotNull T packet
+        final @NotNull T wrappedPacket
     ) {
+        /* Retrieves the event handlers for this wrapped packet. */
         ImmutablePair<EventHandler<?>, EventHandler<?>> syncAsyncPair =
-            this.getEventHandlers(packet.getClass());
+            this.getEventHandlers(wrappedPacket.getClass());
 
-        if (syncAsyncPair.getB().isNotEmpty()) {
+
+        /* We run the async event handler first, because most data updaters are ran async. */
+        if (syncAsyncPair.getB().isNotEmpty()) { //Don't bother passing the event chain if there are no events to run.
             player.getFutureChain()
-                  .addAsyncTask(() -> syncAsyncPair.getB().execute(player, packet));
+                  .addAsyncTask(() -> syncAsyncPair.getB().runEventExecutors(player, wrappedPacket));
         }
 
-        if (syncAsyncPair.getA().isNotEmpty()) {
+        /* Run the sync event handler */
+        if (syncAsyncPair.getA().isNotEmpty()) { //Don't bother passing the event chain if there are no events to run.
             player.getFutureChain()
-                  .addServerMainThreadTask(() -> syncAsyncPair.getA().execute(player, packet));
+                  .addServerMainThreadTask(() -> syncAsyncPair.getA().runEventExecutors(player, wrappedPacket));
         }
     }
 

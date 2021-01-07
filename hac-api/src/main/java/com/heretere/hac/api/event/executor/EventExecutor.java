@@ -30,7 +30,23 @@ import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.util.generics.TypeDefinition;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This is the most basic Event Executor it simply runs based on the passed in event with no conditions.
+ * <p>
+ * * If you need an event executor to conditionally run use {@link DynamicStateEventExecutor}.
+ * * If you need an event executor to stop all other event executors use {@link StoppableEventExecutor}.
+ *
+ * @param <T> The {@link WrappedPacket} type this event executor handles.
+ */
 public interface EventExecutor<T extends WrappedPacket> extends TypeDefinition<T> {
+    /**
+     * This is called when the relevant {@link WrappedPacket} is passed in to the
+     * {@link com.heretere.hac.api.event.EventManager}.
+     *
+     * @param player The {@link HACPlayer} related to this event.
+     * @param packet The {@link WrappedPacket} related to this event.
+     * @return Should always be true. Return is disregarded unless it's an instance of {@link StoppableEventExecutor}.
+     */
     boolean execute(
         @NotNull HACPlayer player,
         @NotNull T packet

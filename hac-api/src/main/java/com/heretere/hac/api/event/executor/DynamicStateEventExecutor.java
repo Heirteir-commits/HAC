@@ -26,7 +26,24 @@
 package com.heretere.hac.api.event.executor;
 
 import com.heretere.hac.api.packet.wrapper.WrappedPacket;
+import com.heretere.hac.api.player.HACPlayer;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * If some conditions need to be checked before an executor is ran this class is used.
+ *
+ * @param <T> The {@link WrappedPacket} type this event executor handles.
+ */
 public interface DynamicStateEventExecutor<T extends WrappedPacket> extends EventExecutor<T> {
-    boolean canRun();
+    /**
+     * Checks that any needed conditions for an event executor to be ran.
+     *
+     * @param player The {@link HACPlayer} related to this event.
+     * @param packet The {@link WrappedPacket} related to this event.
+     * @return true if the executor should be ran.
+     */
+    boolean canRun(
+        @NotNull HACPlayer player,
+        @NotNull T packet
+    );
 }

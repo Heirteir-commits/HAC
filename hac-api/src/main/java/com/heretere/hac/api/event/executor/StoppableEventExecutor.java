@@ -29,7 +29,18 @@ import com.heretere.hac.api.packet.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * If you need an event executor to stop the execution of other event executors then use this type.
+ *
+ * @param <T> The {@link WrappedPacket} type this event executor handles.
+ */
 public interface StoppableEventExecutor<T extends WrappedPacket> extends EventExecutor<T> {
+    /**
+     * This is ran when {@link EventExecutor#execute(HACPlayer, WrappedPacket)} returns false.
+     *
+     * @param player The {@link HACPlayer} related to this event.
+     * @param packet The {@link WrappedPacket} related to this event.
+     */
     void onStop(
         @NotNull HACPlayer player,
         @NotNull T packet

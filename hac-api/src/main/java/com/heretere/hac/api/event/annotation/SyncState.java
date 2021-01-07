@@ -27,18 +27,35 @@ package com.heretere.hac.api.event.annotation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This annotation is used to define whether an {@link com.heretere.hac.api.event.executor.EventExecutor}
+ * should be ran on the main server thread or an async thread.
+ */
+@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SyncState {
+    /**
+     * @return A enum representing if an event executor should be sync or async.
+     */
     @NotNull State value() default State.ASYNCHRONOUS;
 
     enum State {
+        /**
+         * This state tells the event manager that an event executor should be ran on the main server thread.
+         * This should only be used if absolutely necessary prioritize async of sync.
+         */
         SYNCHRONOUS,
+        /**
+         * This state tells the event manager that an event executor should be ran on an async thread.
+         * This is the assumed sync state if no annotation is present.
+         */
         ASYNCHRONOUS
     }
 }
