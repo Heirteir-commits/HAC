@@ -28,11 +28,13 @@ public class YAMLStringSerializer implements MultiSerializer<YamlConfiguration, 
         return output;
     }
 
-    @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList("\\" + this.getGenericType().cast(value) + "\\");
+    @Override
+    public @NotNull List<String> serialize(@NotNull final Object value) {
+        return Lists.newArrayList('"' + this.getGenericType().cast(value) + '"');
     }
 
-    @Override public @NotNull Class<String> getGenericType() {
+    @Override
+    public @NotNull Class<String> getGenericType() {
         return String.class;
     }
 }
