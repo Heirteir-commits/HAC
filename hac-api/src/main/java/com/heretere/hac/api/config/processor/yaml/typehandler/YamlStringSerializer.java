@@ -23,18 +23,40 @@
  *
  */
 
-package com.heretere.hac.api.config.processor;
+package com.heretere.hac.api.config.processor.yaml.typehandler;
 
+import com.google.common.collect.Lists;
+import com.heretere.hac.api.config.processor.MultiSerializer;
+import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface TypeSerializer<K> extends TypeHandler<K> {
-    /**
-     * Converts an object to a string that can't be deserialized from the processor backend.
-     *
-     * @param value The value to serialize.
-     * @return The serialized value.
-     */
-    @NotNull List<String> serialize(@NotNull Object value);
+public final class YamlStringSerializer implements MultiSerializer<YamlConfiguration, String> {
+    @Override public @NotNull String deserialize(
+        final @NotNull YamlConfiguration parser,
+        final @NotNull Class<?> exactType,
+        final @NotNull String key
+    ) throws InvalidTypeException {
+        if (!parser.isString(key)) {
+            throw new InvalidTypeException();
+        }
+
+        String output = parser.getString(key);
+
+        if (output == null) {
+            throw new InvalidTypeException();
+        }
+
+        return output;
+    }
+
+    @Override public @NotNull List<String> serialize(final @NotNull Object value) {
+        return Lists.newArrayList("\\" + this.getGenericType().cast(value) + "\\");
+    }
+
+    @Override public @NotNull Class<String> getGenericType() {
+        return String.class;
+    }
 }

@@ -27,5 +27,11 @@ package com.heretere.hac.api.config.processor;
 
 import com.heretere.hac.api.util.generics.TypeDefinition;
 
+/**
+ * A combination of both TypeDeserializer and TypeSerializer.
+ *
+ * @param <T> The processing backend type.
+ * @param <K> The type to handle.
+ */
 public interface MultiSerializer<T, K> extends TypeDeserializer<T, K>, TypeSerializer<K>, TypeDefinition<K> {
 }

@@ -27,5 +27,5 @@ package com.heretere.hac.api.config.processor;
 
 import com.heretere.hac.api.util.generics.TypeDefinition;
 
-public interface TypeHandler<K> extends TypeDefinition<K> {
+interface TypeHandler<K> extends TypeDefinition<K> {
 }

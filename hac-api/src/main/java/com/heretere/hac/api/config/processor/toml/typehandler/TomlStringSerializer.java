@@ -34,18 +34,23 @@ import org.tomlj.TomlParseResult;
 
 import java.util.List;
 
+/**
+ * Used for string serialization in toml files.
+ */
 public final class TomlStringSerializer implements MultiSerializer<TomlParseResult, String> {
     @Override public @NotNull String deserialize(
         final @NotNull TomlParseResult parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
+        /* Make sure the passed in key is a string */
         if (!parser.isString(key)) {
             throw new InvalidTypeException();
         }
 
         String output = parser.getString(key);
 
+        /* No values should ever be null */
         if (output == null) {
             throw new InvalidTypeException();
         }

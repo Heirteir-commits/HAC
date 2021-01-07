@@ -29,6 +29,15 @@ import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
 import org.jetbrains.annotations.NotNull;
 
 public interface TypeDeserializer<T, K> extends TypeHandler<K> {
+    /**
+     * Deserialized a config key to a value.
+     *
+     * @param parser    The processor backend.
+     * @param exactType The exact type of the deserialized object.
+     * @param key       The key to deserialize in the processor backend.
+     * @return The deserialized value.
+     * @throws InvalidTypeException If there is an issue deserializing the key.
+     */
     @NotNull K deserialize(
         @NotNull T parser,
         @NotNull Class<?> exactType,

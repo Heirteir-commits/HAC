@@ -23,45 +23,38 @@
  *
  */
 
-package com.heretere.hac.api.config.processor.toml.typehandler;
+package com.heretere.hac.api.config.processor.yaml.typehandler;
 
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.config.processor.MultiSerializer;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.tomlj.TomlParseResult;
 
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Used for enum serialization in toml files.
- */
 @SuppressWarnings({"rawtypes", "unchecked"}) //We specifically want to handle all enum types for this class
-public final class TomlEnumSerializer implements MultiSerializer<TomlParseResult, Enum> {
+public final class YamlEnumSerializer implements MultiSerializer<YamlConfiguration, Enum> {
     @Override public @NotNull Enum deserialize(
-        final @NotNull TomlParseResult parser,
+        final @NotNull YamlConfiguration parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
-        /* Make sure that the passed in type is actually an enum. */
         if (!exactType.isEnum()) {
             throw new InvalidTypeException();
         }
 
-        /* Make sure the key location is a string so we can convert it to an enum. */
         if (!parser.isString(key)) {
             throw new InvalidTypeException();
         }
 
         String output = parser.getString(key);
 
-        /* No values should ever be null. */
         if (output == null) {
             throw new InvalidTypeException();
         }
 
-        /* Converts the parsed string to an enum value. */
         return Enum.valueOf((Class<Enum>) exactType, output.toUpperCase(Locale.ROOT));
     }
 

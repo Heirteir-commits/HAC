@@ -25,5 +25,8 @@
 
 package com.heretere.hac.api.config.processor.exception;
 
+/**
+ * Called when a serializer can't properly process a value.
+ */
 public class InvalidTypeException extends Exception {
 }

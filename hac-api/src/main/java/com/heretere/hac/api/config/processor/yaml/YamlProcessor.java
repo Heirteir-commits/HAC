@@ -28,6 +28,9 @@ package com.heretere.hac.api.config.processor.yaml;
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.processor.Processor;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlBooleanSerializer;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlEnumSerializer;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlStringSerializer;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import com.heretere.hac.api.config.structure.backend.ConfigSection;
@@ -46,14 +49,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class YAMLProcessor extends Processor<YamlConfiguration> {
+public final class YamlProcessor extends Processor<YamlConfiguration> {
+    /**
+     * The processing backend for the YamlProcessor.
+     */
     private @Nullable YamlConfiguration yaml;
 
-    public YAMLProcessor(
+    /**
+     * Creates a new YamlProcessor
+     *
+     * @param api      The HACAPI reference.
+     * @param location The location of the config file.
+     */
+    public YamlProcessor(
         final @NotNull HACAPI api,
         final @NotNull Path location
     ) {
         super(api, location);
+        this.createDefaultHandlers();
+    }
+
+    /**
+     * Attaches pre made serializers to this processor.
+     */
+    private void createDefaultHandlers() {
+        super.attachTypeHandler(new YamlStringSerializer());
+        super.attachTypeHandler(new YamlBooleanSerializer());
+        super.attachTypeHandler(new YamlEnumSerializer());
     }
 
     private void attachSectionParent(final @NotNull ConfigPath path) {
@@ -131,10 +153,6 @@ public final class YAMLProcessor extends Processor<YamlConfiguration> {
 
     @Override
     public boolean save() {
-        if (!this.load()) {
-            return false;
-        }
-
         boolean success = true;
         List<String> lines = Lists.newArrayList();
 

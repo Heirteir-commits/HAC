@@ -27,6 +27,8 @@ package com.heretere.hac.api.config.processor;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.config.processor.toml.TomlProcessor;
+import com.heretere.hac.api.config.processor.yaml.YamlProcessor;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import org.jetbrains.annotations.NotNull;
@@ -36,13 +38,33 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * This is used for processing different config file types.
+ *
+ * @param <T> The processing backend type.
+ */
 public abstract class Processor<T> {
+    /**
+     * The HACAPI reference.
+     */
     private final @NotNull HACAPI api;
+    /**
+     * The location of the config file.
+     */
     private final @NotNull Path fileLocation;
 
+    /**
+     * A map of all the serializers for this processor.
+     */
     private final @NotNull Map<Class<?>, TypeSerializer<?>> serializers;
+    /**
+     * A map of all the deserializers for this processor.
+     */
     private final @NotNull Map<Class<?>, TypeDeserializer<T, ?>> deserializers;
 
+    /**
+     * A map of all the entries in this processor.
+     */
     private final @NotNull Map<String, ConfigPath> entries;
 
     protected Processor(
@@ -58,7 +80,13 @@ public abstract class Processor<T> {
         this.entries = Maps.newTreeMap();
     }
 
-    public final @NotNull <K> Processor<T> attachTypeHandler(
+    /**
+     * Used to attach a serializer or deserializer to this processor.
+     *
+     * @param <K>     The type the serializer handles
+     * @param handler The type deserializer or serializer
+     */
+    public final <K> void attachTypeHandler(
         final @NotNull TypeHandler<K> handler
     ) {
         if (handler instanceof TypeDeserializer) {
@@ -69,13 +97,23 @@ public abstract class Processor<T> {
             this.serializers.put(handler.getGenericType(), (TypeSerializer<K>) handler);
         }
 
-        return this;
     }
 
+    /**
+     * Retrieves a previously registered deserializer from the map.
+     * If one isn't found for the exact type it tries to find a super class type.
+     *
+     * @param type The type to find a deserializer for
+     * @return An Optional of found deserializer.
+     */
     protected @NotNull Optional<TypeDeserializer<T, ?>> getDeserializer(final @NotNull Class<?> type) {
+        /* Retrieve the deserializer from the map. */
         Optional<TypeDeserializer<T, ?>> optionalDeserializer = Optional.ofNullable(this.deserializers.get(type));
 
+        /* If no deserializer was found for the type we need to do some extra searching. */
         if (!optionalDeserializer.isPresent()) {
+            /* This will search through all the deserializers to find one that
+             * is assignable to this type and use that instead. */
             for (TypeDeserializer<T, ?> deserializer : this.deserializers.values()) {
                 if (deserializer.getGenericType().isAssignableFrom(type)) {
                     optionalDeserializer = Optional.of(deserializer);
@@ -87,10 +125,21 @@ public abstract class Processor<T> {
         return optionalDeserializer;
     }
 
+    /**
+     * Retrieves a previously registered serializer from the map.
+     * If one isn't found for the exact type it tries to find a super class type.
+     *
+     * @param type The type to find a serializer for
+     * @return An Optional of found serializer.
+     */
     protected @NotNull Optional<TypeSerializer<?>> getSerializer(final @NotNull Class<?> type) {
+        /* Retrieve the serializer from the map. */
         Optional<TypeSerializer<?>> optionalSerializer = Optional.ofNullable(this.serializers.get(type));
 
+        /* If no serializer was found for the type we need to do some extra searching. */
         if (!optionalSerializer.isPresent()) {
+            /* This will search through all the serializers to find one that
+             * is assignable to this type and use that instead. */
             for (TypeSerializer<?> serializer : this.serializers.values()) {
                 if (serializer.getGenericType().isAssignableFrom(type)) {
                     optionalSerializer = Optional.of(serializer);
@@ -102,6 +151,13 @@ public abstract class Processor<T> {
         return optionalSerializer;
     }
 
+    /**
+     * Deserializes a value in the backend to the config field.
+     *
+     * @param backend     The backend processor.
+     * @param configField The config field to update.
+     * @return True is the deserialization was a success.
+     */
     protected final boolean deserializeToField(
         final @NotNull T backend,
         final @NotNull ConfigField<?> configField
@@ -124,12 +180,36 @@ public abstract class Processor<T> {
         return success.get();
     }
 
+    /**
+     * Used to process and add config paths to the processor.
+     *
+     * @param configPath The config path to process.
+     * @return true if the processing was a success.
+     */
     public abstract boolean processConfigPath(@NotNull ConfigPath configPath);
 
+    /**
+     * Used to load the config file and populate the entry map with found values.
+     *
+     * @return true if the loading was a success.
+     */
     public abstract boolean load();
 
+    /**
+     * Used to save the config file based on the entry map.
+     *
+     * @return true if the saving was a success.
+     */
     public abstract boolean save();
 
+    /**
+     * See implementation for more information.
+     *
+     * @param path the path to the key
+     * @return the path
+     * @see TomlProcessor
+     * @see YamlProcessor
+     */
     protected abstract String getPathString(@NotNull String path);
 
     protected final @NotNull HACAPI getAPI() {
@@ -140,6 +220,9 @@ public abstract class Processor<T> {
         return this.entries;
     }
 
+    /**
+     * @return The location of this config file.
+     */
     public final @NotNull Path getFileLocation() {
         return this.fileLocation;
     }

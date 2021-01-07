@@ -50,27 +50,51 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class TOMLProcessor extends Processor<TomlParseResult> {
+public final class TomlProcessor extends Processor<TomlParseResult> {
+    /**
+     * The processing backend for the TomlProcessor.
+     */
     private @Nullable TomlParseResult toml;
 
-    public TOMLProcessor(
+    private boolean loadSuccess;
+
+    /**
+     * Creates a new TomlProcessor.
+     *
+     * @param api      The HACAPI reference.
+     * @param location the location of the config file.
+     */
+    public TomlProcessor(
         final @NotNull HACAPI api,
-        final @NotNull Path fileLocation
+        final @NotNull Path location
     ) {
-        super(api, fileLocation);
+        super(api, location);
+
+        this.loadSuccess = false;
+
         this.createDefaultHandlers();
     }
 
+    /**
+     * Attaches pre made serializers to this processor.
+     */
     private void createDefaultHandlers() {
         super.attachTypeHandler(new TomlStringSerializer());
         super.attachTypeHandler(new TomlBooleanSerializer());
         super.attachTypeHandler(new TomlEnumSerializer());
     }
 
+    /**
+     * Creates a header for a config key if one isn't already in the entries.
+     *
+     * @param path The config path to generate a parent path for.
+     */
     private void attachSectionParent(final @NotNull ConfigPath path) {
+        /* We only want the parent section for toml files */
         String parentPath = StringUtils.substringBeforeLast(path.getKey(), ".");
 
-        if (!parentPath.isEmpty() && !super.getEntries().containsKey(parentPath)) {
+        /* No reason to put in a new section if one is already there */
+        if (!path.getKey().equals(parentPath) && !super.getEntries().containsKey(parentPath)) {
             super.getEntries().put(parentPath, new ConfigSection(parentPath));
         }
     }
@@ -78,10 +102,15 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
     @Override public boolean processConfigPath(final @NotNull ConfigPath configPath) {
         boolean success = true;
 
+        /* If the config path is a section we need to do some extra processing. */
         if (configPath instanceof ConfigField) {
+            /* Attaches the header to a config value if one doesn't exist */
             this.attachSectionParent(configPath);
+
+            /* Puts the config path in the entries map. */
             super.getEntries().put(configPath.getKey(), configPath);
 
+            /* If the toml file contains this key, we deserialize the value to the config field. */
             if (this.toml != null && this.toml.contains(configPath.getKey())) {
                 success = super.deserializeToField(this.toml, (ConfigField<?>) configPath);
             }
@@ -89,9 +118,15 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
             this.getEntries().put(configPath.getKey(), configPath);
         }
 
+        this.loadSuccess = success;
         return success;
     }
 
+    /**
+     * Self explanatory.
+     *
+     * @throws IOException If there is an issue creating the file.
+     */
     private void createFileIfNotExists() throws IOException {
         if (!Files.exists(super.getFileLocation())) {
             Files.createDirectories(super.getFileLocation().getParent());
@@ -103,13 +138,19 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
         boolean success = true;
 
         try {
+            /* Create file */
             this.createFileIfNotExists();
+
+            /* Parse the file so we can process it. */
             this.toml = Toml.parse(super.getFileLocation());
 
+            /* We need to loop through all the keys in the toml file so we can add them as entries to the config map.*/
             this.toml.dottedKeySet(false).forEach(key -> {
                 if (this.toml.isTable(key)) {
+                    /* Add section to entries. */
                     super.getEntries().put(key, new ConfigSection(key));
                 } else {
+                    /* If the entry is already registered we need to update it, instead of creating a new one. */
                     ConfigField<?> configField = super.getEntries().containsKey(key)
                         ? (ConfigField<?>) super.getEntries().get(key)
                         : new ReflectiveConfigField<>(
@@ -120,11 +161,15 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
                             null
                         );
 
+                    /* deserialize the config value to the field. */
                     super.deserializeToField(this.toml, configField);
+
+                    /* Add the entry to the map. */
                     super.getEntries().put(key, configField);
                 }
             });
 
+            /* Throw any errors that occurred during the loading process. */
             if (this.toml.hasErrors()) {
                 throw this.toml.errors().get(0);
             }
@@ -137,23 +182,31 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
     }
 
     @Override public boolean save() {
-        if (!this.load()) {
+        /* If the config file failed to load we don't want to overwrite it with bad values. */
+        if (!this.loadSuccess) {
             return false;
         }
 
         boolean success = true;
         List<String> lines = Lists.newArrayList();
 
+        /* Loop through all the config map entries. */
         super.getEntries().values()
              .forEach(configPath -> {
+                 /* Add all the comments first */
                  configPath.getComments().forEach(comment -> lines.add("# " + comment));
 
+                 /* If the config path is a field we need to do some extra processing. */
                  if (configPath instanceof ConfigField) {
+                     /* Whether or not we have attached the first line yet */
                      AtomicBoolean attached = new AtomicBoolean(false);
+
+                     /* The first list of the config field. */
                      String firstLine = this.getPathString(configPath.getKey()) + " = ";
                      Optional<?> value = ((ConfigField<?>) configPath).getValue();
 
                      if (value.isPresent()) {
+                         /* Serialize the string, and if there are multiple lines do some extra processing. */
                          this.serializeToString(value.get()).forEach(line -> {
                              if (!attached.getAndSet(true)) {
                                  lines.add(firstLine + line);
@@ -162,6 +215,7 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
                              }
                          });
                      } else {
+                         /* If the value isn't present set it tot null. */
                          lines.add(firstLine + null);
                      }
                  } else {
@@ -180,12 +234,20 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
         return success;
     }
 
+    /**
+     * Converts an object to a valid toml string.
+     *
+     * @param object the object to serialize.
+     * @return A list of valid toml strings.
+     */
     private List<String> serializeToString(final @NotNull Object object) {
         List<String> output = Lists.newArrayList();
 
+        /* If there is a serializer use it */
         super.getSerializer(object.getClass())
              .ifPresent(serializer -> output.addAll(serializer.serialize(object)));
 
+        /* if no serializer was found we use a generic approach to creating a valid toml string. */
         if (output.isEmpty()) {
             output.add(Toml.tomlEscape(object.toString()).toString());
         }
@@ -194,8 +256,11 @@ public final class TOMLProcessor extends Processor<TomlParseResult> {
     }
 
     @Override protected String getPathString(final @NotNull String path) {
+        /* Converts a key to the final value in the chain. */
+        /* eg. 'hello.there.how.are.you' turns into 'you'. */
         String output = StringUtils.substringAfterLast(path, ".");
 
+        /* If the output is empty that means there were no extra dots. */
         if (output.isEmpty()) {
             output = path;
         }

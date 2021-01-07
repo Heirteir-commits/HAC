@@ -33,18 +33,23 @@ import org.tomlj.TomlParseResult;
 
 import java.util.List;
 
+/**
+ * Used for boolean serialization in toml files.
+ */
 public final class TomlBooleanSerializer implements MultiSerializer<TomlParseResult, Boolean> {
     @Override public @NotNull Boolean deserialize(
         final @NotNull TomlParseResult parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
+        /* Make sure key is a valid boolean */
         if (!parser.isBoolean(key)) {
             throw new InvalidTypeException();
         }
 
         Boolean output = parser.getBoolean(key);
 
+        /* No values should ever be null */
         if (output == null) {
             throw new InvalidTypeException();
         }

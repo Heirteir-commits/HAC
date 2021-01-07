@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Section {
     /**
-     * @return The key to
+     * @return The key to this section.
      */
     @NotNull String value();
 }
