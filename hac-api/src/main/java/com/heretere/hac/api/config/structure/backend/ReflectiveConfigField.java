@@ -38,13 +38,43 @@ import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class is used for annotation side of the config package.
+ * This is used to assign values directly to the field based on the config value.
+ *
+ * @param <T> The type of this config field.
+ */
 public final class ReflectiveConfigField<T> extends ConfigSection implements ConfigField<T> {
+    /**
+     * The HACAPI reference.
+     */
     private final @NotNull HACAPI api;
+    /**
+     * The generic type reference of this config field.
+     * Used for casting in a type safe way.
+     */
     private final @NotNull Class<T> type;
+    /**
+     * A reference to any instance that this config field may be attached to.
+     */
     private final @NotNull Reference<@Nullable ?> instance;
+    /**
+     * A reference to any field that this config field may be attached to.
+     */
     private @NotNull Reference<@Nullable Field> field;
+    /**
+     * Used in case the reference is null, this allows us to pass a value if for some
+     * reason the instance has been garbage collected and we can no longer retrieve the value from the field.
+     */
     private @Nullable T lastKnownValue;
 
+    /**
+     * @param api      The HACAPI reference.
+     * @param key      The key to this config field.
+     * @param comments The comments attached to this config field.
+     * @param type     The generic type of this config field.
+     * @param instance The instance attached to this config field.
+     */
     public ReflectiveConfigField(
         final @NotNull HACAPI api,
         final @NotNull String key,
@@ -54,6 +84,7 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
     ) {
         super(key, comments);
 
+        /* Primitives are not supported. */
         Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
 
         this.api = api;
@@ -62,6 +93,12 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
         this.field = new WeakReference<>(null);
     }
 
+    /**
+     * Changes the accessibility of the field so it can be edited.
+     *
+     * @param field The field to change the accessibility for.
+     * @param flag  What to set it's accessibility to.
+     */
     private static void changeAccessibility(
         final @NotNull Field field,
         final boolean flag
@@ -72,6 +109,11 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
         });
     }
 
+    /**
+     * @param instance The instance attached to this field.
+     * @param field    The field to check accessibility for.
+     * @return true if the field can be accessed.
+     */
     private static boolean canAccess(
         final @NotNull Object instance,
         final @NotNull Field field
@@ -86,6 +128,11 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
         return accessible;
     }
 
+    /**
+     * Assign a field to this config field.
+     *
+     * @param field The field that should be attached to this config field.
+     */
     public void setField(final @NotNull Field field) {
         this.field = new WeakReference<>(field);
     }

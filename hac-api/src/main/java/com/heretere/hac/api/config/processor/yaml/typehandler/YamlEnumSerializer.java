@@ -59,7 +59,7 @@ public final class YamlEnumSerializer implements MultiSerializer<YamlConfigurati
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList("\"" + this.getGenericType().cast(value).name() + "\"");
+        return Lists.newArrayList('"' + this.getGenericType().cast(value).name() + '"');
     }
 
     @Override public @NotNull Class<Enum> getGenericType() {

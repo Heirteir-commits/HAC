@@ -29,8 +29,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Represents a path in a config file.
+ */
 public interface ConfigPath {
+    /**
+     * @return The key to this config path.
+     */
     @NotNull String getKey();
 
+    /**
+     * @return A list of the comments attached to this config path.
+     */
     @NotNull List<@NotNull String> getComments();
 }

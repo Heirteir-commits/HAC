@@ -34,10 +34,26 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class SuppliedConfigField<T> extends ConfigSection implements ConfigField<T> {
+    /**
+     * The generic class type of this config field.
+     */
     private final @NotNull Class<T> type;
+    /**
+     * The supplier to retrieve the value of this config field.
+     */
     private final @NotNull Supplier<@NotNull T> getter;
+    /**
+     * The consumer to update the value of this config field.
+     */
     private final @NotNull Consumer<@NotNull T> setter;
 
+    /**
+     * @param key      The key to this config field.
+     * @param comments The comments attached to this config field.
+     * @param type     The generic type of this config field.
+     * @param getter   The supplier for this config field.
+     * @param setter   this consumer for this config field.
+     */
     public SuppliedConfigField(
         final @NotNull String key,
         final @NotNull List<@NotNull String> comments,

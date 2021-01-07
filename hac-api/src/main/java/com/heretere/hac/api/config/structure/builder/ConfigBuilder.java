@@ -34,8 +34,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public final class ConfigBuilder {
+    /**
+     * The HACAPI reference.
+     */
     private final @NotNull HACAPI api;
+    /**
+     * The config paths attached to this builder.
+     */
     private final List<ConfigPath> paths;
+    /**
+     * The relative path to the config file.
+     */
     private @Nullable String relativePath;
 
     private ConfigBuilder(final @NotNull HACAPI api) {
@@ -43,20 +52,36 @@ public final class ConfigBuilder {
         this.paths = Lists.newArrayList();
     }
 
+    /**
+     * Creates a new config builder.
+     *
+     * @param api The HACAPI reference.
+     * @return A new instance of Config Builder.
+     */
     public static @NotNull ConfigBuilder builder(final @NotNull HACAPI api) {
         return new ConfigBuilder(api);
     }
 
+    /**
+     * @param relativePath The relative path to the config file.
+     * @return this
+     */
     public @NotNull ConfigBuilder setRelativePath(final @NotNull String relativePath) {
         this.relativePath = relativePath;
         return this;
     }
 
+    /**
+     * @param path The config path to attach to this builder.
+     */
     public @NotNull ConfigBuilder addConfigPath(final @NotNull ConfigPath path) {
         this.paths.add(path);
         return this;
     }
 
+    /**
+     * Registers this config path to the API.
+     */
     public void build() {
         if (this.relativePath == null) {
             throw new IllegalStateException("Please define the relative path.");

@@ -30,10 +30,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+/**
+ * The abstraction for a config field. Used to represent a field with a value in a config value.
+ *
+ * @param <T> The type of the config field.
+ */
 public interface ConfigField<T> extends ConfigPath, TypeDefinition<T> {
+    /**
+     * @return The value of the config field.
+     */
     @NotNull Optional<T> getValue();
 
+    /**
+     * @param value The value to set the config field to.
+     */
     void setValue(@NotNull T value);
 
+    /**
+     * @param value Sets the value when you don't have access to the type.
+     */
     void setValueRaw(@NotNull Object value);
 }

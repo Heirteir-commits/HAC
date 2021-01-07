@@ -29,7 +29,6 @@ import com.google.common.collect.Lists;
 import com.heretere.hac.api.config.processor.MultiSerializer;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
 import org.jetbrains.annotations.NotNull;
-import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
 import java.util.List;
@@ -59,7 +58,7 @@ public final class TomlStringSerializer implements MultiSerializer<TomlParseResu
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList("\"" + Toml.tomlEscape(this.getGenericType().cast(value)) + "\"");
+        return Lists.newArrayList('"' + this.getGenericType().cast(value) + '"');
     }
 
     @Override public @NotNull Class<String> getGenericType() {

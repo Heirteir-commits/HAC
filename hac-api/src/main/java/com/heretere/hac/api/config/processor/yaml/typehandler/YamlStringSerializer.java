@@ -53,7 +53,7 @@ public final class YamlStringSerializer implements MultiSerializer<YamlConfigura
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList("\\" + this.getGenericType().cast(value) + "\\");
+        return Lists.newArrayList('"' + this.getGenericType().cast(value) + '"');
     }
 
     @Override public @NotNull Class<String> getGenericType() {

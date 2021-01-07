@@ -41,9 +41,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This class is responsible for processing config annotations in classes.
+ */
 public final class ConfigClassParser {
+    /**
+     * The HACAPI reference.
+     */
     private final @NotNull HACAPI api;
 
+    /**
+     * @param api The HACAPI reference.
+     */
     public ConfigClassParser(final @NotNull HACAPI api) {
         this.api = api;
     }
@@ -64,6 +73,12 @@ public final class ConfigClassParser {
         return comments;
     }
 
+    /**
+     * Converts the annotations in an object to config paths that can be added to a processor.
+     *
+     * @param instance The instance that contains the annotations.
+     * @return A Map of the found config paths.
+     */
     public @NotNull Map<String, ConfigPath> getConfigPaths(final @NotNull Object instance) {
         Class<?> clazz = instance.getClass();
         Map<String, ConfigPath> output = Maps.newHashMap();

@@ -30,10 +30,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * This class is used to represent a configuration section in a config file.
+ */
 public class ConfigSection implements ConfigPath {
+    /**
+     * The key to this configuration section in the config file.
+     */
     private final @NotNull String key;
+    /**
+     * The comments attached to this configuration section.
+     */
     private final @NotNull List<@NotNull String> comments;
 
+    /**
+     * @param key      The key to this config section.
+     * @param comments Any comments attached to this config section.
+     */
     public ConfigSection(
         final @NotNull String key,
         final @NotNull List<@NotNull String> comments
@@ -42,6 +55,10 @@ public class ConfigSection implements ConfigPath {
         this.comments = comments;
     }
 
+    /**
+     * @param key      The key to this config section.
+     * @param comments Any comments attached to this config section.
+     */
     public ConfigSection(
         final @NotNull String key,
         final @NotNull String... comments
