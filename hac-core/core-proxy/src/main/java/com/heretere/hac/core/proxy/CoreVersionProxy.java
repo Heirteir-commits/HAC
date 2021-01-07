@@ -40,7 +40,7 @@ public abstract class CoreVersionProxy implements VersionProxy {
     protected CoreVersionProxy() { }
 
     /**
-     * This registers the packet factories for each core-nms version.
+     * This method registers the packet factories for each core-nms version.
      */
     protected abstract void registerPackets();
 
