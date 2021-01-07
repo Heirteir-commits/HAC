@@ -47,6 +47,9 @@ public class HACConfigHandler {
      * The HAC API reference.
      */
     private final @NotNull HACAPI api;
+    /**
+     * The config class parser converts annotations into config paths.
+     */
     private final @NotNull ConfigClassParser parser;
     /**
      * The base path of the config files.
@@ -99,6 +102,12 @@ public class HACConfigHandler {
         }
     }
 
+    /**
+     * Loads a collection of configs paths.
+     *
+     * @param relativeFilePath The relative path to the config file.
+     * @param configPaths      The collection of config paths.
+     */
     public void loadConfigPaths(
         final @NotNull String relativeFilePath,
         final @NotNull Collection<ConfigPath> configPaths
@@ -108,12 +117,19 @@ public class HACConfigHandler {
         configPaths.forEach(processor::processConfigPath);
     }
 
+    /**
+     * Loads all the configs.
+     *
+     * @return true if all loaded successfully.
+     */
     public boolean load() {
         return this.files.values().stream().allMatch(Processor::load);
     }
 
     /**
      * Saves all the loaded config files.
+     *
+     * @return true if all configs were saved successfully.
      */
     public boolean unload() {
         return this.files.values().stream().allMatch(Processor::save);

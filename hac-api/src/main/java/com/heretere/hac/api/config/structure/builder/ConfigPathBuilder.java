@@ -38,12 +38,33 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class ConfigPathBuilder<T> {
+    /**
+     * The generic type of this config path builder.
+     */
     private final @NotNull Class<T> type;
+    /**
+     * The field type of this config path builder.
+     */
     private final @NotNull Type pathType;
+    /**
+     * The comments attached to this config field builder.
+     */
     private final @NotNull List<@NotNull String> comments;
+    /**
+     * The key to this config path.
+     */
     private @Nullable String key;
+    /**
+     * The supplier to retrieve the value of the delegated field.
+     */
     private @Nullable Supplier<@NotNull T> supplier;
+    /**
+     * The consumer to set the value of the delegated field.
+     */
     private @Nullable Consumer<@NotNull T> consumer;
+    /**
+     * The default value of the config field.
+     */
     private @Nullable T defaultValue;
 
     private ConfigPathBuilder(
@@ -55,39 +76,78 @@ public final class ConfigPathBuilder<T> {
         this.comments = Lists.newArrayList();
     }
 
+    /**
+     * Creates a config section builder.
+     *
+     * @return A config section builder.
+     */
     public static @NotNull ConfigPathBuilder<?> sectionBuilder() {
         return new ConfigPathBuilder<>(Object.class, Type.SECTION);
     }
 
+    /**
+     * Creates a config field builder.
+     *
+     * @param type The class reference to the generic type of this config field.
+     * @param <T>  The generic type of this config field.
+     * @return a config field builder.
+     */
     public static @NotNull <T> ConfigPathBuilder<T> fieldBuilder(final @NotNull Class<T> type) {
         return new ConfigPathBuilder<>(type, Type.FIELD);
     }
 
+    /**
+     * @param key The key for this config field.
+     * @return this
+     */
     public @NotNull ConfigPathBuilder<T> setKey(final @NotNull String key) {
         this.key = key;
         return this;
     }
 
+    /**
+     * @param supplier The supplier to retrieve the value for the field.
+     * @return this
+     */
     public @NotNull ConfigPathBuilder<T> setGetterSupplier(final @NotNull Supplier<@NotNull T> supplier) {
         this.supplier = supplier;
         return this;
     }
 
+    /**
+     * @param consumer The consumer to set the value for this field.
+     * @return this
+     */
     public @NotNull ConfigPathBuilder<T> setSetterConsumer(final @NotNull Consumer<@NotNull T> consumer) {
         this.consumer = consumer;
         return this;
     }
 
+    /**
+     * The optional default value of this field. If no value is present it uses the one currently on the field.
+     *
+     * @param defaultValue The default value for this field.
+     * @return this
+     */
     public @NotNull ConfigPathBuilder<T> setDefaultValue(final @NotNull T defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
 
+    /**
+     * Attach a comment to this config file.
+     *
+     * @param comment the comment to attach.
+     * @return this
+     */
     public @NotNull ConfigPathBuilder<T> addComment(final @NotNull String comment) {
         this.comments.add(comment);
         return this;
     }
 
+    /**
+     * @return The built config path.
+     */
     public ConfigPath build() {
         Objects.requireNonNull(this.key, "Define key for config path.");
 
@@ -111,7 +171,13 @@ public final class ConfigPathBuilder<T> {
     }
 
     public enum Type {
+        /**
+         * Represents a configuration section.
+         */
         SECTION,
+        /**
+         * Represents a config field.
+         */
         FIELD
     }
 }
