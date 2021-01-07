@@ -1,6 +1,3 @@
-rootProject.name = 'hac'
-include ':hac-api'
-
 /*
  * MIT License
  *
@@ -26,36 +23,16 @@ include ':hac-api'
  *
  */
 
-/* Core */
-include ':hac-core'
-include ':hac-core:core-nms'
-//include ':hac-core:core-nms:1_8_R3'
-//include ':hac-core:core-nms:1_9_R2'
-//include ':hac-core:core-nms:1_10_R1'
-//include ':hac-core:core-nms:1_11_R1'
-//include ':hac-core:core-nms:1_12_R1'
-//include ':hac-core:core-nms:1_13_R2'
-//include ':hac-core:core-nms:1_14_R1'
-//include ':hac-core:core-nms:1_15_R1'
-include ':hac-core:core-nms:1_16_R3'
-include ':hac-core:core-proxy'
-include ':hac-core:core-plugin'
-/* Core end */
+package com.heretere.hac.api.event.executor;
 
-/* Movement */
-include ':hac-movement'
-include ':hac-movement:movement-nms'
-//include ':hac-movement:movement-nms:1_8_R3'
-//include ':hac-movement:movement-nms:1_9_R2'
-//include ':hac-movement:movement-nms:1_10_R1'
-//include ':hac-movement:movement-nms:1_11_R1'
-//include ':hac-movement:movement-nms:1_12_R1'
-//include ':hac-movement:movement-nms:1_13_R2'
-//include ':hac-movement:movement-nms:1_14_R1'
-//include ':hac-movement:movement-nms:1_15_R1'
-include ':hac-movement:movement-nms:1_16_R3'
-include ':hac-movement:movement-proxy'
-include ':hac-movement:movement-plugin'
-/* Movement end */
+import com.heretere.hac.api.packet.wrapper.WrappedPacket;
+import com.heretere.hac.api.player.HACPlayer;
+import com.heretere.hac.api.util.generics.TypeDefinition;
+import org.jetbrains.annotations.NotNull;
 
-include ':hac-util'
+public interface EventExecutor<T extends WrappedPacket> extends TypeDefinition<T> {
+    boolean execute(
+        @NotNull HACPlayer player,
+        @NotNull T packet
+    );
+}

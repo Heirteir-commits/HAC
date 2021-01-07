@@ -34,13 +34,16 @@ import com.heretere.hac.api.config.structure.builder.ConfigBuilder;
 import com.heretere.hac.api.config.structure.builder.ConfigPathBuilder;
 import org.bukkit.Bukkit;
 
+/**
+ * You can make configs with a builder or with annotations this class shows both ways.
+ */
 @ConfigFile("test/test_annotations.toml")
 @Comment("Comment 1")
 @Comment("Comment 2")
 @Comment("Comment 3")
 @Section("section.to.add.comments")
 public class ConfigExample {
-    /* Annotation example */
+    /* Type 1 Annotations */
     @Key("section.to.add.comments.value")
     @Comment("Add comment to say what's up")
     private Boolean value = false;
@@ -57,9 +60,9 @@ public class ConfigExample {
     @Comment("Can define enums")
     private Test enumTest = Test.TESTING_1;
 
-    /* Builder Example */
+    /* Type 2 Builder Example */
     private Boolean valueBuilder = false;
-    private String nameBuilder = "SquadBuilder";
+    private String nameBuilder = "Squad";
     private Boolean enabledBuilder = false;
     private Test enumTestBuilder = Test.TESTING_2;
 
@@ -72,47 +75,54 @@ public class ConfigExample {
         this.createBuilderStuffs();
     }
 
+    /* Builder Type */
     private void createBuilderStuffs() {
         ConfigBuilder.builder(Bukkit.getServicesManager().load(HACAPI.class))
                      .setRelativePath("test/test_builder.toml")
-                     .addConfigPath(ConfigPathBuilder.builder(Object.class, ConfigPathBuilder.Type.SECTION)
-                                                     .setKey("section.to.add.comments")
-                                                     .addComment("Comment 1")
-                                                     .addComment("Comment 2")
-                                                     .addComment("Comment 3")
-                                                     .build()
+                     .addConfigPath(
+                         ConfigPathBuilder
+                             .sectionBuilder()
+                             .setKey("section.to.add.comments")
+                             .addComment("Comment 1")
+                             .addComment("Comment 2")
+                             .addComment("Comment 3")
+                             .build()
                      )
-                     .addConfigPath(ConfigPathBuilder.builder(Boolean.class, ConfigPathBuilder.Type.FIELD)
-                                                     .setKey("section.to.add.comments.value")
-                                                     .addComment("Add comment to say what's up")
-                                                     .setGetterSupplier(() -> this.valueBuilder)
-                                                     .setSetterConsumer(b -> this.valueBuilder = b)
-                                                     .setDefaultValue(false)
-                                                     .build()
+                     .addConfigPath(
+                         ConfigPathBuilder
+                             .fieldBuilder(Boolean.class)
+                             .setKey("section.to.add.comments.value")
+                             .addComment("Add comment to say what's up")
+                             .setGetterSupplier(() -> this.valueBuilder)
+                             .setSetterConsumer(bool -> this.valueBuilder = bool)
+                             .build()
                      )
-                     .addConfigPath(ConfigPathBuilder.builder(String.class, ConfigPathBuilder.Type.FIELD)
-                                                     .setKey("section.to.add.comments.name")
-                                                     .addComment("Yo that's a name bro")
-                                                     .setGetterSupplier(() -> this.nameBuilder)
-                                                     .setSetterConsumer(b -> this.nameBuilder = b)
-                                                     .setDefaultValue("SquadBuilder")
-                                                     .build()
+                     .addConfigPath(
+                         ConfigPathBuilder
+                             .fieldBuilder(String.class)
+                             .setKey("section.to.add.comments.name")
+                             .addComment("Yo that's a name bro")
+                             .setGetterSupplier(() -> this.nameBuilder)
+                             .setSetterConsumer(name -> this.nameBuilder = name)
+                             .build()
                      )
-                     .addConfigPath(ConfigPathBuilder.builder(Boolean.class, ConfigPathBuilder.Type.FIELD)
-                                                     .setKey("section.to.add.comments.enabled")
-                                                     .addComment("Ayo bro enable this")
-                                                     .setGetterSupplier(() -> this.enabledBuilder)
-                                                     .setSetterConsumer(b -> this.enabledBuilder = b)
-                                                     .setDefaultValue(true)
-                                                     .build()
+                     .addConfigPath(
+                         ConfigPathBuilder
+                             .fieldBuilder(Boolean.class)
+                             .setKey("section.to.add.comments.enabled")
+                             .addComment("Ayo bro enable this")
+                             .setGetterSupplier(() -> this.enabledBuilder)
+                             .setSetterConsumer(bool -> this.enabledBuilder = bool)
+                             .build()
                      )
-                     .addConfigPath(ConfigPathBuilder.builder(Test.class, ConfigPathBuilder.Type.FIELD)
-                                                     .setKey("section.to.add.comments.enum")
-                                                     .addComment("Can define enums")
-                                                     .setGetterSupplier(() -> this.enumTestBuilder)
-                                                     .setSetterConsumer(b -> this.enumTestBuilder = b)
-                                                     .setDefaultValue(Test.TESTING_2)
-                                                     .build()
+                     .addConfigPath(
+                         ConfigPathBuilder
+                             .fieldBuilder(Test.class)
+                             .setKey("section.to.add.comments.enum")
+                             .addComment("Can define enums")
+                             .setGetterSupplier(() -> this.enumTestBuilder)
+                             .setSetterConsumer(test -> this.enumTestBuilder = test)
+                             .build()
                      )
                      .build();
     }

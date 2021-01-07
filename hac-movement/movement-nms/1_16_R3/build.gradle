@@ -23,16 +23,10 @@
  *
  */
 
-package com.heretere.hac.api.event;
+group 'com.heretere'
+version rootProject.version
 
-import com.heretere.hac.api.packet.wrapper.WrappedPacket;
-import com.heretere.hac.api.player.HACPlayer;
-import com.heretere.hac.api.util.generics.TypeDefinition;
-import org.jetbrains.annotations.NotNull;
-
-public interface EventExecutor<T extends WrappedPacket> extends TypeDefinition<T> {
-    boolean execute(
-        @NotNull HACPlayer player,
-        @NotNull T packet
-    );
+dependencies {
+    /* Spigot Dependency */
+    compileOnlyApi files(VERSIONS['1_16_R3'].spigotJar)
 }

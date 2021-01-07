@@ -33,5 +33,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Priority {
-    int value() default 0;
+    int value() default Level.CHECK;
+
+    final class Level {
+        private Level() {
+            throw new IllegalStateException("Utility Class.");
+        }
+
+        public static final int PRE_PROCESS = 0;
+        public static final int PRE_UPDATER = 100;
+        public static final int UPDATER = 200;
+        public static final int POST_UPDATER = 300;
+        public static final int CHECK = 400;
+    }
 }

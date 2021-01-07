@@ -23,13 +23,16 @@
  *
  */
 
-package com.heretere.hac.api.check;
+package com.heretere.hac.movement.proxy.versions.sixteen;
 
-import com.heretere.hac.api.event.StoppableEventExecutor;
-import com.heretere.hac.api.packet.wrapper.WrappedPacket;
+import com.heretere.hac.movement.proxy.MovementVersionProxy;
 
-public interface Check<T extends WrappedPacket> extends StoppableEventExecutor<T> {
-    void defineConfigValues();
+public class Proxy extends MovementVersionProxy {
+    @Override public void load() {
 
-    boolean isEnabled();
+    }
+
+    @Override public void unload() {
+
+    }
 }

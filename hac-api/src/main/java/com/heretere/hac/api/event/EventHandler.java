@@ -28,6 +28,9 @@ package com.heretere.hac.api.event;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.heretere.hac.api.event.annotation.Priority;
+import com.heretere.hac.api.event.executor.DynamicStateEventExecutor;
+import com.heretere.hac.api.event.executor.EventExecutor;
+import com.heretere.hac.api.event.executor.StoppableEventExecutor;
 import com.heretere.hac.api.packet.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.util.annotation.UniqueIdentifier;
@@ -44,6 +47,8 @@ import java.util.Set;
  */
 final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
     /**
+     * This is used for equality instead of #equals
+     * <p>
      * A comparator that compares:
      * 1. {@link Priority#value()}
      * 2. if it's an instance of {@link StoppableEventExecutor} 1 otherwise 0.
@@ -56,7 +61,14 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
             .thenComparingInt(executor -> executor instanceof StoppableEventExecutor ? 1 : 0)
             .thenComparing(executor -> executor.getClass().getAnnotation(UniqueIdentifier.class).value());
 
+    /**
+     * The {@link WrappedPacket} type this event handler processes event executors for.
+     */
     private final @NotNull Class<T> type;
+
+    /**
+     * The event executors for this event handler.
+     */
     private @NotNull Set<@NotNull EventExecutor<T>> executors;
 
     EventHandler(final @NotNull Class<T> type) {
@@ -73,10 +85,14 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
         }
 
         for (EventExecutor<T> executor : this.executors) {
-            if (!executor.execute(
-                player,
-                this.getGenericType().cast(packet)
-            ) && executor instanceof StoppableEventExecutor) {
+            boolean shouldRun = !(executor instanceof DynamicStateEventExecutor)
+                || ((DynamicStateEventExecutor<T>) executor).canRun();
+
+            boolean stopLoop = shouldRun
+                && !executor.execute(player, this.getGenericType().cast(packet))
+                && executor instanceof StoppableEventExecutor;
+
+            if (shouldRun && stopLoop) {
                 ((StoppableEventExecutor<T>) executor).onStop(player, this.getGenericType().cast(packet));
                 break;
             }
@@ -89,7 +105,7 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
         }
     }
 
-    @SuppressWarnings("unchecked") //The type is checked by checkExecutor
+    @SuppressWarnings("unchecked") //The type is checked by #checkExecutor
     public void addExecutor(final @NotNull EventExecutor<?> executor) {
         this.checkExecutor(executor);
 
@@ -118,7 +134,7 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
         return this.type;
     }
 
-    public boolean isEmpty() {
-        return this.executors.isEmpty();
+    public boolean isNotEmpty() {
+        return !this.executors.isEmpty();
     }
 }

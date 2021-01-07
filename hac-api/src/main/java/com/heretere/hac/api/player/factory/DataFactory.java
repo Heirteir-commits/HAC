@@ -27,7 +27,7 @@ package com.heretere.hac.api.player.factory;
 
 import com.google.common.collect.ImmutableSet;
 import com.heretere.hac.api.HACAPI;
-import com.heretere.hac.api.event.EventExecutor;
+import com.heretere.hac.api.event.executor.EventExecutor;
 import com.heretere.hac.api.player.HACPlayer;
 import org.jetbrains.annotations.NotNull;
 

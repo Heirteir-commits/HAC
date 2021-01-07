@@ -1,9 +1,6 @@
 ---
-name: False Positive Report
-about: Report a false positive
-title: ''
-labels: false-positive
-assignees: heretere
+name: False Positive Report about: Report a false positive title: ''
+labels: false-positive assignees: heretere
 
 ---
 

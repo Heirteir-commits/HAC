@@ -33,15 +33,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ConfigBuilder {
+public final class ConfigBuilder {
     private final @NotNull HACAPI api;
-    private @Nullable String relativePath;
-
     private final List<ConfigPath> paths;
+    private @Nullable String relativePath;
 
     private ConfigBuilder(final @NotNull HACAPI api) {
         this.api = api;
         this.paths = Lists.newArrayList();
+    }
+
+    public static @NotNull ConfigBuilder builder(final @NotNull HACAPI api) {
+        return new ConfigBuilder(api);
     }
 
     public @NotNull ConfigBuilder setRelativePath(final @NotNull String relativePath) {
@@ -60,9 +63,5 @@ public class ConfigBuilder {
         }
 
         this.api.getConfigHandler().loadConfigPaths(this.relativePath, this.paths);
-    }
-
-    public static @NotNull ConfigBuilder builder(final @NotNull HACAPI api) {
-        return new ConfigBuilder(api);
     }
 }

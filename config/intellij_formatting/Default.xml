@@ -1,0 +1,65 @@
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2021 Justin Heflin
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  ~
+  -->
+
+<code_scheme name="Default" version="173">
+    <JavaCodeStyleSettings>
+        <option name="DO_NOT_WRAP_AFTER_SINGLE_ANNOTATION" value="true"/>
+        <option name="ANNOTATION_PARAMETER_WRAP" value="5"/>
+        <option name="ALIGN_MULTILINE_ANNOTATION_PARAMETERS" value="true"/>
+        <option name="ALIGN_MULTILINE_TEXT_BLOCKS" value="true"/>
+        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="500"/>
+    </JavaCodeStyleSettings>
+    <codeStyleSettings language="Groovy">
+        <indentOptions>
+            <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+        </indentOptions>
+    </codeStyleSettings>
+    <codeStyleSettings language="JAVA">
+        <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true"/>
+        <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true"/>
+        <option name="CALL_PARAMETERS_WRAP" value="5"/>
+        <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true"/>
+        <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true"/>
+        <option name="METHOD_PARAMETERS_WRAP" value="2"/>
+        <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true"/>
+        <option name="METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true"/>
+        <option name="METHOD_CALL_CHAIN_WRAP" value="5"/>
+        <option name="TERNARY_OPERATION_WRAP" value="5"/>
+        <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="true"/>
+        <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true"/>
+        <option name="KEEP_SIMPLE_LAMBDAS_IN_ONE_LINE" value="true"/>
+        <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true"/>
+        <option name="IF_BRACE_FORCE" value="3"/>
+        <option name="DOWHILE_BRACE_FORCE" value="3"/>
+        <option name="WHILE_BRACE_FORCE" value="3"/>
+        <option name="FOR_BRACE_FORCE" value="3"/>
+        <option name="WRAP_LONG_LINES" value="true"/>
+        <option name="METHOD_ANNOTATION_WRAP" value="0"/>
+        <option name="FIELD_ANNOTATION_WRAP" value="0"/>
+        <indentOptions>
+            <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+        </indentOptions>
+    </codeStyleSettings>
+</code_scheme>

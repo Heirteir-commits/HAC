@@ -25,7 +25,6 @@
 
 package com.heretere.hac.api.config.structure.backend;
 
-import com.google.common.base.Preconditions;
 import com.heretere.hac.api.HACAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,12 +53,36 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
     ) {
         super(key, comments);
 
-        Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
+//        Preconditions.checkState(!type.isPrimitive(), "Primitive types are not allowed. Invalid Key (%s).", key);
 
         this.api = api;
         this.type = type;
         this.instance = new WeakReference<>(instance);
         this.field = new WeakReference<>(null);
+    }
+
+    private static void changeAccessibility(
+        final @NotNull Field field,
+        final boolean flag
+    ) {
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            field.setAccessible(flag);
+            return null;
+        });
+    }
+
+    private static boolean canAccess(
+        final @NotNull Object instance,
+        final @NotNull Field field
+    ) {
+        boolean accessible;
+        try {
+            accessible = field.get(instance) != null;
+        } catch (IllegalAccessException e) {
+            accessible = false;
+        }
+
+        return accessible;
     }
 
     public void setField(final @NotNull Field field) {
@@ -131,35 +154,7 @@ public final class ReflectiveConfigField<T> extends ConfigSection implements Con
         this.setValue(this.getGenericType().cast(value));
     }
 
-    private boolean convertWrapped(final @NotNull Boolean value) {
-        return value.booleanValue();
-    }
-
     @Override public @NotNull Class<T> getGenericType() {
         return this.type;
-    }
-
-    private static void changeAccessibility(
-        final @NotNull Field field,
-        final boolean flag
-    ) {
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            field.setAccessible(flag);
-            return null;
-        });
-    }
-
-    private static boolean canAccess(
-        final @NotNull Object instance,
-        final @NotNull Field field
-    ) {
-        boolean accessible;
-        try {
-            accessible = field.get(instance) != null;
-        } catch (IllegalAccessException e) {
-            accessible = false;
-        }
-
-        return accessible;
     }
 }

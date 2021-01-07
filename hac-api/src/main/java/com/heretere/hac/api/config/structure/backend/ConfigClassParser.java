@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ConfigClassParser {
+public final class ConfigClassParser {
     private final @NotNull HACAPI api;
 
     public ConfigClassParser(final @NotNull HACAPI api) {

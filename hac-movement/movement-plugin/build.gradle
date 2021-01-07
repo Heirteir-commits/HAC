@@ -35,8 +35,6 @@ group 'com.heretere'
 version rootProject.version
 
 dependencies {
-    compileOnlyApi 'org.bstats:bstats-bukkit:1.7'
-
     implementation project(PROJECT_PROXY)
     implementation project(PROJECT_ALL_VERSIONS)
 
@@ -69,10 +67,7 @@ shadowJar {
         relocate 'org.apache.commons.lang3', 'com.heretere.hac.core.libs.lang3'
 
         /* module specific */
-        relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'
-        relocate 'org.bstats.bukkit', 'com.heretere.hac.core.libs.bstats.bukkit'
-        relocate 'org.antlr', 'com.heretere.hac.core.libs.antlr'
-        relocate 'org.tomlj', 'com.heretere.hac.core.libs.tomlj'
+        relocate 'com.heretere.hac.util', 'com.heretere.hac.movement.util'
 
         archiveFileName = 'HAC.Core.jar'
         destinationDirectory = SHADOW_JAR_OUTPUT_DIR

@@ -40,11 +40,11 @@ import java.util.function.Supplier;
 public final class ConfigPathBuilder<T> {
     private final @NotNull Class<T> type;
     private final @NotNull Type pathType;
+    private final @NotNull List<@NotNull String> comments;
     private @Nullable String key;
     private @Nullable Supplier<@NotNull T> supplier;
     private @Nullable Consumer<@NotNull T> consumer;
     private @Nullable T defaultValue;
-    private final @NotNull List<@NotNull String> comments;
 
     private ConfigPathBuilder(
         final @NotNull Class<T> type,
@@ -53,6 +53,14 @@ public final class ConfigPathBuilder<T> {
         this.type = type;
         this.pathType = pathType;
         this.comments = Lists.newArrayList();
+    }
+
+    public static @NotNull ConfigPathBuilder<?> sectionBuilder() {
+        return new ConfigPathBuilder<>(Object.class, Type.SECTION);
+    }
+
+    public static @NotNull <T> ConfigPathBuilder<T> fieldBuilder(final @NotNull Class<T> type) {
+        return new ConfigPathBuilder<>(type, Type.FIELD);
     }
 
     public @NotNull ConfigPathBuilder<T> setKey(final @NotNull String key) {
@@ -105,12 +113,5 @@ public final class ConfigPathBuilder<T> {
     public enum Type {
         SECTION,
         FIELD
-    }
-
-    public static @NotNull <T> ConfigPathBuilder<T> builder(
-        final @NotNull Class<T> type,
-        final @NotNull Type pathType
-    ) {
-        return new ConfigPathBuilder<>(type, pathType);
     }
 }

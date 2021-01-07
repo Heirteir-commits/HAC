@@ -1,9 +1,6 @@
 ---
-name: Bug report
-about: Getting errors in console or other general unexpected activity
-title: ''
-labels: bug
-assignees: heretere
+name: Bug report about: Getting errors in console or other general unexpected activity title: ''
+labels: bug assignees: heretere
 
 ---
 
@@ -12,6 +9,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'

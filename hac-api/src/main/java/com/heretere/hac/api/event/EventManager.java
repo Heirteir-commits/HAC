@@ -29,6 +29,7 @@ import com.google.common.collect.Maps;
 import com.heretere.hac.api.event.annotation.Priority;
 import com.heretere.hac.api.event.annotation.SyncState;
 import com.heretere.hac.api.event.exception.InvalidExecutorException;
+import com.heretere.hac.api.event.executor.EventExecutor;
 import com.heretere.hac.api.packet.wrapper.WrappedPacket;
 import com.heretere.hac.api.player.HACPlayer;
 import com.heretere.hac.api.util.annotation.UniqueIdentifier;
@@ -38,31 +39,56 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * This class is responsible for calling events throughout HAC.
+ * {@link EventExecutor} types are registered to their respective {@link WrappedPacket} type.
+ */
 public final class EventManager {
-    private final Map<Class<? extends WrappedPacket>, ImmutablePair<EventHandler<?>, EventHandler<?>>>
+    /**
+     * This stores the {@link EventHandler} for a wrapped packet.
+     * The first value in the pair is the sync handler (these are ran through the Bukkit scheduler).
+     * The second value in the pair is the async handler (these are ran in the HAC thread pool).
+     */
+    private final Map<Class<? extends WrappedPacket>, ImmutablePair<@NotNull EventHandler<?>, @NotNull EventHandler<?>>>
         handlers;
 
+    /**
+     * Creates a new instance of the Event Manager. Typically this should only be called by
+     * {@link com.heretere.hac.api.HACAPI}.
+     */
     public EventManager() {
         this.handlers = Maps.newIdentityHashMap();
     }
 
+    /**
+     * Register an {@link EventExecutor}.
+     *
+     * @param executor The {@link EventExecutor}.
+     * @param <T>      The {@link WrappedPacket} type the event executor handles.
+     */
     public <T extends WrappedPacket> void registerPacketEventExecutor(
         final @NotNull EventExecutor<T> executor
     ) {
+        /* All event executors need a unique id attached. This is used instead of #equals. */
         if (!Optional.ofNullable(executor.getClass().getAnnotation(UniqueIdentifier.class)).isPresent()) {
             throw new InvalidExecutorException(String.format(
-                "Please add a %s annotation to the executor.",
-                UniqueIdentifier.class
+                "Please add a %s annotation to the executor. (%s)",
+                UniqueIdentifier.class,
+                executor.getClass()
             ));
         }
 
+        /* All event executors need a priority attached. So the event handler knows what order to run it in. */
         if (!Optional.ofNullable(executor.getClass().getAnnotation(Priority.class)).isPresent()) {
             throw new InvalidExecutorException(String.format(
-                "Please add a %s annotation to the executor.",
-                Priority.class
+                "Please add a %s annotation to the executor. (%s)",
+                Priority.class,
+                executor.getClass()
             ));
         }
 
+        /* SyncState just defines if an executor should be ran on the server thread or a separate thread. */
+        /* If the annotation isn't present, async is the assumed state. */
         Optional<SyncState> syncState = Optional.ofNullable(executor.getClass().getAnnotation(SyncState.class));
 
         if (syncState.isPresent() && syncState.get().value() == SyncState.State.SYNCHRONOUS) {
@@ -72,6 +98,12 @@ public final class EventManager {
         }
     }
 
+    /**
+     * Unregister a {@link EventExecutor}.
+     *
+     * @param executor
+     * @param <T>
+     */
     public <T extends WrappedPacket> void unregisterPacketEventExecutor(
         final @NotNull EventExecutor<T> executor
     ) {
@@ -96,7 +128,7 @@ public final class EventManager {
         return this.getEventHandlers(clazz).getB();
     }
 
-    private @NotNull ImmutablePair<EventHandler<?>, EventHandler<?>> getEventHandlers(
+    private @NotNull ImmutablePair<@NotNull EventHandler<?>, @NotNull EventHandler<?>> getEventHandlers(
         final @NotNull Class<? extends WrappedPacket> packetClass
     ) {
         return this.handlers.computeIfAbsent(
@@ -112,12 +144,12 @@ public final class EventManager {
         ImmutablePair<EventHandler<?>, EventHandler<?>> syncAsyncPair =
             this.getEventHandlers(packet.getClass());
 
-        if (!syncAsyncPair.getB().isEmpty()) {
+        if (syncAsyncPair.getB().isNotEmpty()) {
             player.getFutureChain()
                   .addAsyncTask(() -> syncAsyncPair.getB().execute(player, packet));
         }
 
-        if (!syncAsyncPair.getA().isEmpty()) {
+        if (syncAsyncPair.getA().isNotEmpty()) {
             player.getFutureChain()
                   .addServerMainThreadTask(() -> syncAsyncPair.getA().execute(player, packet));
         }

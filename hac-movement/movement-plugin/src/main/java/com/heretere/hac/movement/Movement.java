@@ -23,15 +23,34 @@
  *
  */
 
-package com.heretere.hac.api.event;
+package com.heretere.hac.movement;
 
-import com.heretere.hac.api.packet.wrapper.WrappedPacket;
-import com.heretere.hac.api.player.HACPlayer;
-import org.jetbrains.annotations.NotNull;
+import com.heretere.hac.movement.proxy.MovementVersionProxy;
+import com.heretere.hac.util.proxy.ProxyPlugin;
+import org.bukkit.plugin.java.annotation.dependency.Dependency;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
+import org.bukkit.plugin.java.annotation.plugin.LogPrefix;
+import org.bukkit.plugin.java.annotation.plugin.Plugin;
 
-public interface StoppableEventExecutor<T extends WrappedPacket> extends EventExecutor<T> {
-    void onStop(
-        @NotNull HACPlayer player,
-        @NotNull T packet
-    );
+/* Plugin */
+@Plugin(name = "HAC-Movement", version = "0.0.1")
+@LogPrefix("-")
+@ApiVersion(ApiVersion.Target.v1_13)
+@Dependency("HAC-Core")
+public final class Movement extends ProxyPlugin<MovementVersionProxy> {
+    public Movement() {
+        super("HAC", "Movement", "com.heretere.hac.movement.proxy.versions", MovementVersionProxy.class);
+    }
+
+    @Override public void proxyLoad() {
+
+    }
+
+    @Override public void proxyEnable() {
+
+    }
+
+    @Override public void proxyDisable() {
+
+    }
 }

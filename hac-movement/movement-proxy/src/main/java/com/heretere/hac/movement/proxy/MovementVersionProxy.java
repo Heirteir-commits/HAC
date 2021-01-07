@@ -1,6 +1,3 @@
-rootProject.name = 'hac'
-include ':hac-api'
-
 /*
  * MIT License
  *
@@ -26,36 +23,16 @@ include ':hac-api'
  *
  */
 
-/* Core */
-include ':hac-core'
-include ':hac-core:core-nms'
-//include ':hac-core:core-nms:1_8_R3'
-//include ':hac-core:core-nms:1_9_R2'
-//include ':hac-core:core-nms:1_10_R1'
-//include ':hac-core:core-nms:1_11_R1'
-//include ':hac-core:core-nms:1_12_R1'
-//include ':hac-core:core-nms:1_13_R2'
-//include ':hac-core:core-nms:1_14_R1'
-//include ':hac-core:core-nms:1_15_R1'
-include ':hac-core:core-nms:1_16_R3'
-include ':hac-core:core-proxy'
-include ':hac-core:core-plugin'
-/* Core end */
+package com.heretere.hac.movement.proxy;
 
-/* Movement */
-include ':hac-movement'
-include ':hac-movement:movement-nms'
-//include ':hac-movement:movement-nms:1_8_R3'
-//include ':hac-movement:movement-nms:1_9_R2'
-//include ':hac-movement:movement-nms:1_10_R1'
-//include ':hac-movement:movement-nms:1_11_R1'
-//include ':hac-movement:movement-nms:1_12_R1'
-//include ':hac-movement:movement-nms:1_13_R2'
-//include ':hac-movement:movement-nms:1_14_R1'
-//include ':hac-movement:movement-nms:1_15_R1'
-include ':hac-movement:movement-nms:1_16_R3'
-include ':hac-movement:movement-proxy'
-include ':hac-movement:movement-plugin'
-/* Movement end */
+import com.heretere.hac.util.proxy.VersionProxy;
 
-include ':hac-util'
+public abstract class MovementVersionProxy implements VersionProxy {
+    @Override public final void preLoad() {
+        this.load();
+    }
+
+    @Override public final void preUnload() {
+        this.unload();
+    }
+}
