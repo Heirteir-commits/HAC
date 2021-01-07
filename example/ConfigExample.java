@@ -23,8 +23,6 @@
  *
  */
 
-package com.heretere.hac.core;
-
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.structure.annotation.Comment;
 import com.heretere.hac.api.config.structure.annotation.ConfigFile;

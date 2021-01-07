@@ -90,7 +90,7 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
     ) {
         /* Loop through all the event executors in this event handler. */
         for (EventExecutor<T> executor : this.executors) {
-            /* This makes sure that the passed in wrapped packet is of the correct type. */
+            /* This makes sure that the passed in wrapped packet matches the generic type of this packet handler. */
             T wrappedPacket = this.getGenericType().cast(packet);
 
             /* This checks if this event executor should be ran.
@@ -160,7 +160,7 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
      * @return A {@link java.util.TreeSet} of {@link EventHandler#executors}.
      */
     private @NotNull Set<EventExecutor<T>> tempTreeSet() {
-        Set<EventExecutor<T>> set = Sets.newTreeSet(EventHandler.COMPARATOR);
+        Set<65EventExecutor<T>> set = Sets.newTreeSet(EventHandler.COMPARATOR);
         set.addAll(this.executors);
         return set;
     }

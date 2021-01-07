@@ -1,6 +1,9 @@
 ---
-name: Documentation Clarification about: Ask for documentation to be added or fixed in a portion of the code title: ''
-labels: documentation assignees: heretere
+name: Documentation Clarification
+about: Ask for documentation to be added or fixed in a portion of the code
+title: ''
+labels: documentation
+assignees: heretere
 
 ---
 
