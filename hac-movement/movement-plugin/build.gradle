@@ -69,7 +69,7 @@ shadowJar {
         /* module specific */
         relocate 'com.heretere.hac.util', 'com.heretere.hac.movement.util'
 
-        archiveFileName = 'HAC.Core.jar'
+        archiveFileName = 'HAC.Movement.jar'
         destinationDirectory = SHADOW_JAR_OUTPUT_DIR
     }
     doLast {

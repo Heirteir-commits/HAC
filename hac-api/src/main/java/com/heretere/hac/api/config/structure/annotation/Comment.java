@@ -27,6 +27,7 @@ package com.heretere.hac.api.config.structure.annotation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -34,15 +35,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
+/**
+ * Used to add comments to a {@link Key} or {@link Section}.
+ */
+@Documented
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Comment.List.class)
 public @interface Comment {
+    /**
+     * The config line to add.
+     *
+     * @return The comment string.
+     */
     @NotNull String value();
 
+    /**
+     * Array representation of comments. Used for multiple comment annotations.
+     */
+    @Documented
     @Target({ElementType.FIELD, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @interface List {
+        /**
+         * @return An array of {@link Comment};
+         */
         @NotNull Comment[] value();
     }
 }

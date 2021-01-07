@@ -27,13 +27,21 @@ package com.heretere.hac.api.config.structure.annotation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Represents a configuration section in a config file.
+ */
+@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Section {
+    /**
+     * @return The key to
+     */
     @NotNull String value();
 }

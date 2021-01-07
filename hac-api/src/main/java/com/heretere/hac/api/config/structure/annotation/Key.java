@@ -27,16 +27,21 @@ package com.heretere.hac.api.config.structure.annotation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The interface Config key.
+ * Represents the key to a value in a config file.
  */
+@Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Key {
+    /**
+     * @return The key to this variable in a config.
+     */
     @NotNull String value();
 }

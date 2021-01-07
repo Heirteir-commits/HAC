@@ -160,7 +160,7 @@ final class EventHandler<T extends WrappedPacket> implements TypeDefinition<T> {
      * @return A {@link java.util.TreeSet} of {@link EventHandler#executors}.
      */
     private @NotNull Set<EventExecutor<T>> tempTreeSet() {
-        Set<65EventExecutor<T>> set = Sets.newTreeSet(EventHandler.COMPARATOR);
+        Set<EventExecutor<T>> set = Sets.newTreeSet(EventHandler.COMPARATOR);
         set.addAll(this.executors);
         return set;
     }

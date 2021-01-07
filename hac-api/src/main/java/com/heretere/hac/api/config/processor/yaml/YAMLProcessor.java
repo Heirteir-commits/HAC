@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Heflin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.heretere.hac.api.config.processor.yaml;
 
 import com.google.common.collect.Lists;
@@ -21,17 +46,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class YAMLProcessor extends Processor<YamlConfiguration> {
-    private @Nullable YamlConfiguration current;
+public final class YAMLProcessor extends Processor<YamlConfiguration> {
+    private @Nullable YamlConfiguration yaml;
 
     public YAMLProcessor(
-        @NotNull final HACAPI api,
-        @NotNull final Path location
+        final @NotNull HACAPI api,
+        final @NotNull Path location
     ) {
         super(api, location);
     }
 
-    private void attachSectionParent(@NotNull final ConfigPath path) {
+    private void attachSectionParent(final @NotNull ConfigPath path) {
         String parentPath = StringUtils.substringBeforeLast(path.getKey(), ".");
 
         if (!path.getKey().equals(parentPath)) {
@@ -45,16 +70,15 @@ public class YAMLProcessor extends Processor<YamlConfiguration> {
         }
     }
 
-    @Override
-    public boolean processConfigPath(@NotNull final ConfigPath configPath) {
+    @Override public boolean processConfigPath(final @NotNull ConfigPath configPath) {
         boolean success = true;
 
         if (configPath instanceof ConfigField) {
             this.attachSectionParent(configPath);
             super.getEntries().put(configPath.getKey(), configPath);
 
-            if (this.current != null && this.current.contains(configPath.getKey())) {
-                success = this.deserializeToField((ConfigField<?>) configPath);
+            if (this.yaml != null && this.yaml.contains(configPath.getKey())) {
+                success = super.deserializeToField(this.yaml, (ConfigField<?>) configPath);
             }
         } else {
             this.getEntries().put(configPath.getKey(), configPath);
@@ -63,38 +87,17 @@ public class YAMLProcessor extends Processor<YamlConfiguration> {
         return success;
     }
 
-    private boolean deserializeToField(@NotNull final ConfigField<?> configField) {
-        AtomicBoolean success = new AtomicBoolean(true);
-
-        if (this.current != null) {
-            super.getDeserializer(configField.getGenericType()).ifPresent(deserializer -> {
-                try {
-                    configField.setValueRaw(deserializer.deserialize(
-                        this.current,
-                        configField.getGenericType(),
-                        configField.getKey()
-                    ));
-                } catch (Exception e) {
-                    success.set(false);
-                    super.getAPI().getErrorHandler().getHandler().accept(e);
-                }
-            });
-        }
-
-        return success.get();
-    }
-
     @Override
     public boolean load() {
         boolean success = true;
 
         try {
-            createFileIfNotExists();
+            this.createFileIfNotExists();
 
-            current = YamlConfiguration.loadConfiguration(super.getFileLocation().toFile());
+            this.yaml = YamlConfiguration.loadConfiguration(super.getFileLocation().toFile());
 
-            current.getKeys(false).forEach(key -> {
-                if (this.current.isConfigurationSection(key)) {
+            this.yaml.getKeys(false).forEach(key -> {
+                if (this.yaml.isConfigurationSection(key)) {
                     super.getEntries().put(key, new ConfigSection(key));
                 } else {
                     ConfigField<?> configField = super.getEntries().containsKey(key)
@@ -107,7 +110,7 @@ public class YAMLProcessor extends Processor<YamlConfiguration> {
                             null
                         );
 
-                    this.deserializeToField(configField);
+                    this.deserializeToField(this.yaml, configField);
                     super.getEntries().put(key, configField);
                 }
             });
@@ -145,7 +148,7 @@ public class YAMLProcessor extends Processor<YamlConfiguration> {
                      AtomicBoolean attached = new AtomicBoolean(false);
                      String firstLine = indentation + this.getPathString(configPath.getKey()) + ": ";
                      Optional<?> value = ((ConfigField<?>) configPath).getValue();
-                     
+
                      if (value.isPresent()) {
                          this.serializeToString(value.get()).forEach(line -> {
                              if (!attached.getAndSet(true)) {

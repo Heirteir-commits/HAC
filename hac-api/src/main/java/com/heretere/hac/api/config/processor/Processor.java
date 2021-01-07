@@ -27,12 +27,14 @@ package com.heretere.hac.api.config.processor;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Processor<T> {
     private final @NotNull HACAPI api;
@@ -98,6 +100,28 @@ public abstract class Processor<T> {
         }
 
         return optionalSerializer;
+    }
+
+    protected final boolean deserializeToField(
+        final @NotNull T backend,
+        final @NotNull ConfigField<?> configField
+    ) {
+        AtomicBoolean success = new AtomicBoolean(true);
+
+        this.getDeserializer(configField.getGenericType()).ifPresent(deserializer -> {
+            try {
+                configField.setValueRaw(deserializer.deserialize(
+                    backend,
+                    configField.getGenericType(),
+                    configField.getKey()
+                ));
+            } catch (Exception e) {
+                success.set(false);
+                this.api.getErrorHandler().getHandler().accept(e);
+            }
+        });
+
+        return success.get();
     }
 
     public abstract boolean processConfigPath(@NotNull ConfigPath configPath);

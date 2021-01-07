@@ -28,9 +28,9 @@ package com.heretere.hac.api.config.processor.toml;
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.processor.Processor;
-import com.heretere.hac.api.config.processor.toml.typehandler.TomlBooleanHybridHandler;
-import com.heretere.hac.api.config.processor.toml.typehandler.TomlEnumHybridHandler;
-import com.heretere.hac.api.config.processor.toml.typehandler.TomlStringHybridHandler;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlBooleanSerializer;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlEnumSerializer;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlStringSerializer;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import com.heretere.hac.api.config.structure.backend.ConfigSection;
@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TOMLProcessor extends Processor<TomlParseResult> {
-    private @Nullable TomlParseResult current;
+public final class TOMLProcessor extends Processor<TomlParseResult> {
+    private @Nullable TomlParseResult toml;
 
     public TOMLProcessor(
         final @NotNull HACAPI api,
@@ -62,9 +62,9 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
     }
 
     private void createDefaultHandlers() {
-        super.attachTypeHandler(new TomlStringHybridHandler());
-        super.attachTypeHandler(new TomlBooleanHybridHandler());
-        super.attachTypeHandler(new TomlEnumHybridHandler());
+        super.attachTypeHandler(new TomlStringSerializer());
+        super.attachTypeHandler(new TomlBooleanSerializer());
+        super.attachTypeHandler(new TomlEnumSerializer());
     }
 
     private void attachSectionParent(final @NotNull ConfigPath path) {
@@ -75,27 +75,6 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
         }
     }
 
-    private boolean deserializeToField(final @NotNull ConfigField<?> configField) {
-        AtomicBoolean success = new AtomicBoolean(true);
-
-        if (this.current != null) {
-            super.getDeserializer(configField.getGenericType()).ifPresent(deserializer -> {
-                try {
-                    configField.setValueRaw(deserializer.deserialize(
-                        this.current,
-                        configField.getGenericType(),
-                        configField.getKey()
-                    ));
-                } catch (Exception e) {
-                    success.set(false);
-                    super.getAPI().getErrorHandler().getHandler().accept(e);
-                }
-            });
-        }
-
-        return success.get();
-    }
-
     @Override public boolean processConfigPath(final @NotNull ConfigPath configPath) {
         boolean success = true;
 
@@ -103,8 +82,8 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
             this.attachSectionParent(configPath);
             super.getEntries().put(configPath.getKey(), configPath);
 
-            if (this.current != null && this.current.contains(configPath.getKey())) {
-                success = this.deserializeToField((ConfigField<?>) configPath);
+            if (this.toml != null && this.toml.contains(configPath.getKey())) {
+                success = super.deserializeToField(this.toml, (ConfigField<?>) configPath);
             }
         } else {
             this.getEntries().put(configPath.getKey(), configPath);
@@ -125,10 +104,10 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
 
         try {
             this.createFileIfNotExists();
-            this.current = Toml.parse(super.getFileLocation());
+            this.toml = Toml.parse(super.getFileLocation());
 
-            this.current.dottedKeySet(false).forEach(key -> {
-                if (this.current.isTable(key)) {
+            this.toml.dottedKeySet(false).forEach(key -> {
+                if (this.toml.isTable(key)) {
                     super.getEntries().put(key, new ConfigSection(key));
                 } else {
                     ConfigField<?> configField = super.getEntries().containsKey(key)
@@ -141,13 +120,13 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
                             null
                         );
 
-                    this.deserializeToField(configField);
+                    super.deserializeToField(this.toml, configField);
                     super.getEntries().put(key, configField);
                 }
             });
 
-            if (this.current.hasErrors()) {
-                throw this.current.errors().get(0);
+            if (this.toml.hasErrors()) {
+                throw this.toml.errors().get(0);
             }
         } catch (Exception e) {
             success = false;
@@ -220,6 +199,7 @@ public class TOMLProcessor extends Processor<TomlParseResult> {
         if (output.isEmpty()) {
             output = path;
         }
+
         return output;
     }
 }

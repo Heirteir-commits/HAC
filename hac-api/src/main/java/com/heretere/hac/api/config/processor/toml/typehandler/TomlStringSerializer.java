@@ -26,25 +26,20 @@
 package com.heretere.hac.api.config.processor.toml.typehandler;
 
 import com.google.common.collect.Lists;
-import com.heretere.hac.api.config.processor.HybridHandler;
+import com.heretere.hac.api.config.processor.MultiSerializer;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
 import org.jetbrains.annotations.NotNull;
+import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
 import java.util.List;
-import java.util.Locale;
 
-@SuppressWarnings({"rawtypes", "unchecked"}) //We specifically want to handle all enum types for this class
-public final class TomlEnumHybridHandler implements HybridHandler<TomlParseResult, Enum> {
-    @Override public @NotNull Enum deserialize(
+public final class TomlStringSerializer implements MultiSerializer<TomlParseResult, String> {
+    @Override public @NotNull String deserialize(
         final @NotNull TomlParseResult parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
-        if (!exactType.isEnum()) {
-            throw new InvalidTypeException();
-        }
-
         if (!parser.isString(key)) {
             throw new InvalidTypeException();
         }
@@ -55,14 +50,14 @@ public final class TomlEnumHybridHandler implements HybridHandler<TomlParseResul
             throw new InvalidTypeException();
         }
 
-        return Enum.valueOf((Class<Enum>) exactType, output.toUpperCase(Locale.ROOT));
+        return output;
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList("\"" + this.getGenericType().cast(value).name() + "\"");
+        return Lists.newArrayList("\"" + Toml.tomlEscape(this.getGenericType().cast(value)) + "\"");
     }
 
-    @Override public @NotNull Class<Enum> getGenericType() {
-        return Enum.class;
+    @Override public @NotNull Class<String> getGenericType() {
+        return String.class;
     }
 }

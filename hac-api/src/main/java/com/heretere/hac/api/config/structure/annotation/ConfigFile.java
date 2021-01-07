@@ -27,16 +27,26 @@ package com.heretere.hac.api.config.structure.annotation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The interface Config file.
+ * This annotation is attached to class types. It is used to define a relative path to a config location.
  */
+@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigFile {
+    /**
+     * The relative path to the config file.
+     * <p>
+     * eg:
+     * config/test.toml -> plugins/HAC/config/test.toml
+     *
+     * @return The relative path to the config file.
+     */
     @NotNull String value();
 }
