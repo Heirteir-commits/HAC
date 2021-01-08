@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings({"rawtypes", "unchecked"}) //We specifically want to handle all enum types for this class
-public final class YamlEnumSerializer implements MultiSerializer<YamlConfiguration, Enum> {
+public final class YamlRawEnumSerializer implements MultiSerializer<YamlConfiguration, Enum> {
     @Override public @NotNull Enum deserialize(
         final @NotNull YamlConfiguration parser,
         final @NotNull Class<?> exactType,
@@ -59,8 +59,8 @@ public final class YamlEnumSerializer implements MultiSerializer<YamlConfigurati
     }
 
     @Override public @NotNull Enum deserializeRaw(
-        @NotNull Class<?> exactType,
-        @NotNull Object value
+        final @NotNull Class<?> exactType,
+        final @NotNull Object value
     ) {
         return Enum.valueOf((Class<Enum>) exactType, value.toString().toUpperCase(Locale.ROOT));
     }

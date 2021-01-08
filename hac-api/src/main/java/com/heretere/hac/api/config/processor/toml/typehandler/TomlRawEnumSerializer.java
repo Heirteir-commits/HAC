@@ -23,44 +23,60 @@
  *
  */
 
-package com.heretere.hac.api.config.processor.yaml.typehandler;
+package com.heretere.hac.api.config.processor.toml.typehandler;
 
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.config.processor.MultiSerializer;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.tomlj.TomlParseResult;
 
 import java.util.List;
+import java.util.Locale;
 
-public final class YamlDoubleSerializer implements MultiSerializer<YamlConfiguration, Double> {
-    @Override
-    public @NotNull Double deserialize(
-        final @NotNull YamlConfiguration parser,
+/**
+ * Used for enum serialization in toml files.
+ */
+@SuppressWarnings({"rawtypes", "unchecked"}) //We specifically want to handle all enum types for this class
+public final class TomlRawEnumSerializer implements MultiSerializer<TomlParseResult, Enum> {
+    @Override public @NotNull Enum deserialize(
+        final @NotNull TomlParseResult parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
-        if (!parser.isDouble(key)) {
+        /* Make sure that the passed in type is actually an enum. */
+        if (!exactType.isEnum()) {
             throw new InvalidTypeException();
         }
 
-        return parser.getDouble(key);
+        /* Make sure the key location is a string so we can convert it to an enum. */
+        if (!parser.isString(key)) {
+            throw new InvalidTypeException();
+        }
+
+        String output = parser.getString(key);
+
+        /* No values should ever be null. */
+        if (output == null) {
+            throw new InvalidTypeException();
+        }
+
+        /* Converts the parsed string to an enum value. */
+        return Enum.valueOf((Class<Enum>) exactType, output.toUpperCase(Locale.ROOT));
     }
 
-    @Override public @NotNull Double deserializeRaw(
+    @Override public @NotNull Enum deserializeRaw(
         final @NotNull Class<?> exactType,
         final @NotNull Object value
     ) throws InvalidTypeException {
-        return Double.valueOf(value.toString());
+        return Enum.valueOf((Class<Enum>) exactType, value.toString().toUpperCase(Locale.ROOT));
     }
 
-    @Override
-    public @NotNull List<String> serialize(@NotNull final Object value) {
-        return Lists.newArrayList(this.getGenericType().cast(value).toString());
+    @Override public @NotNull List<String> serialize(final @NotNull Object value) {
+        return Lists.newArrayList('"' + this.getGenericType().cast(value).name() + '"');
     }
 
-    @Override
-    public @NotNull Class<Double> getGenericType() {
-        return Double.class;
+    @Override public @NotNull Class<Enum> getGenericType() {
+        return Enum.class;
     }
 }

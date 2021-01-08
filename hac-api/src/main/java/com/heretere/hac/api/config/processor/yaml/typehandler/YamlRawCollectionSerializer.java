@@ -23,60 +23,57 @@
  *
  */
 
-package com.heretere.hac.api.config.processor.toml.typehandler;
+package com.heretere.hac.api.config.processor.yaml.typehandler;
 
 import com.google.common.collect.Lists;
+import com.heretere.hac.api.config.collection.ConfigList;
 import com.heretere.hac.api.config.processor.MultiSerializer;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.tomlj.TomlParseResult;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
-/**
- * Used for enum serialization in toml files.
- */
-@SuppressWarnings({"rawtypes", "unchecked"}) //We specifically want to handle all enum types for this class
-public final class TomlEnumSerializer implements MultiSerializer<TomlParseResult, Enum> {
-    @Override public @NotNull Enum deserialize(
-        final @NotNull TomlParseResult parser,
+@SuppressWarnings({"rawtypes", "unchecked"})
+public final class YamlRawCollectionSerializer implements MultiSerializer<YamlConfiguration, Collection> {
+    @Override public @NotNull Collection deserialize(
+        final @NotNull YamlConfiguration parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
-        /* Make sure that the passed in type is actually an enum. */
-        if (!exactType.isEnum()) {
+        if (!parser.isList(key)) {
             throw new InvalidTypeException();
         }
 
-        /* Make sure the key location is a string so we can convert it to an enum. */
-        if (!parser.isString(key)) {
+        List<?> list = parser.getList(key);
+
+        if (list == null) {
             throw new InvalidTypeException();
         }
 
-        String output = parser.getString(key);
-
-        /* No values should ever be null. */
-        if (output == null) {
-            throw new InvalidTypeException();
-        }
-
-        /* Converts the parsed string to an enum value. */
-        return Enum.valueOf((Class<Enum>) exactType, output.toUpperCase(Locale.ROOT));
+        ConfigList configList = ConfigList.newInstance(exactType);
+        configList.addAll(list);
+        return configList;
     }
 
-    @Override public @NotNull Enum deserializeRaw(
+    @Override public @NotNull Collection deserializeRaw(
         final @NotNull Class<?> exactType,
         final @NotNull Object value
     ) throws InvalidTypeException {
-        return Enum.valueOf((Class<Enum>) exactType, value.toString().toUpperCase(Locale.ROOT));
+        return this.getGenericType().cast(value);
     }
 
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
-        return Lists.newArrayList('"' + this.getGenericType().cast(value).name() + '"');
+        List<String> output = Lists.newArrayList();
+
+        this.getGenericType().cast(value).forEach(item -> output.add(item.toString()));
+
+        return output;
     }
 
-    @Override public @NotNull Class<Enum> getGenericType() {
-        return Enum.class;
+    @Override public @NotNull Class<Collection> getGenericType() {
+        return Collection.class;
     }
 }
+

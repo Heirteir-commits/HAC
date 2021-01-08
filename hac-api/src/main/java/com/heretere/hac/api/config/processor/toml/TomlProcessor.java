@@ -30,8 +30,8 @@ import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.collection.ConfigList;
 import com.heretere.hac.api.config.processor.Processor;
 import com.heretere.hac.api.config.processor.toml.typehandler.TomlBooleanSerializer;
-import com.heretere.hac.api.config.processor.toml.typehandler.TomlEnumSerializer;
 import com.heretere.hac.api.config.processor.toml.typehandler.TomlRawCollectionSerializer;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlRawEnumSerializer;
 import com.heretere.hac.api.config.processor.toml.typehandler.TomlStringSerializer;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
@@ -88,7 +88,7 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
     private void createDefaultHandlers() {
         super.attachTypeHandler(new TomlStringSerializer());
         super.attachTypeHandler(new TomlBooleanSerializer());
-        super.attachTypeHandler(new TomlEnumSerializer());
+        super.attachTypeHandler(new TomlRawEnumSerializer());
         super.attachTypeHandler(new TomlRawCollectionSerializer());
     }
 
@@ -102,7 +102,7 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
         String parentPath = StringUtils.substringBeforeLast(path.getKey(), ".");
 
         /* No reason to put in a new section if one is already there */
-        if (!path.getKey().equals(parentPath) && !super.getEntries().containsKey(parentPath)) {
+        if (!parentPath.isEmpty() && !path.getKey().equals(parentPath) && !super.getEntries().containsKey(parentPath)) {
             super.getEntries().put(parentPath, new ConfigSection(parentPath));
         }
     }

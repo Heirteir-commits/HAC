@@ -28,7 +28,7 @@ package com.heretere.hac.api.config;
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.processor.Processor;
-import com.heretere.hac.api.config.processor.toml.TomlProcessor;
+import com.heretere.hac.api.config.processor.yaml.YamlProcessor;
 import com.heretere.hac.api.config.structure.annotation.ConfigFile;
 import com.heretere.hac.api.config.structure.backend.ConfigClassParser;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
@@ -83,7 +83,7 @@ public class HACConfigHandler {
     }
 
     private Processor<?> getProcessor(final @NotNull String path) {
-        return this.files.computeIfAbsent(path, key -> new TomlProcessor(this.api, this.basePath.resolve(key)));
+        return this.files.computeIfAbsent(path, key -> new YamlProcessor(this.api, this.basePath.resolve(key)));
     }
 
     /**

@@ -63,7 +63,7 @@ public class ConfigExample {
 
     @Key("section.to.add.comments.enumlist")
     @Comment("Collections are supported")
-    private ConfigList<Test> listTest = ConfigList.newInstance(Test.class, Test.TESTING_1, Test.TESTING_2);
+    private ConfigList<Boolean> listTest = ConfigList.newInstance(Boolean.class, true, false, true, true, false);
 
     /* Type 2 Builder Example */
     private Boolean valueBuilder = false;
@@ -79,7 +79,7 @@ public class ConfigExample {
 
         System.out.println(this.listTest);
 
-        this.createBuilderStuffs();
+//        this.createBuilderStuffs();
     }
 
     /* Builder Type */

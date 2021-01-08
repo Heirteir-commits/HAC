@@ -174,7 +174,6 @@ public abstract class Processor<T> {
                 configField.getValue().orElseThrow(NullPointerException::new)).getGenericType();
             this.getDeserializer(genericType).ifPresent(deserializer -> {
                 /* Now we need to deserialize a collection */
-
                 /* There should always be a collection serializer for a processor. */
                 try {
                     /* Serialize the collection from the backend */
