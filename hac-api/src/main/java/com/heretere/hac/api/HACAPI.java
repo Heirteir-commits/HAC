@@ -27,14 +27,15 @@ package com.heretere.hac.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.event.EventManager;
 import com.heretere.hac.api.packet.PacketReferences;
 import com.heretere.hac.api.player.HACPlayerList;
+import com.heretere.hch.MultiConfigHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -47,7 +48,7 @@ public final class HACAPI {
     /**
      * The Config Handler instance.
      */
-    private final @NotNull HACConfigHandler configHandler;
+    private final @NotNull MultiConfigHandler configHandler;
     /**
      * The Event Manager instance.
      */
@@ -88,7 +89,7 @@ public final class HACAPI {
 
         this.loaded = true;
 
-        this.configHandler = new HACConfigHandler(this, parent);
+        this.configHandler = new MultiConfigHandler(parent.getDataFolder().toPath().getParent().resolve("HAC"));
         this.eventManager = new EventManager();
         this.threadPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("hac-thread-%d")
                                                                                   .build());
@@ -110,7 +111,11 @@ public final class HACAPI {
      */
     public void unload() {
         this.checkLoaded();
-        this.configHandler.unload();
+        try {
+            this.configHandler.unload();
+        } catch (IOException | IllegalAccessException e) {
+            this.errorHandler.getHandler().accept(e);
+        }
         this.threadPool.shutdown();
         this.loaded = false;
     }
@@ -120,7 +125,7 @@ public final class HACAPI {
      *
      * @return the config handler
      */
-    public @NotNull HACConfigHandler getConfigHandler() {
+    public @NotNull MultiConfigHandler getConfigHandler() {
         this.checkLoaded();
         return this.configHandler;
     }

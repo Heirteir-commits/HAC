@@ -25,10 +25,10 @@
 
 package com.heretere.hac.api.check.executor;
 
-import com.heretere.hac.api.config.HACConfigHandler;
 import com.heretere.hac.api.packet.wrapper.WrappedPacket;
+import com.heretere.hch.MultiConfigHandler;
 import org.jetbrains.annotations.NotNull;
 
 public interface ConfigurableCheck<T extends WrappedPacket> extends Check<T> {
-    void registerConfigValues(@NotNull HACConfigHandler handler);
+    void registerConfigValues(@NotNull MultiConfigHandler handler);
 }

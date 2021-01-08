@@ -67,6 +67,7 @@ shadowJar {
         /* Global relocations */
         relocate 'com.flowpowered.math', 'com.heretere.hac.core.libs.math'
         relocate 'org.apache.commons.lang3', 'com.heretere.hac.core.libs.lang3'
+        relocate 'com.heretere.hch', 'com.heretere.hac.core.libs.hch'
 
         /* module specific */
         relocate 'com.heretere.hac.util', 'com.heretere.hac.core.util'

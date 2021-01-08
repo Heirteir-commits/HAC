@@ -33,6 +33,7 @@ import com.heretere.hac.core.proxy.player.PlayerDataFactory;
 import com.heretere.hac.util.plugin.dependency.annotations.Maven;
 import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import com.heretere.hac.util.proxy.ProxyPlugin;
+import com.heretere.hch.processor.exception.InvalidTypeException;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -42,21 +43,23 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+
 /* Plugin */
 @Plugin(name = "HAC-Core", version = "0.0.1")
 @LogPrefix("-")
 @ApiVersion(ApiVersion.Target.v1_13)
 
 /* Dependencies */
-@Maven(groupId = "org|bstats",
-       artifactId = "bstats-bukkit",
-       version = "1.7",
-       repoUrl = "https://repo.codemc.org/repository/maven-public/")
 @Maven(groupId = "com|flowpowered", artifactId = "flow-math", version = "1.0.3")
 @Maven(groupId = "org|tomlj", artifactId = "tomlj", version = "1.0.0")
 @Maven(groupId = "org|antlr", artifactId = "antlr4-runtime", version = "4.7.2")
 @Maven(groupId = "org|apache|commons", artifactId = "commons-lang3", version = "3.11")
 @Maven(groupId = "com|google|guava", artifactId = "guava", version = "30.1-jre")
+@Maven(groupId = "org|bstats",
+       artifactId = "bstats-bukkit",
+       version = "1.7",
+       repoUrl = "https://repo.codemc.org/repository/maven-public/")
 /* Relocations */
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
@@ -114,15 +117,15 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
             return;
         }
 
-        if (!this.api.getConfigHandler().load()) {
+        try {
+            this.api.getConfigHandler().load();
+        } catch (IllegalAccessException | IOException | InvalidTypeException e) {
             super.getLog().reportFatalError(() -> "HAC failed to load the config files correctly. " +
                 "Please look at the latest.log to determine the issue.", true);
             return;
         }
 
         new Metrics(this, Core.BSTATS_ID);
-
-        new ConfigExample();
 
         this.api.getErrorHandler().setHandler(ex -> {
             if (ex != null) {
