@@ -23,47 +23,57 @@
  *
  */
 
-package com.heretere.hac.api.config.processor.yaml.typehandler;
+package com.heretere.hac.api.config.processor.toml.typehandler;
 
 import com.google.common.collect.Lists;
+import com.heretere.hac.api.config.collection.ConfigList;
 import com.heretere.hac.api.config.processor.MultiSerializer;
 import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.tomlj.TomlArray;
+import org.tomlj.TomlParseResult;
 
+import java.util.Collection;
 import java.util.List;
 
-public final class YamlCharacterSerializer implements MultiSerializer<YamlConfiguration, Character> {
-    @Override public @NotNull Character deserialize(
-        final @NotNull YamlConfiguration parser,
+@SuppressWarnings({"rawtypes", "unchecked"})
+public final class TomlRawCollectionSerializer implements MultiSerializer<TomlParseResult, Collection> {
+    @Override public @NotNull Collection deserialize(
+        final @NotNull TomlParseResult parser,
         final @NotNull Class<?> exactType,
         final @NotNull String key
     ) throws InvalidTypeException {
-        if (!parser.isString(key)) {
+        if (!parser.isArray(key)) {
             throw new InvalidTypeException();
         }
 
-        String output = parser.getString(key);
+        TomlArray array = parser.getArray(key);
 
-        if (output == null || output.length() > 1) {
+        if (array == null) {
             throw new InvalidTypeException();
         }
 
-        return output.charAt(0);
+        ConfigList list = ConfigList.newInstance(exactType);
+        list.addAll(array.toList());
+        return list;
     }
 
-    @Override public @NotNull Character deserializeRaw(
+    @Override public @NotNull Collection deserializeRaw(
         final @NotNull Class<?> exactType,
         final @NotNull Object value
     ) throws InvalidTypeException {
-        return value.toString().charAt(0);
+        return this.getGenericType().cast(value);
     }
 
-    @Override public @NotNull List<String> serialize(@NotNull final Object value) {
-        return Lists.newArrayList("'" + this.getGenericType().cast(value) + "'");
+    @Override public @NotNull List<String> serialize(final @NotNull Object value) {
+        List<String> output = Lists.newArrayList();
+
+        this.getGenericType().cast(value).forEach(item -> output.add(item.toString()));
+
+        return output;
     }
 
-    @Override public @NotNull Class<Character> getGenericType() {
-        return Character.class;
+    @Override public @NotNull Class<Collection> getGenericType() {
+        return Collection.class;
     }
 }

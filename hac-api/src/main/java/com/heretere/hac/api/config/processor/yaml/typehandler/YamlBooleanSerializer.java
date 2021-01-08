@@ -46,6 +46,13 @@ public final class YamlBooleanSerializer implements MultiSerializer<YamlConfigur
         return parser.getBoolean(key);
     }
 
+    @Override public @NotNull Boolean deserializeRaw(
+        final @NotNull Class<?> exactType,
+        final @NotNull Object value
+    ) throws InvalidTypeException {
+        return Boolean.valueOf(value.toString());
+    }
+
     @Override public @NotNull List<String> serialize(@NotNull final Object value) {
         return Lists.newArrayList(this.getGenericType().cast(value).toString());
     }

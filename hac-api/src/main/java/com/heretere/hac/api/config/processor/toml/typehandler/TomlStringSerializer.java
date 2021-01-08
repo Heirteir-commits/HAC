@@ -57,6 +57,13 @@ public final class TomlStringSerializer implements MultiSerializer<TomlParseResu
         return output;
     }
 
+    @Override public @NotNull String deserializeRaw(
+        final @NotNull Class<?> exactType,
+        final @NotNull Object value
+    ) throws InvalidTypeException {
+        return this.getGenericType().cast(value);
+    }
+
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
         return Lists.newArrayList('"' + this.getGenericType().cast(value) + '"');
     }

@@ -122,6 +122,8 @@ public final class Core extends ProxyPlugin<CoreVersionProxy> {
 
         new Metrics(this, Core.BSTATS_ID);
 
+        new ConfigExample();
+
         this.api.getErrorHandler().setHandler(ex -> {
             if (ex != null) {
                 this.getLog().severe(ex);

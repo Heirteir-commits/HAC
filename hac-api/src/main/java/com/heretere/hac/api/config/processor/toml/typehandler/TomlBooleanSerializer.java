@@ -57,6 +57,13 @@ public final class TomlBooleanSerializer implements MultiSerializer<TomlParseRes
         return output;
     }
 
+    @Override public @NotNull Boolean deserializeRaw(
+        final @NotNull Class<?> exactType,
+        final @NotNull Object value
+    ) {
+        return Boolean.valueOf(value.toString());
+    }
+
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
         return Lists.newArrayList(this.getGenericType().cast(value).toString());
     }

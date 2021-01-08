@@ -65,6 +65,13 @@ public final class TomlEnumSerializer implements MultiSerializer<TomlParseResult
         return Enum.valueOf((Class<Enum>) exactType, output.toUpperCase(Locale.ROOT));
     }
 
+    @Override public @NotNull Enum deserializeRaw(
+        final @NotNull Class<?> exactType,
+        final @NotNull Object value
+    ) throws InvalidTypeException {
+        return Enum.valueOf((Class<Enum>) exactType, value.toString().toUpperCase(Locale.ROOT));
+    }
+
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
         return Lists.newArrayList('"' + this.getGenericType().cast(value).name() + '"');
     }

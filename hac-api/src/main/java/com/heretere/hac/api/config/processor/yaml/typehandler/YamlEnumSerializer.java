@@ -58,6 +58,13 @@ public final class YamlEnumSerializer implements MultiSerializer<YamlConfigurati
         return Enum.valueOf((Class<Enum>) exactType, output.toUpperCase(Locale.ROOT));
     }
 
+    @Override public @NotNull Enum deserializeRaw(
+        @NotNull Class<?> exactType,
+        @NotNull Object value
+    ) {
+        return Enum.valueOf((Class<Enum>) exactType, value.toString().toUpperCase(Locale.ROOT));
+    }
+
     @Override public @NotNull List<String> serialize(final @NotNull Object value) {
         return Lists.newArrayList('"' + this.getGenericType().cast(value).name() + '"');
     }

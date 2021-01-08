@@ -23,29 +23,31 @@
  *
  */
 
-package com.heretere.hac.api.config.processor;
+package com.heretere.hac.api.config.collection;
 
-import com.heretere.hac.api.config.processor.exception.InvalidTypeException;
+import com.heretere.hac.api.util.generics.TypeDefinition;
 import org.jetbrains.annotations.NotNull;
 
-public interface TypeDeserializer<T, K> extends TypeHandler<K> {
-    /**
-     * Deserialized a config key to a value.
-     *
-     * @param parser    The processor backend.
-     * @param exactType The exact type of the deserialized object.
-     * @param key       The key to deserialize in the processor backend.
-     * @return The deserialized value.
-     * @throws InvalidTypeException If there is an issue deserializing the key.
-     */
-    @NotNull K deserialize(
-        @NotNull T parser,
-        @NotNull Class<?> exactType,
-        @NotNull String key
-    ) throws InvalidTypeException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    @NotNull K deserializeRaw(
-        @NotNull Class<?> exactType,
-        @NotNull Object value
-    ) throws InvalidTypeException;
+public class ConfigList<T> extends ArrayList<T> implements TypeDefinition<T> {
+    private final @NotNull Class<T> type;
+
+    private ConfigList(final @NotNull Class<T> type) {
+        this.type = type;
+    }
+
+    @Override public @NotNull Class<T> getGenericType() {
+        return this.type;
+    }
+
+    public static <T> ConfigList<T> newInstance(
+        final @NotNull Class<T> type,
+        final @NotNull T... elements
+    ) {
+        ConfigList<T> list = new ConfigList<>(type);
+        list.addAll(Arrays.asList(elements));
+        return list;
+    }
 }

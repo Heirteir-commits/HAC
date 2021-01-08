@@ -46,6 +46,13 @@ public final class YamlIntegerSerializer implements MultiSerializer<YamlConfigur
         return parser.getInt(key);
     }
 
+    @Override public @NotNull Integer deserializeRaw(
+        final @NotNull Class<?> exactType,
+        final @NotNull Object value
+    ) throws InvalidTypeException {
+        return Integer.valueOf(value.toString());
+    }
+
     @Override public @NotNull List<String> serialize(@NotNull final Object value) {
         return Lists.newArrayList(this.getGenericType().cast(value).toString());
     }

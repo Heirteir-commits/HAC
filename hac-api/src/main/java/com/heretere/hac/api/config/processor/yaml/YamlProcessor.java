@@ -29,7 +29,11 @@ import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
 import com.heretere.hac.api.config.processor.Processor;
 import com.heretere.hac.api.config.processor.yaml.typehandler.YamlBooleanSerializer;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlCharacterSerializer;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlDoubleSerializer;
 import com.heretere.hac.api.config.processor.yaml.typehandler.YamlEnumSerializer;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlFloatSerializer;
+import com.heretere.hac.api.config.processor.yaml.typehandler.YamlIntegerSerializer;
 import com.heretere.hac.api.config.processor.yaml.typehandler.YamlStringSerializer;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
@@ -73,9 +77,13 @@ public final class YamlProcessor extends Processor<YamlConfiguration> {
      * Attaches pre made serializers to this processor.
      */
     private void createDefaultHandlers() {
-        super.attachTypeHandler(new YamlStringSerializer());
         super.attachTypeHandler(new YamlBooleanSerializer());
+        super.attachTypeHandler(new YamlCharacterSerializer());
+        super.attachTypeHandler(new YamlDoubleSerializer());
         super.attachTypeHandler(new YamlEnumSerializer());
+        super.attachTypeHandler(new YamlFloatSerializer());
+        super.attachTypeHandler(new YamlIntegerSerializer());
+        super.attachTypeHandler(new YamlStringSerializer());
     }
 
     private void attachSectionParent(final @NotNull ConfigPath path) {

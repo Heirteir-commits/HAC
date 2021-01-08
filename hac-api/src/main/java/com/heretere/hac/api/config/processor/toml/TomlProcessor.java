@@ -27,9 +27,11 @@ package com.heretere.hac.api.config.processor.toml;
 
 import com.google.common.collect.Lists;
 import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.config.collection.ConfigList;
 import com.heretere.hac.api.config.processor.Processor;
 import com.heretere.hac.api.config.processor.toml.typehandler.TomlBooleanSerializer;
 import com.heretere.hac.api.config.processor.toml.typehandler.TomlEnumSerializer;
+import com.heretere.hac.api.config.processor.toml.typehandler.TomlRawCollectionSerializer;
 import com.heretere.hac.api.config.processor.toml.typehandler.TomlStringSerializer;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
 import com.heretere.hac.api.config.structure.backend.ConfigPath;
@@ -46,6 +48,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -56,6 +59,10 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
      */
     private @Nullable TomlParseResult toml;
 
+    /**
+     * This is used to tell the save method if the config was loaded correctly.
+     * If the load failed we don't want to overwrite the save file with a potentially corrupted config.
+     */
     private boolean loadSuccess;
 
     /**
@@ -82,6 +89,7 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
         super.attachTypeHandler(new TomlStringSerializer());
         super.attachTypeHandler(new TomlBooleanSerializer());
         super.attachTypeHandler(new TomlEnumSerializer());
+        super.attachTypeHandler(new TomlRawCollectionSerializer());
     }
 
     /**
@@ -178,6 +186,7 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
             super.getAPI().getErrorHandler().getHandler().accept(e);
         }
 
+        this.loadSuccess = success;
         return success;
     }
 
@@ -211,11 +220,11 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
                              if (!attached.getAndSet(true)) {
                                  lines.add(firstLine + line);
                              } else {
-                                 lines.add(StringUtils.repeat(' ', firstLine.length()) + line);
+                                 lines.add(StringUtils.repeat(' ', firstLine.length() + 1) + line);
                              }
                          });
                      } else {
-                         /* If the value isn't present set it tot null. */
+                         /* If the value isn't present set it to null. */
                          lines.add(firstLine + null);
                      }
                  } else {
@@ -243,13 +252,42 @@ public final class TomlProcessor extends Processor<TomlParseResult> {
     private List<String> serializeToString(final @NotNull Object object) {
         List<String> output = Lists.newArrayList();
 
-        /* If there is a serializer use it */
-        super.getSerializer(object.getClass())
-             .ifPresent(serializer -> output.addAll(serializer.serialize(object)));
+        if (ConfigList.class.isAssignableFrom(object.getClass())) {
+            super.getSerializer(((ConfigList<?>) object).getGenericType())
+                 .ifPresent(serializer -> ((Collection<?>) object)
+                     .forEach(item -> output.addAll(serializer.serialize(item))));
+        } else {
+            /* If there is a serializer use it */
+            super.getSerializer(object.getClass())
+                 .ifPresent(serializer -> output.addAll(serializer.serialize(object)));
+        }
 
         /* if no serializer was found we use a generic approach to creating a valid toml string. */
         if (output.isEmpty()) {
             output.add(Toml.tomlEscape(object.toString()).toString());
+        }
+
+        /* If there is more than one string in the list that means it's an array so we need to do some
+         * TOML specific changes to make it work with the toml deserializer. */
+
+        /* This basically converts a list of any type to example
+        *  "Hey", "There", "Bro"
+        * ["Hey",
+        * "There",
+        " "Bro"]/
+        *
+        * Any extra formatting is done in the save method.
+         */
+        if (output.size() > 1) {
+            for (int x = 0; x != output.size(); x++) {
+                if (x == 0) {
+                    output.set(x, "[" + output.get(x) + ", ");
+                } else if (x + 1 == output.size()) {
+                    output.set(x, output.get(x) + "]");
+                } else {
+                    output.set(x, output.get(x) + ", ");
+                }
+            }
         }
 
         return output;

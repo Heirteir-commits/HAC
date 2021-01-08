@@ -27,6 +27,7 @@ package com.heretere.hac.api.config.processor;
 
 import com.google.common.collect.Maps;
 import com.heretere.hac.api.HACAPI;
+import com.heretere.hac.api.config.collection.ConfigList;
 import com.heretere.hac.api.config.processor.toml.TomlProcessor;
 import com.heretere.hac.api.config.processor.yaml.YamlProcessor;
 import com.heretere.hac.api.config.structure.backend.ConfigField;
@@ -34,6 +35,7 @@ import com.heretere.hac.api.config.structure.backend.ConfigPath;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -158,24 +160,62 @@ public abstract class Processor<T> {
      * @param configField The config field to update.
      * @return True is the deserialization was a success.
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected final boolean deserializeToField(
         final @NotNull T backend,
         final @NotNull ConfigField<?> configField
     ) {
         AtomicBoolean success = new AtomicBoolean(true);
 
-        this.getDeserializer(configField.getGenericType()).ifPresent(deserializer -> {
-            try {
-                configField.setValueRaw(deserializer.deserialize(
-                    backend,
-                    configField.getGenericType(),
-                    configField.getKey()
-                ));
-            } catch (Exception e) {
-                success.set(false);
-                this.api.getErrorHandler().getHandler().accept(e);
-            }
-        });
+        /* Check if config field generic type is a collection if so we need to get the generic type instead of searching
+         * for a collection serializer. */
+        if (ConfigList.class.isAssignableFrom(configField.getGenericType())) {
+            Class<?> genericType = ((ConfigList<?>)
+                configField.getValue().orElseThrow(NullPointerException::new)).getGenericType();
+            this.getDeserializer(genericType).ifPresent(deserializer -> {
+                /* Now we need to deserialize a collection */
+
+                /* There should always be a collection serializer for a processor. */
+                try {
+                    /* Serialize the collection from the backend */
+                    Collection collection = (Collection)
+                        this.getDeserializer(Collection.class)
+                            .orElseThrow(IllegalStateException::new)
+                            .deserialize(
+                                backend,
+                                configField.getGenericType(),
+                                configField.getKey()
+                            );
+
+                    /* Next we need to convert all the values from the collection into
+                     *  Their correct type to be passed to the field */
+                    ConfigList output = ConfigList.newInstance(genericType);
+
+                    for (Object value : collection) {
+                        output.add(deserializer.deserializeRaw(genericType, value));
+                    }
+
+                    configField.setValueRaw(output);
+                } catch (Exception e) {
+                    success.set(false);
+                    this.api.getErrorHandler().getHandler().accept(e);
+                }
+            });
+        } else {
+            /* If the config field isn't a collection we can just process it regularly. */
+            this.getDeserializer(configField.getGenericType()).ifPresent(deserializer -> {
+                try {
+                    configField.setValueRaw(deserializer.deserialize(
+                        backend,
+                        configField.getGenericType(),
+                        configField.getKey()
+                    ));
+                } catch (Exception e) {
+                    success.set(false);
+                    this.api.getErrorHandler().getHandler().accept(e);
+                }
+            });
+        }
 
         return success.get();
     }
