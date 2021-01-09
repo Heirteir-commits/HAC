@@ -25,17 +25,16 @@
 
 package com.heretere.hac.util.plugin;
 
-import com.heretere.hac.util.plugin.dependency.DependencyLoader;
 import com.heretere.hac.util.plugin.logging.Log;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.heretere.hdl.DependencyPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-public abstract class HACPlugin extends JavaPlugin {
+public abstract class HACPlugin extends DependencyPlugin {
     /**
-     * The base directory all files should be passed to. This is similar to {@link JavaPlugin#getDataFolder()}
+     * The base directory all files should be passed to. This is similar to
+     * {@link org.bukkit.plugin.java.JavaPlugin#getDataFolder()}
      * except it points to a directory that could be used by multiple plugins.
      */
     private final @NotNull Path baseDirectory;
@@ -50,15 +49,11 @@ public abstract class HACPlugin extends JavaPlugin {
      */
     private final @NotNull Log log;
 
-    /**
-     * Whether or not the dependencies were successfully loaded.
-     */
-    private boolean dependencySuccess;
-
     protected HACPlugin(
         final @NotNull String baseDirectory,
         final @NotNull String prefix
     ) {
+        super();
         this.baseDirectory = this.getDataFolder().toPath().getParent().resolve(baseDirectory);
         this.prefix = "[HAC] [" + prefix + "] ";
 
@@ -66,57 +61,20 @@ public abstract class HACPlugin extends JavaPlugin {
         this.log.open();
     }
 
-    @Override
-    public final void onLoad() {
-        super.onLoad();
-
-        this.dependencySuccess = new DependencyLoader(this).loadDependencies();
-
-        if (this.dependencySuccess) {
-            this.load();
-        }
-    }
-
-    @Override
-    public final void onDisable() {
-        super.onDisable();
-
-        if (this.dependencySuccess) {
-            this.disable();
-        }
-
-        this.log.close();
-    }
-
-    @Override
-    public final void onEnable() {
-        super.onEnable();
-
-        if (this.dependencySuccess) {
-            this.enable();
-        } else {
-            this.log.reportFatalError(() -> String.format(
-                "Could not download required dependencies. " + "Please look at the latest.log in '%s' to " +
-                    "determine the issue.",
-                this.baseDirectory.getParent()
-                                  .relativize(this.baseDirectory.resolve("logs").resolve(this.getName()))
-            ), false);
-            Bukkit.getPluginManager().disablePlugin(this);
-        }
-    }
-
     /**
-     * Similar to {@link JavaPlugin#onLoad()} except it's ran after all dependencies are loaded.
+     * Similar to {@link org.bukkit.plugin.java.JavaPlugin#onLoad()} except it's ran after all dependencies are loaded.
      */
     public abstract void load();
 
     /**
-     * Similar to {@link JavaPlugin#onEnable()} except it's ran after all dependencies are loaded.
+     * Similar to {@link org.bukkit.plugin.java.JavaPlugin#onEnable()} except it's ran after all dependencies are
+     * loaded.
      */
     public abstract void enable();
 
     /**
-     * Similar to {@link JavaPlugin#onDisable()} except it's ran after all dependencies are loaded.
+     * Similar to {@link org.bukkit.plugin.java.JavaPlugin#onDisable()} except it's ran after all dependencies are
+     * loaded.
      */
     public abstract void disable();
 

@@ -30,10 +30,11 @@ import com.heretere.hac.core.player.HACPlayerListUpdater;
 import com.heretere.hac.core.proxy.CoreVersionProxy;
 import com.heretere.hac.core.proxy.player.PlayerData;
 import com.heretere.hac.core.proxy.player.PlayerDataFactory;
-import com.heretere.hac.util.plugin.dependency.annotations.Maven;
-import com.heretere.hac.util.plugin.dependency.relocation.annotations.Relocation;
 import com.heretere.hac.util.proxy.ProxyPlugin;
 import com.heretere.hch.processor.exception.InvalidTypeException;
+import com.heretere.hdl.dependency.maven.annotation.Maven;
+import com.heretere.hdl.dependency.maven.annotation.MavenRepo;
+import com.heretere.hdl.relocation.annotation.Relocation;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -51,22 +52,18 @@ import java.io.IOException;
 @ApiVersion(ApiVersion.Target.v1_13)
 
 /* Dependencies */
-@Maven(groupId = "com|flowpowered", artifactId = "flow-math", version = "1.0.3")
-@Maven(groupId = "org|tomlj", artifactId = "tomlj", version = "1.0.0")
-@Maven(groupId = "org|antlr", artifactId = "antlr4-runtime", version = "4.7.2")
-@Maven(groupId = "org|apache|commons", artifactId = "commons-lang3", version = "3.11")
-@Maven(groupId = "com|google|guava", artifactId = "guava", version = "30.1-jre")
-@Maven(groupId = "org|bstats",
-       artifactId = "bstats-bukkit",
-       version = "1.7",
-       repoUrl = "https://repo.codemc.org/repository/maven-public/")
+@MavenRepo("https://repo.codemc.org/repository/maven-public/")
+@Maven("com|flowpowered:flow-math:1.0.3")
+@Maven("org|tomlj:tomlj:1.0.0")
+@Maven("org|antlr:antlr4-runtime:4.7.2")
+@Maven("org|bstats:bstats-bukkit:1.7")
+@Maven("org|apache|commons:commons-lang3:3.11")
 /* Relocations */
 @Relocation(from = "org|bstats|bukkit", to = "com|heretere|hac|core|libs|bstats|bukkit")
 @Relocation(from = "com|flowpowered|math", to = "com|heretere|hac|core|libs|math")
 @Relocation(from = "org|tomlj", to = "com|heretere|hac|core|libs|tomlj")
 @Relocation(from = "org|antlr", to = "com|heretere|hac|core|libs|antlr")
 @Relocation(from = "org|apache|commons|lang3", to = "com|heretere|hac|core|libs|lang3")
-@Relocation(from = "com|google|common", to = "com|heretere|hac|core|libs|guava")
 public final class Core extends ProxyPlugin<CoreVersionProxy> {
     /**
      * The id for this plugin on bstats.
